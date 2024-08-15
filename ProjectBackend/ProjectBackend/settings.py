@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'storages',
     'ProjectBackend',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -50,6 +51,11 @@ AWS_S3_REGION_NAME = 'af-south-1'  # e.g., 'us-west-2'
 AWS_S3_SIGNATURE_VERSION = 's3v4'
 AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None  # S3 default access control
+# Static and Media files settings
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
