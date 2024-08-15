@@ -42,6 +42,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+# AWS S3 Configuration
+AWS_ACCESS_KEY_ID = 'AKIAS66UCUDQ4HGT54SD'
+AWS_SECRET_ACCESS_KEY = 'yAEf4xjJjS8BYwbFymJeO87zfDm4bOq0OB6AmPgPf'
+AWS_STORAGE_BUCKET_NAME = 'cpmg323-project-file-storage-django'
+AWS_S3_REGION_NAME = 'af-south-1'  # e.g., 'us-west-2'
+AWS_S3_SIGNATURE_VERSION = 's3v4'
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None  # S3 default access control
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
