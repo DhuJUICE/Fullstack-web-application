@@ -44,8 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 # AWS S3 Configuration
-AWS_ACCESS_KEY_ID = 'AKIAS66UCUDQ4HGT54SD'
-AWS_SECRET_ACCESS_KEY = 'yAEf4xjJjS8BYwbFymJeO87zfDm4bOq0OB6AmPgPf'
+AWS_ACCESS_KEY_ID = 'AKIAS66UCUDQ2AC2KBGM'
+#secretAccessHere
 AWS_STORAGE_BUCKET_NAME = 'cpmg323-project-file-storage-django'
 AWS_S3_REGION_NAME = 'af-south-1'  # e.g., 'us-west-2'
 AWS_S3_SIGNATURE_VERSION = 's3v4'

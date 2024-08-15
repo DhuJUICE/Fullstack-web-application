@@ -12,8 +12,8 @@ def test_s3_connection(request):
     # Initialize a session using your credentials
     s3 = boto3.client(
         's3',
-        aws_access_key_id='AKIAS66UCUDQ4HGT54SD',
-        aws_secret_access_key='yAEf4xjJjS8BYwbFymJeO87zfDm4bOq0OB6AmPgPf',
+        aws_access_key_id='AKIAS66UCUDQ2AC2KBGM',
+        #secretAccessHere
         region_name='af-south-1'
     )
 
