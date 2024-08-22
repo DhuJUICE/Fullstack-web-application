@@ -3,9 +3,11 @@ from django.db import models
 # Create your models here.
 class ResourceMetadata(models.Model):
 
-    #resource-metadata
+    #Resource Metadata
     File_Path = ""
     File_Type = ""
+    
+    Contributor = ""
     
     Resource_Name = ""
     Subject = ""
