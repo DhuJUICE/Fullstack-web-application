@@ -15,12 +15,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from . import views
 
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.testpage, name="testpage"),
     path('test-s3/', views.test_s3_connection, name='test_s3_connection'),
+    #for now just include resource_contribution
+    path('', include('resource_contribution.urls')),
 ]
