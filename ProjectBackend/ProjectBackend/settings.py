@@ -34,6 +34,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'resource_report',
+    'resource_contribution',
+    'faq',
     'storages',
     'ProjectBackend',
     'django.contrib.admin',
