@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-class ResourceMetadata(models.Model):
+class RESOURCE_METADATA(models.Model):
 
     #Resource Metadata
     #identifier from aws s3
