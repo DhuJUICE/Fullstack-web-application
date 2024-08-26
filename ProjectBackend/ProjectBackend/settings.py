@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'resource_contribution',
     'faq',
     'storages',
     'ProjectBackend',
