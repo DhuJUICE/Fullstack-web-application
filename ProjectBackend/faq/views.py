@@ -3,10 +3,10 @@ from rest_framework import generics
 from .models import FAQ
 from .serializers import FaqSerializer
 
-class BookListCreate(generics.ListCreateAPIView):
+class FaqListCreate(generics.ListCreateAPIView):
     queryset = FAQ.objects.all()
     serializer_class = FaqSerializer
 
-class BookDetail(generics.RetrieveUpdateDestroyAPIView):
+class FaqDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = FAQ.objects.all()
     serializer_class = FaqSerializer
