@@ -1,0 +1,13 @@
+API ENDPOINT SPECIFICS
+To get all the objects from a database table:
+api/model/serial
+
+to GET specific object from a database table
+api/model/deserial/primarykeyNum/
+
+to POST specific object from a database table
+
+to PUT/UPDATE specific object from a database table
+
+to DELETE specific object from a database table
+

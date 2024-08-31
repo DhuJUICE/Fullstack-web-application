@@ -26,7 +26,7 @@ from rest_framework import status
 
 #class based views to show the detail of all objects that are serialized
 
-#SERIALIZE DATA CLASSBASED VIEWS - Backend to Frontend
+#SERIALIZE DATA CLASSBASED VIEWS - Backend making the data available to be used by the frontend
 class serializeFaq(generics.ListCreateAPIView):
     queryset = FAQ.objects.all()
     serializer_class = FaqSerializer
@@ -47,70 +47,56 @@ class serializeUser(generics.ListCreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
 	
-#DESERIALIZE DATA CLASSBASED VIEWS - Frontend to Backend
+#DESERIALIZE DATA CLASSBASED VIEWS - Frontend to Backend communication
 #WITH TEST DATA
 class deserializeFaq(APIView):
     permission_classes = [AllowAny] #remove once login functionality has been completed
     #when a form method/action is "GET"
+    #to get a specic object according its primary key id
     def get(self, request, *args, **kwargs):
-        data = JSONParser().parse(request)
-        serializer = FaqSerializer(data=data)
-        
-        if serializer.is_valid():
-            faq_instance = serializer.save()
-            response_data = {
-                "id": faq_instance.id,
-                "question": faq_instance.question,
-                "answer": faq_instance.answer
-            }
-            return JsonResponse(response_data, status=201)
-        else:
-            return JsonResponse({"error": serializer.errors}, status=400)
+        faq_id = kwargs.get('pk')
+        try:
+            faq_instance = FAQ.objects.get(id=faq_id)
+            serializer = FaqSerializer(faq_instance)
+            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+        except FAQ.DoesNotExist:
+            return JsonResponse({"error": "FAQ not found."}, status=status.HTTP_404_NOT_FOUND)
 
-    #when a form method/action is "POST"
+    # POST request
     def post(self, request, *args, **kwargs):
         data = request.data
         serializer = FaqSerializer(data=data)
         if serializer.is_valid():
             faq_instance = serializer.save()
-            response_data = {
-                "id": faq_instance.id,
-                "question": faq_instance.question,
-                "answer": faq_instance.answer
-            }
-            return JsonResponse(response_data, status=201)
+            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return JsonResponse({"error": serializer.errors}, status=400)
+            return JsonResponse({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-    #when a form method/action is "PUT"
+    # PUT request
     def put(self, request, *args, **kwargs):
+        faq_id = kwargs.get('pk')
         data = request.data
         try:
-            faq_instance = FAQ.objects.get(id=kwargs.get('pk'))
+            faq_instance = FAQ.objects.get(id=faq_id)
         except FAQ.DoesNotExist:
-            return JsonResponse({"error": "FAQ not found."}, status=404)
+            return JsonResponse({"error": "FAQ not found."}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = FaqSerializer(faq_instance, data=data, partial=True)
         if serializer.is_valid():
-            faq_instance.question = "Alright"
             faq_instance = serializer.save()
-            response_data = {
-                "id": faq_instance.id,
-                "question": faq_instance.question,
-                "answer": faq_instance.answer
-            }
-            return JsonResponse(response_data, status=200)
+            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
         else:
-            return JsonResponse({"error": serializer.errors}, status=400)
+            return JsonResponse({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-    #when a form method/action is "DELETE"
+    # DELETE request
     def delete(self, request, *args, **kwargs):
+        faq_id = kwargs.get('pk')
         try:
-            faq_instance = FAQ.objects.get(id=kwargs.get('pk'))
+            faq_instance = FAQ.objects.get(id=faq_id)
             faq_instance.delete()
-            return JsonResponse({"message": "FAQ deleted successfully."}, status=204)
+            return JsonResponse({"message": "FAQ deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
         except FAQ.DoesNotExist:
-            return JsonResponse({"error": "FAQ not found."}, status=404)
+            return JsonResponse({"error": "FAQ not found."}, status=status.HTTP_404_NOT_FOUND)
 
 class deserializeResource(APIView):
     permission_classes = [AllowAny]
