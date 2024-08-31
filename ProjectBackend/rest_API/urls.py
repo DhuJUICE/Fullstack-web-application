@@ -1,8 +1,8 @@
 from django.contrib import admin
 
 from django.urls import path
-from .views import FaqListCreate, FaqDetail, DocListCreate, ReportListCreate, UserListCreate
-
+from .views import FaqListCreate, FaqDetail, DocListCreate, ReportListCreate, UserListCreate, FaqCreateView
+from django.test import TestCase
 urlpatterns = [
 	#faq endpoint
 	#to see all objects from a table
@@ -19,4 +19,7 @@ urlpatterns = [
 	
 	#User endpoint
 	path('api/user/', UserListCreate.as_view(), name='user-list-create'),
+	
+	#testing for deserialized data
+	path('api/deserial/', FaqCreateView.as_view(), name='faq-list-create'),
 ]

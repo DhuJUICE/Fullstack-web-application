@@ -3,7 +3,9 @@ from faq.models import FAQ
 from resource_contribution.models import RESOURCE_METADATA
 from resource_report.models import RESOURCE_REPORT
 from django.contrib.auth.models import User, auth
+from rest_framework.exceptions import ValidationError
 
+#Serializers
 class FaqSerializer(serializers.ModelSerializer):
     class Meta:
         model = FAQ
@@ -27,3 +29,5 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         
         fields = '__all__' #specify fields explicitly
+		
+

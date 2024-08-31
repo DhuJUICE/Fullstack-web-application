@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+	'rest_framework.authtoken',
 ]
 # AWS S3 Configuration
 AWS_ACCESS_KEY_ID = 'AKIAS66UCUDQ2AC2KBGM'
