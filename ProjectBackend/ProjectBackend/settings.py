@@ -191,6 +191,9 @@ LOGGING = {
     },
 }
 
+<<<<<<< HEAD
 #CSRF_COOKIE_SECURE = True
 
+=======
+>>>>>>> parent of 7d5d830 (update)
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
