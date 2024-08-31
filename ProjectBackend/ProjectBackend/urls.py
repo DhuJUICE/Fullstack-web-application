@@ -20,6 +20,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from . import views
+from .views import delete_faq_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -37,4 +38,5 @@ urlpatterns = [
     path('', include('user_analytics.urls')),
     path('', include('faq.urls')),
 	path('', include('rest_API.urls')),
+    path('delete-faq/', delete_faq_view, name='delete_faq'),
 ]
