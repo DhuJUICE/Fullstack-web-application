@@ -24,13 +24,17 @@ urlpatterns = [
 	#deserialize routes
 	#deserialize faq endpoint
     path('api/faq/deserial', deserializeFaq.as_view(), name='faq'),
+	path('api/faq/deserial/<int:pk>', deserializeFaq.as_view(), name='faq'),
 	
 	#deserialize resource endpoint
 	path('api/resource/deserial/', deserializeResource.as_view(), name='doc'),
+	path('api/resource/deserial/<int:pk>', deserializeFaq.as_view(), name='faq'),
 	
 	#deserialize report endpoint
 	path('api/report/deserial/', deserializeReport.as_view(), name='report'),
+	path('api/report/deserial/<int:pk>', deserializeFaq.as_view(), name='faq'),
 	
 	#deserialize User endpoint
 	path('api/user/deserial/', deserializeUser.as_view(), name='user'),
+	path('api/user/deserial/<int:pk>', deserializeFaq.as_view(), name='faq'),
 ]

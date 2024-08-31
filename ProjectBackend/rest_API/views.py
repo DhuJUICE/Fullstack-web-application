@@ -20,7 +20,7 @@ from rest_framework.parsers import JSONParser
 from io import BytesIO
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
-from django.views import View
+from rest_framework.views import APIView
 from django.http import JsonResponse
 from rest_framework import status
 
@@ -49,16 +49,11 @@ class serializeUser(generics.ListCreateAPIView):
 	
 #DESERIALIZE DATA CLASSBASED VIEWS - Frontend to Backend
 #WITH TEST DATA
-class deserializeFaq(View):
+class deserializeFaq(APIView):
+    permission_classes = [AllowAny] #remove once login functionality has been completed
+    #when a form method/action is "GET"
     def get(self, request, *args, **kwargs):
-        json_data = {
-            "id": 1,
-            "question": "Are you ready?",
-            "answer": "Yes my guy"
-        }
-        json_bytes = JSONRenderer().render(json_data)
-        stream = BytesIO(json_bytes)
-        data = JSONParser().parse(stream)
+        data = JSONParser().parse(request)
         serializer = FaqSerializer(data=data)
         
         if serializer.is_valid():
@@ -72,7 +67,53 @@ class deserializeFaq(View):
         else:
             return JsonResponse({"error": serializer.errors}, status=400)
 
-class deserializeResource(View):
+    #when a form method/action is "POST"
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        serializer = FaqSerializer(data=data)
+        if serializer.is_valid():
+            faq_instance = serializer.save()
+            response_data = {
+                "id": faq_instance.id,
+                "question": faq_instance.question,
+                "answer": faq_instance.answer
+            }
+            return JsonResponse(response_data, status=201)
+        else:
+            return JsonResponse({"error": serializer.errors}, status=400)
+
+    #when a form method/action is "PUT"
+    def put(self, request, *args, **kwargs):
+        data = request.data
+        try:
+            faq_instance = FAQ.objects.get(id=kwargs.get('pk'))
+        except FAQ.DoesNotExist:
+            return JsonResponse({"error": "FAQ not found."}, status=404)
+
+        serializer = FaqSerializer(faq_instance, data=data, partial=True)
+        if serializer.is_valid():
+            faq_instance.question = "Alright"
+            faq_instance = serializer.save()
+            response_data = {
+                "id": faq_instance.id,
+                "question": faq_instance.question,
+                "answer": faq_instance.answer
+            }
+            return JsonResponse(response_data, status=200)
+        else:
+            return JsonResponse({"error": serializer.errors}, status=400)
+
+    #when a form method/action is "DELETE"
+    def delete(self, request, *args, **kwargs):
+        try:
+            faq_instance = FAQ.objects.get(id=kwargs.get('pk'))
+            faq_instance.delete()
+            return JsonResponse({"message": "FAQ deleted successfully."}, status=204)
+        except FAQ.DoesNotExist:
+            return JsonResponse({"error": "FAQ not found."}, status=404)
+
+class deserializeResource(APIView):
+    permission_classes = [AllowAny]
     def get(self, request, *args, **kwargs):
         json_data = {
             "file_path": "No/path",
@@ -114,7 +155,8 @@ class deserializeResource(View):
         else:
             return JsonResponse({"error": serializer.errors}, status=400)
 
-class deserializeReport(View):
+class deserializeReport(APIView):
+    permission_classes = [AllowAny]
     def get(self, request, *args, **kwargs):
         json_data = {
             "reportComplaint": "This is not helpful at all. It distracts my kids from really studying",
@@ -138,7 +180,8 @@ class deserializeReport(View):
         else:
             return JsonResponse({"error": serializer.errors}, status=400)
 
-class deserializeUser(View):
+class deserializeUser(APIView):
+    permission_classes = [AllowAny]
     def get(self, request, *args, **kwargs):
         json_data = {
             "username": "testuser3",
@@ -161,9 +204,9 @@ class deserializeUser(View):
         else:
             return JsonResponse({"error": serializer.errors}, status=400)
 
-#WITHOUT TEST DATA
+#WITHOUT TEST DATA and without allowing everyone access, need authentication and authorisation
 """
-class deserializeFaq(View):
+class deserializeFaq(APIView):
     def get(self, request, *args, **kwargs):
         json_data = {
             "id": 1,
@@ -184,7 +227,7 @@ class deserializeFaq(View):
         else:
             return JsonResponse({"error": serializer.errors}, status=400)
 
-class deserializeResource(View):
+class deserializeResource(APIView):
     def get(self, request, *args, **kwargs):
         json_data = {
             "file_type": "jpg",
@@ -222,7 +265,7 @@ class deserializeResource(View):
         else:
             return JsonResponse({"error": serializer.errors}, status=400)
 
-class deserializeReport(View):
+class deserializeReport(APIView):
     def get(self, request, *args, **kwargs):
         json_data = {
             "reportComplaint": "This is not helpful at all. It distracts my kids from really studying",
@@ -244,7 +287,7 @@ class deserializeReport(View):
         else:
             return JsonResponse({"error": serializer.errors}, status=400)
 
-class deserializeUser(View):
+class deserializeUser(APIView):
     def get(self, request, *args, **kwargs):
         json_data = {
             "username": "testuser3",
