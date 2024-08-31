@@ -16,10 +16,6 @@ from rest_framework.permissions import IsAuthenticated #must be added later on t
 
 
 #deserializing imports
-from rest_framework.parsers import JSONParser
-from io import BytesIO
-from rest_framework.renderers import JSONRenderer
-from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.http import JsonResponse
 from rest_framework import status
@@ -125,7 +121,7 @@ class deserializeResource(APIView):
         resource_id = kwargs.get('pk')
         data = request.data
         try:
-            resource_instance = RESOURCE_METADATA.objects.get(id=faq_id)
+            resource_instance = RESOURCE_METADATA.objects.get(id=resource_id)
         except RESOURCE_METADATA.DoesNotExist:
             return JsonResponse({"error": "Resource not found."}, status=status.HTTP_404_NOT_FOUND)
 
