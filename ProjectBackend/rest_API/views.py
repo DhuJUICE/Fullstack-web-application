@@ -75,6 +75,7 @@ class deserializeFaq(View):
 class deserializeResource(View):
     def get(self, request, *args, **kwargs):
         json_data = {
+            "file_path": "No/path",
             "file_type": "jpg",
             "contributor": "Jesica-System Admin",
             "resource_name": "How to study better",
@@ -96,6 +97,7 @@ class deserializeResource(View):
             resource_instance = serializer.save()
             response_data = {
                 "id": resource_instance.id,
+                "file_path": resource_instance.file_path ,
                 "file_type": resource_instance.file_type,
                 "contributor": resource_instance.contributor,
                 "resource_name": resource_instance.resource_name,
