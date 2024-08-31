@@ -100,197 +100,146 @@ class deserializeFaq(APIView):
 
 class deserializeResource(APIView):
     permission_classes = [AllowAny]
+    #to get a specic object according its primary key id
     def get(self, request, *args, **kwargs):
-        json_data = {
-            "file_path": "No/path",
-            "file_type": "jpg",
-            "contributor": "Jesica-System Admin",
-            "resource_name": "How to study better",
-            "subject": "Study Techniques",
-            "grade": "11",
-            "keywords": "sociology, sind, research",
-            "date_contributed": "2024-08-31T08:26:19.777069Z",
-            "resource_rating": 4,
-            "approval_status": "Approved",
-            "moderation_comment": "This will be very helpful to students",
-            "moderation_date": "2024-08-31T10:18:00Z"
-        }
-        json_bytes = JSONRenderer().render(json_data)
-        stream = BytesIO(json_bytes)
-        data = JSONParser().parse(stream)
+        resource_id = kwargs.get('pk')
+        try:
+            resource_instance = RESOURCE_METADATA.objects.get(id=resource_id)
+            serializer = DocSerializer(resource_instance)
+            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+        except RESOURCE_METADATA.DoesNotExist:
+            return JsonResponse({"error": "Resource not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    # POST request
+    def post(self, request, *args, **kwargs):
+        data = request.data
         serializer = DocSerializer(data=data)
-        
         if serializer.is_valid():
             resource_instance = serializer.save()
-            response_data = {
-                "id": resource_instance.id,
-                "file_path": resource_instance.file_path ,
-                "file_type": resource_instance.file_type,
-                "contributor": resource_instance.contributor,
-                "resource_name": resource_instance.resource_name,
-                "subject": resource_instance.subject,
-                "grade": resource_instance.grade,
-                "keywords": resource_instance.keywords,
-                "date_contributed": resource_instance.date_contributed,
-                "resource_rating": resource_instance.resource_rating,
-                "approval_status": resource_instance.approval_status,
-                "moderation_comment": resource_instance.moderation_comment,
-                "moderation_date": resource_instance.moderation_date
-            }
-            return JsonResponse(response_data, status=201)
+            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return JsonResponse({"error": serializer.errors}, status=400)
+            return JsonResponse({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    # PUT request
+    def put(self, request, *args, **kwargs):
+        resource_id = kwargs.get('pk')
+        data = request.data
+        try:
+            resource_instance = RESOURCE_METADATA.objects.get(id=faq_id)
+        except RESOURCE_METADATA.DoesNotExist:
+            return JsonResponse({"error": "Resource not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = DocSerializer(faq_instance, data=data, partial=True)
+        if serializer.is_valid():
+            resource_instance = serializer.save()
+            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    # DELETE request
+    def delete(self, request, *args, **kwargs):
+        resource_id = kwargs.get('pk')
+        try:
+            resource_instance = RESOURCE_METADATA.objects.get(id=resource_id)
+            resource_instance.delete()
+            return JsonResponse({"message": "Resource deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+        except RESOURCE_METADATA.DoesNotExist:
+            return JsonResponse({"error": "Resource not found."}, status=status.HTTP_404_NOT_FOUND)
+
 
 class deserializeReport(APIView):
     permission_classes = [AllowAny]
+    #to get a specic object according its primary key id
     def get(self, request, *args, **kwargs):
-        json_data = {
-            "reportComplaint": "This is not helpful at all. It distracts my kids from really studying",
-            "reportDatetime": "2024-08-31T08:36:56.833338Z",
-            "reportResource": "ForeignKeyToResource"
-        }
-        json_bytes = JSONRenderer().render(json_data)
-        stream = BytesIO(json_bytes)
-        data = JSONParser().parse(stream)
+        report_id = kwargs.get('pk')
+        try:
+            report_instance = RESOURCE_REPORT.objects.get(id=report_id)
+            serializer = ReportSerializer(report_instance)
+            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+        except RESOURCE_REPORT.DoesNotExist:
+            return JsonResponse({"error": "Report not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    # POST request
+    def post(self, request, *args, **kwargs):
+        data = request.data
         serializer = ReportSerializer(data=data)
-        
         if serializer.is_valid():
             report_instance = serializer.save()
-            response_data = {
-                "id": report_instance.id,
-                "reportComplaint": report_instance.reportComplaint,
-                "reportDatetime": report_instance.reportDatetime,
-                "reportResource": report_instance.reportResource
-            }
-            return JsonResponse(response_data, status=201)
+            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return JsonResponse({"error": serializer.errors}, status=400)
+            return JsonResponse({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    # PUT request
+    def put(self, request, *args, **kwargs):
+        report_id = kwargs.get('pk')
+        data = request.data
+        try:
+            report_instance = RESOURCE_REPORT.objects.get(id=report_id)
+        except RESOURCE_REPORT.DoesNotExist:
+            return JsonResponse({"error": "Report not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ReportSerializer(report_instance, data=data, partial=True)
+        if serializer.is_valid():
+            report_instance = serializer.save()
+            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    # DELETE request
+    def delete(self, request, *args, **kwargs):
+        report_id = kwargs.get('pk')
+        try:
+            resource_instance = RESOURCE_REPORT.objects.get(id=report_id)
+            resource_instance.delete()
+            return JsonResponse({"message": "Report deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+        except RESOURCE_REPORT.DoesNotExist:
+            return JsonResponse({"error": "Report not found."}, status=status.HTTP_404_NOT_FOUND)
 
 class deserializeUser(APIView):
     permission_classes = [AllowAny]
+    #to get a specic object according its primary key id
     def get(self, request, *args, **kwargs):
-        json_data = {
-            "username": "testuser3",
-            "email": "testuser@example.com",
-            "password": "securepassword"
-        }
-        json_bytes = JSONRenderer().render(json_data)
-        stream = BytesIO(json_bytes)
-        data = JSONParser().parse(stream)
+        user_id = kwargs.get('pk')
+        try:
+            user_instance = User.objects.get(id=user_id)
+            serializer = UserSerializer(user_instance)
+            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    # POST request
+    def post(self, request, *args, **kwargs):
+        data = request.data
         serializer = UserSerializer(data=data)
-        
         if serializer.is_valid():
             user_instance = serializer.save()
-            response_data = {
-                "id": user_instance.id,
-                "username": user_instance.username,
-                "email": user_instance.email
-            }
-            return JsonResponse(response_data, status=201)
+            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return JsonResponse({"error": serializer.errors}, status=400)
+            return JsonResponse({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-#WITHOUT TEST DATA and without allowing everyone access, need authentication and authorisation
-"""
-class deserializeFaq(APIView):
-    def get(self, request, *args, **kwargs):
-        json_data = {
-            "id": 1,
-            "question": "Are you ready?",
-            "answer": "Yes my guy"
-        }
-        data = JSONParser().parse(request)
-        serializer = FaqSerializer(data=data)
-        
-        if serializer.is_valid():
-            faq_instance = serializer.save()
-            response_data = {
-                "id": faq_instance.id,
-                "question": faq_instance.question,
-                "answer": faq_instance.answer
-            }
-            return JsonResponse(response_data, status=201)
-        else:
-            return JsonResponse({"error": serializer.errors}, status=400)
+    # PUT request
+    def put(self, request, *args, **kwargs):
+        user_id = kwargs.get('pk')
+        data = request.data
+        try:
+            user_instance = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
-class deserializeResource(APIView):
-    def get(self, request, *args, **kwargs):
-        json_data = {
-            "file_type": "jpg",
-            "contributor": "Jesica-System Admin",
-            "resource_name": "How to study better",
-            "subject": "Study Techniques",
-            "grade": "11",
-            "keywords": "sociology, sind, research",
-            "date_contributed": "2024-08-31T08:26:19.777069Z",
-            "resource_rating": 4,
-            "approval_status": "Approved",
-            "moderation_comment": "This will be very helpful to students",
-            "moderation_date": "2024-08-31T10:18:00Z"
-        }
-        data = JSONParser().parse(request)
-        serializer = DocSerializer(data=data)
-        
-        if serializer.is_valid():
-            resource_instance = serializer.save()
-            response_data = {
-                "id": resource_instance.id,
-                "file_type": resource_instance.file_type,
-                "contributor": resource_instance.contributor,
-                "resource_name": resource_instance.resource_name,
-                "subject": resource_instance.subject,
-                "grade": resource_instance.grade,
-                "keywords": resource_instance.keywords,
-                "date_contributed": resource_instance.date_contributed,
-                "resource_rating": resource_instance.resource_rating,
-                "approval_status": resource_instance.approval_status,
-                "moderation_comment": resource_instance.moderation_comment,
-                "moderation_date": resource_instance.moderation_date
-            }
-            return JsonResponse(response_data, status=201)
-        else:
-            return JsonResponse({"error": serializer.errors}, status=400)
-
-class deserializeReport(APIView):
-    def get(self, request, *args, **kwargs):
-        json_data = {
-            "reportComplaint": "This is not helpful at all. It distracts my kids from really studying",
-            "reportDatetime": "2024-08-31T08:36:56.833338Z",
-            "reportResource": "ForeignKeyToResource"
-        }
-        data = JSONParser().parse(request)
-        serializer = ReportSerializer(data=data)
-        
-        if serializer.is_valid():
-            report_instance = serializer.save()
-            response_data = {
-                "id": report_instance.id,
-                "reportComplaint": report_instance.reportComplaint,
-                "reportDatetime": report_instance.reportDatetime,
-                "reportResource": report_instance.reportResource
-            }
-            return JsonResponse(response_data, status=201)
-        else:
-            return JsonResponse({"error": serializer.errors}, status=400)
-
-class deserializeUser(APIView):
-    def get(self, request, *args, **kwargs):
-        json_data = {
-            "username": "testuser3",
-            "email": "testuser@example.com",
-            "password": "securepassword"
-        }
-        data = JSONParser().parse(request)
-        serializer = UserSerializer(data=data)
-        
+        serializer = DocSerializer(user_instance, data=data, partial=True)
         if serializer.is_valid():
             user_instance = serializer.save()
-            response_data = {
-                "id": user_instance.id,
-                "username": user_instance.username,
-                "email": user_instance.email
-            }
-            return JsonResponse(response_data, status=201)
+            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
         else:
-            return JsonResponse({"error": serializer.errors}, status=400)
-"""
+            return JsonResponse({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    # DELETE request
+    def delete(self, request, *args, **kwargs):
+        user_id = kwargs.get('pk')
+        try:
+            user_instance = User.objects.get(id=user_id)
+            user_instance.delete()
+            return JsonResponse({"message": "User deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
