@@ -23,7 +23,7 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.testpage, name="testpage"),
+    path('test/', views.testpage, name="testpage"),
     
     #this path is for testing out AWS S3 file storage system connection to the backend
     #path('test-s3/', views.test_s3_connection, name='test_s3_connection'),
