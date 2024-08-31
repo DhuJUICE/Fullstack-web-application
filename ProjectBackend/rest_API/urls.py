@@ -1,25 +1,35 @@
 from django.contrib import admin
 
 from django.urls import path
-from .views import FaqListCreate, FaqDetail, DocListCreate, ReportListCreate, UserListCreate, FaqCreateView
+from .views import FaqListCreate, DocListCreate, ReportListCreate, UserListCreate, deserializeFaq, deserializeResource, deserializeReport, deserializeUser
 from django.test import TestCase
+
+
 urlpatterns = [
-	#faq endpoint
+	#serialize routes
 	#to see all objects from a table
-    path('api/faq/', FaqListCreate.as_view(), name='faq-list-create'),
+    path('api/faq/serial/', FaqListCreate.as_view(), name='faq-list-create'),
 	
-	#to see the detail about a specific object in a table or from tables
-    #path('api/faq/<int:pk>/', FaqDetail.as_view(), name='faq-detail'),
+	#serialize resource endpoint
+	path('api/resource/serial/', DocListCreate.as_view(), name='doc-list-create'),
 	
-	#resource endpoint
-	path('api/resource/', DocListCreate.as_view(), name='doc-list-create'),
+	#serialize report endpoint
+	path('api/report/serial/', ReportListCreate.as_view(), name='report-list-create'),
 	
-	#report endpoint
-	path('api/report/', ReportListCreate.as_view(), name='report-list-create'),
+	#serialize User endpoint
+	path('api/user/serial/', UserListCreate.as_view(), name='user-list-create'),
+
+
+	#deserialize routes
+	#deserialize faq endpoint
+    path('api/faq/deserial', deserializeFaq.as_view(), name='faq'),
 	
-	#User endpoint
-	path('api/user/', UserListCreate.as_view(), name='user-list-create'),
+	#deserialize resource endpoint
+	path('api/resource/deserial/', deserializeResource.as_view(), name='doc'),
 	
-	#testing for deserialized data
-	path('api/deserial/', FaqCreateView.as_view(), name='faq-list-create'),
+	#deserialize report endpoint
+	path('api/report/deserial/', deserializeReport.as_view(), name='report'),
+	
+	#deserialize User endpoint
+	path('api/user/deserial/', deserializeUser.as_view(), name='user'),
 ]

@@ -1,75 +1,159 @@
 from django.shortcuts import render
 from rest_framework import generics
 
+#models
 from faq.models import FAQ
 from resource_contribution.models import RESOURCE_METADATA
 from resource_report.models import RESOURCE_REPORT
 from django.contrib.auth.models import User, auth
 
+#serializing imports
 from .serializers import FaqSerializer, DocSerializer, ReportSerializer, UserSerializer
+
+#permissions
 from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated #must be added later on to allow only authorised users in permission_classes
 
-from rest_framework import status
+
+#deserializing imports
+from rest_framework.parsers import JSONParser
+from io import BytesIO
+from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.exceptions import ValidationError
+from django.views import View
+from django.http import JsonResponse
+from rest_framework import status
 
-#to make sure only authorised users has access to api - will be added to permission_classes later on
-from rest_framework.permissions import IsAuthenticated
-
-#SERIALIZE DATA - Backend to Frontend
 #class based views to show the detail of all objects that are serialized
-class FaqListCreate(generics.ListCreateAPIView):
-    #f1 = FAQ.objects.create(question="Are you ready?", answer="Yes my guy")
-    #f1.save()
-    queryset = FAQ.objects.all()
-    serializer_class = FaqSerializer
-	#who can get access to the objects, will be updated later on
-    permission_classes = [AllowAny]
 
-#class based views to show the detail of a single object that are serialized
-class FaqDetail(generics.RetrieveUpdateDestroyAPIView):
-    #f1 = FAQ.objects.create(question="Are you ready?", answer="Yes my guy")
-    #f1.save()
+#SERIALIZE DATA CLASSBASED VIEWS - Backend to Frontend
+class serializeFaq(generics.ListCreateAPIView):
     queryset = FAQ.objects.all()
     serializer_class = FaqSerializer
     permission_classes = [AllowAny]
 
-class DocListCreate(generics.ListCreateAPIView):
-    #resource1 = RESOURCE_METADATA.objects.create(question="Are you ready?", answer="Yes my guy")
-    #resource1.save()
+class serializeResource(generics.ListCreateAPIView):
     queryset = RESOURCE_METADATA.objects.all()
     serializer_class = DocSerializer
     permission_classes = [AllowAny]
 	
-class ReportListCreate(generics.ListCreateAPIView):
-    #resource1 = RESOURCE_METADATA.objects.create(question="Are you ready?", answer="Yes my guy")
-    #resource1.save()
+class serializeReport(generics.ListCreateAPIView):
     queryset = RESOURCE_REPORT.objects.all()
     serializer_class = ReportSerializer
     permission_classes = [AllowAny]
 	
-class UserListCreate(generics.ListCreateAPIView):
-    #resource1 = RESOURCE_METADATA.objects.create(question="Are you ready?", answer="Yes my guy")
-    #resource1.save()
+class serializeUser(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
 	
-#DESERIALIZE DATA - Frontend to Backend
-#class based views to show the detail of all objects that are deserialized
-class FaqCreateView(APIView):
-    def post(self, request, *args, **kwargs):
-        serializer = FaqSerializer(data=request.data)
+#DESERIALIZE DATA CLASSBASED VIEWS - Frontend to Backend
+class deserializeFaq(View):
+    def get(request, *args, **kwargs):
+        # Example hardcoded JSON object
+        json_data = {
+            "question": "What is your name?",
+            "answer": "My name is mr Test."
+        }
+        # Convert JSON data to Python dictionary
+        json_bytes = JSONRenderer().render(json_data)
+        stream = BytesIO(json_bytes)
+        data = JSONParser().parse(stream)
+        
+        # Initialize the serializer with data
+        serializer = FaqSerializer(data=data)
         
         if serializer.is_valid():
-            # Save the faq instance
-            faq = serializer.save()
-            # Optionally, return a response with the created user data
-            return Response(FaqSerializer(faq).data, status=status.HTTP_201_CREATED)
+            # Save the instance and return a response
+            faq_instance = serializer.save()
+            response_data = {
+                "id": faq_instance.id,
+                "question": faq_instance.question,
+                "answer": faq_instance.answer
+            }
+            return JsonResponse(response_data, status=201)
         else:
-            # Return errors if validation fails
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-	
+            return JsonResponse({"error": serializer.errors}, status=400)
 
-	
+class deserializeResource(View):
+    def get(request, *args, **kwargs):
+        # Example hardcoded JSON object
+        json_data = {
+            "question": "What is your name?",
+            "answer": "My name is mr Test."
+        }
+        # Convert JSON data to Python dictionary
+        json_bytes = JSONRenderer().render(json_data)
+        stream = BytesIO(json_bytes)
+        data = JSONParser().parse(stream)
+        
+        # Initialize the serializer with data
+        serializer = FaqSerializer(data=data)
+        
+        if serializer.is_valid():
+            # Save the instance and return a response
+            faq_instance = serializer.save()
+            response_data = {
+                "id": faq_instance.id,
+                "question": faq_instance.question,
+                "answer": faq_instance.answer
+            }
+            return JsonResponse(response_data, status=201)
+        else:
+            return JsonResponse({"error": serializer.errors}, status=400)
+
+class deserializeReport(View):
+    def get(request, *args, **kwargs):
+        # Example hardcoded JSON object
+        json_data = {
+            "question": "What is your name?",
+            "answer": "My name is mr Test."
+        }
+        # Convert JSON data to Python dictionary
+        json_bytes = JSONRenderer().render(json_data)
+        stream = BytesIO(json_bytes)
+        data = JSONParser().parse(stream)
+        
+        # Initialize the serializer with data
+        serializer = FaqSerializer(data=data)
+        
+        if serializer.is_valid():
+            # Save the instance and return a response
+            faq_instance = serializer.save()
+            response_data = {
+                "id": faq_instance.id,
+                "question": faq_instance.question,
+                "answer": faq_instance.answer
+            }
+            return JsonResponse(response_data, status=201)
+        else:
+            return JsonResponse({"error": serializer.errors}, status=400)
+
+class deserializeUser(View):
+    def get(request, *args, **kwargs):
+        # Example hardcoded JSON object
+        json_data = {
+            "question": "What is your name?",
+            "answer": "My name is mr Test."
+        }
+        # Convert JSON data to Python dictionary
+        json_bytes = JSONRenderer().render(json_data)
+        stream = BytesIO(json_bytes)
+        data = JSONParser().parse(stream)
+        
+        # Initialize the serializer with data
+        serializer = FaqSerializer(data=data)
+        
+        if serializer.is_valid():
+            # Save the instance and return a response
+            faq_instance = serializer.save()
+            response_data = {
+                "id": faq_instance.id,
+                "question": faq_instance.question,
+                "answer": faq_instance.answer
+            }
+            return JsonResponse(response_data, status=201)
+        else:
+            return JsonResponse({"error": serializer.errors}, status=400)
+
+
