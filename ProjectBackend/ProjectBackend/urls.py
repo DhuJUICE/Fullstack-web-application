@@ -36,4 +36,5 @@ urlpatterns = [
     path('', include('document_search.urls')),
     path('', include('user_analytics.urls')),
     path('', include('faq.urls')),
+	path('', include('rest_API.urls')),
 ]
