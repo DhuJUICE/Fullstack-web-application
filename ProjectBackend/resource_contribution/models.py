@@ -11,7 +11,7 @@ class RESOURCE_METADATA(models.Model):
     file_type = models.CharField(max_length = 100)
 
     #get the id of the person uploading the resource
-    contributor = models.ForeignKey(User, on_delete=models.CASCADE)
+    contributor = models.CharField(max_length = 100)
 
     #details about the specific resource
     resource_name = models.CharField(max_length = 100)
