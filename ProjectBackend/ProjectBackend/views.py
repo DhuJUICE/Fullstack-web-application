@@ -34,22 +34,4 @@ def test_s3_connection(request):
     except Exception as e:
         return JsonResponse({'status': 'Failed', 'message': str(e)})
 
-#this will be used by the frontend to make requests to our api
-def delete_faq_view(request):
-    if request.method == 'POST':
-        faq_id = request.POST.get('id')
-        if faq_id:
-            api_url = f'http://localhost:8000/api/faq/deserial/{faq_id}/'  # Replace with your actual API endpoint
-            try:
-                # Perform the DELETE request
-                response = requests.delete(api_url)
-                
-                if response.status_code == 204:
-                    return HttpResponse("FAQ deleted successfully.")
-                else:
-                    return HttpResponse(f"Failed to delete FAQ. Status code: {response.status_code}")
-            except requests.RequestException as e:
-                return HttpResponse(f"An error occurred: {e}")
-    
-    return render(request, 'APIdelete.html')
 
