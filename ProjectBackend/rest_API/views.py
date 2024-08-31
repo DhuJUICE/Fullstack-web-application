@@ -14,13 +14,10 @@ from .serializers import FaqSerializer, DocSerializer, ReportSerializer, UserSer
 from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated #must be added later on to allow only authorised users in permission_classes
 
-
 #deserializing imports
 from rest_framework.views import APIView
 from django.http import JsonResponse
 from rest_framework import status
-
-#class based views to show the detail of all objects that are serialized
 
 #SERIALIZE DATA CLASSBASED VIEWS - Backend making the data available to be used by the frontend
 class serializeFaq(generics.ListCreateAPIView):
@@ -44,7 +41,7 @@ class serializeUser(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
 	
 #DESERIALIZE DATA CLASSBASED VIEWS - Frontend to Backend communication
-#WITH TEST DATA
+#FAQ API VIEW
 class deserializeFaq(APIView):
     permission_classes = [AllowAny] #remove once login functionality has been completed
     #when a form method/action is "GET"
@@ -94,6 +91,7 @@ class deserializeFaq(APIView):
         except FAQ.DoesNotExist:
             return JsonResponse({"error": "FAQ not found."}, status=status.HTTP_404_NOT_FOUND)
 
+#RESOURCE API VIEW
 class deserializeResource(APIView):
     permission_classes = [AllowAny]
     #to get a specic object according its primary key id
@@ -125,7 +123,7 @@ class deserializeResource(APIView):
         except RESOURCE_METADATA.DoesNotExist:
             return JsonResponse({"error": "Resource not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = DocSerializer(faq_instance, data=data, partial=True)
+        serializer = DocSerializer(resource_instance, data=data, partial=True)
         if serializer.is_valid():
             resource_instance = serializer.save()
             return JsonResponse(serializer.data, status=status.HTTP_200_OK)
@@ -142,7 +140,7 @@ class deserializeResource(APIView):
         except RESOURCE_METADATA.DoesNotExist:
             return JsonResponse({"error": "Resource not found."}, status=status.HTTP_404_NOT_FOUND)
 
-
+#REPORT API VIEW
 class deserializeReport(APIView):
     permission_classes = [AllowAny]
     #to get a specic object according its primary key id
@@ -191,6 +189,7 @@ class deserializeReport(APIView):
         except RESOURCE_REPORT.DoesNotExist:
             return JsonResponse({"error": "Report not found."}, status=status.HTTP_404_NOT_FOUND)
 
+#USER API VIEW
 class deserializeUser(APIView):
     permission_classes = [AllowAny]
     #to get a specic object according its primary key id
@@ -222,7 +221,7 @@ class deserializeUser(APIView):
         except User.DoesNotExist:
             return JsonResponse({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = DocSerializer(user_instance, data=data, partial=True)
+        serializer = UserSerializer(user_instance, data=data, partial=True)
         if serializer.is_valid():
             user_instance = serializer.save()
             return JsonResponse(serializer.data, status=status.HTTP_200_OK)
