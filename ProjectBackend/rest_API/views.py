@@ -48,23 +48,20 @@ class serializeUser(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
 	
 #DESERIALIZE DATA CLASSBASED VIEWS - Frontend to Backend
+#WITH TEST DATA
 class deserializeFaq(View):
-    def get(request, *args, **kwargs):
-        # Example hardcoded JSON object
+    def get(self, request, *args, **kwargs):
         json_data = {
-            "question": "What is your name?",
-            "answer": "My name is mr Test."
+            "id": 1,
+            "question": "Are you ready?",
+            "answer": "Yes my guy"
         }
-        # Convert JSON data to Python dictionary
         json_bytes = JSONRenderer().render(json_data)
         stream = BytesIO(json_bytes)
         data = JSONParser().parse(stream)
-        
-        # Initialize the serializer with data
         serializer = FaqSerializer(data=data)
         
         if serializer.is_valid():
-            # Save the instance and return a response
             faq_instance = serializer.save()
             response_data = {
                 "id": faq_instance.id,
@@ -76,76 +73,105 @@ class deserializeFaq(View):
             return JsonResponse({"error": serializer.errors}, status=400)
 
 class deserializeResource(View):
-    def get(request, *args, **kwargs):
-        # Example hardcoded JSON object
+    def get(self, request, *args, **kwargs):
         json_data = {
-            "question": "What is your name?",
-            "answer": "My name is mr Test."
+            "file_type": "jpg",
+            "contributor": "Jesica-System Admin",
+            "resource_name": "How to study better",
+            "subject": "Study Techniques",
+            "grade": "11",
+            "keywords": "sociology, sind, research",
+            "date_contributed": "2024-08-31T08:26:19.777069Z",
+            "resource_rating": 4,
+            "approval_status": "Approved",
+            "moderation_comment": "This will be very helpful to students",
+            "moderation_date": "2024-08-31T10:18:00Z"
         }
-        # Convert JSON data to Python dictionary
         json_bytes = JSONRenderer().render(json_data)
         stream = BytesIO(json_bytes)
         data = JSONParser().parse(stream)
-        
-        # Initialize the serializer with data
-        serializer = FaqSerializer(data=data)
+        serializer = DocSerializer(data=data)
         
         if serializer.is_valid():
-            # Save the instance and return a response
-            faq_instance = serializer.save()
+            resource_instance = serializer.save()
             response_data = {
-                "id": faq_instance.id,
-                "question": faq_instance.question,
-                "answer": faq_instance.answer
+                "id": resource_instance.id,
+                "file_type": resource_instance.file_type,
+                "contributor": resource_instance.contributor,
+                "resource_name": resource_instance.resource_name,
+                "subject": resource_instance.subject,
+                "grade": resource_instance.grade,
+                "keywords": resource_instance.keywords,
+                "date_contributed": resource_instance.date_contributed,
+                "resource_rating": resource_instance.resource_rating,
+                "approval_status": resource_instance.approval_status,
+                "moderation_comment": resource_instance.moderation_comment,
+                "moderation_date": resource_instance.moderation_date
             }
             return JsonResponse(response_data, status=201)
         else:
             return JsonResponse({"error": serializer.errors}, status=400)
 
 class deserializeReport(View):
-    def get(request, *args, **kwargs):
-        # Example hardcoded JSON object
+    def get(self, request, *args, **kwargs):
         json_data = {
-            "question": "What is your name?",
-            "answer": "My name is mr Test."
+            "reportComplaint": "This is not helpful at all. It distracts my kids from really studying",
+            "reportDatetime": "2024-08-31T08:36:56.833338Z",
+            "reportResource": "ForeignKeyToResource"
         }
-        # Convert JSON data to Python dictionary
         json_bytes = JSONRenderer().render(json_data)
         stream = BytesIO(json_bytes)
         data = JSONParser().parse(stream)
-        
-        # Initialize the serializer with data
-        serializer = FaqSerializer(data=data)
+        serializer = ReportSerializer(data=data)
         
         if serializer.is_valid():
-            # Save the instance and return a response
-            faq_instance = serializer.save()
+            report_instance = serializer.save()
             response_data = {
-                "id": faq_instance.id,
-                "question": faq_instance.question,
-                "answer": faq_instance.answer
+                "id": report_instance.id,
+                "reportComplaint": report_instance.reportComplaint,
+                "reportDatetime": report_instance.reportDatetime,
+                "reportResource": report_instance.reportResource
             }
             return JsonResponse(response_data, status=201)
         else:
             return JsonResponse({"error": serializer.errors}, status=400)
 
 class deserializeUser(View):
-    def get(request, *args, **kwargs):
-        # Example hardcoded JSON object
+    def get(self, request, *args, **kwargs):
         json_data = {
-            "question": "What is your name?",
-            "answer": "My name is mr Test."
+            "username": "testuser3",
+            "email": "testuser@example.com",
+            "password": "securepassword"
         }
-        # Convert JSON data to Python dictionary
         json_bytes = JSONRenderer().render(json_data)
         stream = BytesIO(json_bytes)
         data = JSONParser().parse(stream)
+        serializer = UserSerializer(data=data)
         
-        # Initialize the serializer with data
+        if serializer.is_valid():
+            user_instance = serializer.save()
+            response_data = {
+                "id": user_instance.id,
+                "username": user_instance.username,
+                "email": user_instance.email
+            }
+            return JsonResponse(response_data, status=201)
+        else:
+            return JsonResponse({"error": serializer.errors}, status=400)
+
+#WITHOUT TEST DATA
+"""
+class deserializeFaq(View):
+    def get(self, request, *args, **kwargs):
+        json_data = {
+            "id": 1,
+            "question": "Are you ready?",
+            "answer": "Yes my guy"
+        }
+        data = JSONParser().parse(request)
         serializer = FaqSerializer(data=data)
         
         if serializer.is_valid():
-            # Save the instance and return a response
             faq_instance = serializer.save()
             response_data = {
                 "id": faq_instance.id,
@@ -156,4 +182,84 @@ class deserializeUser(View):
         else:
             return JsonResponse({"error": serializer.errors}, status=400)
 
+class deserializeResource(View):
+    def get(self, request, *args, **kwargs):
+        json_data = {
+            "file_type": "jpg",
+            "contributor": "Jesica-System Admin",
+            "resource_name": "How to study better",
+            "subject": "Study Techniques",
+            "grade": "11",
+            "keywords": "sociology, sind, research",
+            "date_contributed": "2024-08-31T08:26:19.777069Z",
+            "resource_rating": 4,
+            "approval_status": "Approved",
+            "moderation_comment": "This will be very helpful to students",
+            "moderation_date": "2024-08-31T10:18:00Z"
+        }
+        data = JSONParser().parse(request)
+        serializer = DocSerializer(data=data)
+        
+        if serializer.is_valid():
+            resource_instance = serializer.save()
+            response_data = {
+                "id": resource_instance.id,
+                "file_type": resource_instance.file_type,
+                "contributor": resource_instance.contributor,
+                "resource_name": resource_instance.resource_name,
+                "subject": resource_instance.subject,
+                "grade": resource_instance.grade,
+                "keywords": resource_instance.keywords,
+                "date_contributed": resource_instance.date_contributed,
+                "resource_rating": resource_instance.resource_rating,
+                "approval_status": resource_instance.approval_status,
+                "moderation_comment": resource_instance.moderation_comment,
+                "moderation_date": resource_instance.moderation_date
+            }
+            return JsonResponse(response_data, status=201)
+        else:
+            return JsonResponse({"error": serializer.errors}, status=400)
 
+class deserializeReport(View):
+    def get(self, request, *args, **kwargs):
+        json_data = {
+            "reportComplaint": "This is not helpful at all. It distracts my kids from really studying",
+            "reportDatetime": "2024-08-31T08:36:56.833338Z",
+            "reportResource": "ForeignKeyToResource"
+        }
+        data = JSONParser().parse(request)
+        serializer = ReportSerializer(data=data)
+        
+        if serializer.is_valid():
+            report_instance = serializer.save()
+            response_data = {
+                "id": report_instance.id,
+                "reportComplaint": report_instance.reportComplaint,
+                "reportDatetime": report_instance.reportDatetime,
+                "reportResource": report_instance.reportResource
+            }
+            return JsonResponse(response_data, status=201)
+        else:
+            return JsonResponse({"error": serializer.errors}, status=400)
+
+class deserializeUser(View):
+    def get(self, request, *args, **kwargs):
+        json_data = {
+            "username": "testuser3",
+            "email": "testuser@example.com",
+            "password": "securepassword"
+        }
+        data = JSONParser().parse(request)
+        serializer = UserSerializer(data=data)
+        
+        if serializer.is_valid():
+            user_instance = serializer.save()
+            response_data = {
+                "id": user_instance.id,
+                "username": user_instance.username,
+                "email": user_instance.email
+            }
+            return JsonResponse(response_data, status=201)
+        else:
+            return JsonResponse({"error": serializer.errors}, status=400)
+"""
