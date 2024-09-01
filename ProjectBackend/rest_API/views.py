@@ -182,28 +182,60 @@ class deserializeResource(APIView):
 
 class deserializeReport(APIView):
     permission_classes = [AllowAny]
+
     def get(self, request, *args, **kwargs):
-        json_data = {
-            "reportComplaint": "This is not helpful at all. It distracts my kids from really studying",
-            "reportDatetime": "2024-08-31T08:36:56.833338Z",
-            "reportResource": "ForeignKeyToResource"
-        }
-        json_bytes = JSONRenderer().render(json_data)
-        stream = BytesIO(json_bytes)
-        data = JSONParser().parse(stream)
-        serializer = ReportSerializer(data=data)
-        
-        if serializer.is_valid():
-            report_instance = serializer.save()
-            response_data = {
-                "id": report_instance.id,
-                "reportComplaint": report_instance.reportComplaint,
-                "reportDatetime": report_instance.reportDatetime,
-                "reportResource": report_instance.reportResource
-            }
-            return JsonResponse(response_data, status=201)
+        if 'pk' in kwargs:
+            # Retrieve a single report instance
+            try:
+                report = RESOURCE_REPORT.objects.get(pk=kwargs['pk'])
+                serializer = ReportSerializer(report)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except RESOURCE_REPORT.DoesNotExist:
+                return Response({"error": "Report not found."}, status=status.HTTP_404_NOT_FOUND)
         else:
-            return JsonResponse({"error": serializer.errors}, status=400)
+            # List all report instances
+            reports = RESOURCE_REPORT.objects.all()
+            serializer = ReportSerializer(reports, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        serializer = ReportSerializer(data=request.data)
+        if serializer.is_valid():
+            report = serializer.save()
+            response_data = {
+                "id": report.id,
+                "reportComplaint": report.reportComplaint,
+                "reportDatetime": report.reportDatetime,
+                "reportResource": report.reportResource
+            }
+            return Response(response_data, status=status.HTTP_201_CREATED)
+        return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, *args, **kwargs):
+        try:
+            report = RESOURCE_REPORT.objects.get(pk=kwargs['pk'])
+        except RESOURCE_REPORT.DoesNotExist:
+            return Response({"error": "Report not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ReportSerializer(report, data=request.data, partial=True)
+        if serializer.is_valid():
+            report = serializer.save()
+            response_data = {
+                "id": report.id,
+                "reportComplaint": report.reportComplaint,
+                "reportDatetime": report.reportDatetime,
+                "reportResource": report.reportResource
+            }
+            return Response(response_data, status=status.HTTP_200_OK)
+        return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            report = RESOURCE_REPORT.objects.get(pk=kwargs['pk'])
+            report.delete()
+            return Response({"message": "Report deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+        except RESOURCE_REPORT.DoesNotExist:
+            return Response({"error": "Report not found."}, status=status.HTTP_404_NOT_FOUND)
 
 class deserializeUser(APIView):
     permission_classes = [AllowAny]
