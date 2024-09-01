@@ -60,16 +60,13 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__' #specify fields explicitly
 
     def create(self, validated_data):
-        role = validated_data.pop('role', None)
-        image = validated_data.pop('image', None)
-        code=validated_data.pop('verificationCode', None)
+        username = validated_data.pop('username')
+        password = validated_data.pop('password')
+        email = validated_data.pop('email')
 
-        user = User.objects.create(**validated_data)  # Create the User instance
-
-        # Create the UserProfile instance
-        user_profile = UserProfile.objects.create(user=user, role=role, image=image, verificationCode=code)
+        user = User.objects.create(username=username, password=password, email=email)  # Create the User instance
         
-        return user_profile
+        return user
 
     def update(self, instance, validated_data):
         user_data = validated_data.pop('user', None)  # Extract user data if provided
