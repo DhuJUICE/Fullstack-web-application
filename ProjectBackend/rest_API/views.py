@@ -239,25 +239,56 @@ class deserializeReport(APIView):
 
 class deserializeUser(APIView):
     permission_classes = [AllowAny]
+
     def get(self, request, *args, **kwargs):
-        json_data = {
-            "username": "testuser3",
-            "email": "testuser@example.com",
-            "password": "securepassword"
-        }
-        json_bytes = JSONRenderer().render(json_data)
-        stream = BytesIO(json_bytes)
-        data = JSONParser().parse(stream)
-        serializer = UserSerializer(data=data)
-        
-        if serializer.is_valid():
-            user_instance = serializer.save()
-            response_data = {
-                "id": user_instance.id,
-                "username": user_instance.username,
-                "email": user_instance.email
-            }
-            return JsonResponse(response_data, status=201)
+        if 'pk' in kwargs:
+            # Retrieve a single user instance
+            try:
+                user = User.objects.get(pk=kwargs['pk'])
+                serializer = UserSerializer(user)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except User.DoesNotExist:
+                return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
         else:
-            return JsonResponse({"error": serializer.errors}, status=400)
+            # List all user instances
+            users = User.objects.all()
+            serializer = UserSerializer(users, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            response_data = {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email
+            }
+            return Response(response_data, status=status.HTTP_201_CREATED)
+        return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, *args, **kwargs):
+        try:
+            user = User.objects.get(pk=kwargs['pk'])
+        except User.DoesNotExist:
+            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            user = serializer.save()
+            response_data = {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email
+            }
+            return Response(response_data, status=status.HTTP_200_OK)
+        return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            user = User.objects.get(pk=kwargs['pk'])
+            user.delete()
+            return Response({"message": "User deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+        except User.DoesNotExist:
+            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
