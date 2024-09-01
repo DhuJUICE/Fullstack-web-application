@@ -1,30 +1,27 @@
 from django.shortcuts import render
 from rest_framework import generics
 
-#models
-from faq.models import FAQ
-from resource_contribution.models import RESOURCE_METADATA
-from resource_report.models import RESOURCE_REPORT
-from django.contrib.auth.models import User, auth
-
-#serializing imports
-from .serializers import FaqSerializer, DocSerializer, ReportSerializer, UserSerializer
-
 #permissions
 from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated #must be added later on to allow only authorised users in permission_classes
 
+#models
+from faq.models import FAQ
+from django.contrib.auth.models import User, auth
+from resource_report.models import RESOURCE_REPORT
+from resource_contribution.models import RESOURCE_METADATA
+
+#serializing imports
+from .serializers import FaqSerializer, DocSerializer, ReportSerializer, UserSerializer
 
 #deserializing imports
-from rest_framework.parsers import JSONParser
-from io import BytesIO
 from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.http import JsonResponse
 from rest_framework import status
-
-#class based views to show the detail of all objects that are serialized
+from io import BytesIO
 
 #SERIALIZE DATA CLASSBASED VIEWS - Backend to Frontend
 class serializeFaq(generics.ListCreateAPIView):
@@ -47,7 +44,7 @@ class serializeUser(generics.ListCreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
 	
-#DESERIALIZE DATA CLASSBASED VIEWS - Frontend to Backend
+#DESERIALIZE DATA CLASSBASED VIEWS(Uses serializers) - Frontend to Backend
 #WITH TEST DATA
 class deserializeFaq(APIView):
     permission_classes = [AllowAny]
