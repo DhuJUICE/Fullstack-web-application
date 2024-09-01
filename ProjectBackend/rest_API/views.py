@@ -273,11 +273,11 @@ class deserializeUser(APIView):
     def post(self, request, *args, **kwargs):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.save()
+            user = serializer.create(serializer.validated_data)
             response_data = {
                 "id": user.id,
-                "username": user.username,
-                "email": user.email
+                "username": "user.username",
+                "email": "user.email"
             }
             return Response(response_data, status=status.HTTP_201_CREATED)
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)

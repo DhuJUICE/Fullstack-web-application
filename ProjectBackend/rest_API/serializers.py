@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from faq.models import FAQ
 from resource_contribution.models import RESOURCE_METADATA
+from user_management.models import UserProfile
 from resource_report.models import RESOURCE_REPORT
 from django.contrib.auth.models import User, auth
 from rest_framework.exceptions import ValidationError
@@ -57,5 +58,31 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         
         fields = '__all__' #specify fields explicitly
-		
 
+    def create(self, validated_data):
+        role = validated_data.pop('role', None)
+        image = validated_data.pop('image', None)
+        code=validated_data.pop('verificationCode', None)
+
+        user = User.objects.create(**validated_data)  # Create the User instance
+
+        # Create the UserProfile instance
+        user_profile = UserProfile.objects.create(user=user, role=role, image=image, verificationCode=code)
+        
+        return user_profile
+
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user', None)  # Extract user data if provided
+
+        if user_data:
+            # Update the user instance
+            user_serializer = UserSerializer(instance.user, data=user_data, partial=True)
+            user_serializer.is_valid(raise_exception=True)
+            user_serializer.save()
+
+        # Update the UserProfile instance
+        instance.role = validated_data.get('role', instance.role)
+        instance.image = validated_data.get('image', instance.image)
+        instance.verificationCode = validated_data.get('verificationCode', instance.verificationCode)
+        instance.save()
+        return instance
