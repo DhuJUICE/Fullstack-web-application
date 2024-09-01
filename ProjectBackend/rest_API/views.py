@@ -251,6 +251,7 @@ class deserializeReport(APIView):
             return Response({"message": "Report deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
         except RESOURCE_REPORT.DoesNotExist:
             return Response({"error": "Report not found."}, status=status.HTTP_404_NOT_FOUND)
+
 class deserializeUser(APIView):
     permission_classes = [AllowAny]
 
