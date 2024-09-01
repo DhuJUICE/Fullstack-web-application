@@ -3,7 +3,7 @@ from django.http import HttpResponse
 import requests
 
 def testpage(request):
-	return render(request, 'testpage.html')
+	return render(request, 'APIdelete.html')
 
 import boto3
 from django.http import JsonResponse
