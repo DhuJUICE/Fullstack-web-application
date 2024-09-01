@@ -1,17 +1,18 @@
 Testpage endpoint
 http://127.0.0.1:8000/test
 
-API endpoints used alongside postman
-GET
-To get all objects
-http://127.0.0.1:8000/api/model/serail
-
-To get one object specifically
+API ENPOINTS FOR USING POSTMAN
+GET - ALL objects
+http://127.0.0.1:8000/api/model/deserial
+GET - ONE object based on "id"
 http://127.0.0.1:8000/api/model/deserial/objectId
+
 POST
 http://127.0.0.1:8000/api/model/deserial
+
 PUT
 http://127.0.0.1:8000/api/model/deserial/objectId
+
 DELETE
 http://127.0.0.1:8000/api/model/deserial/objectId
 
