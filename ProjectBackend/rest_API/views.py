@@ -182,7 +182,6 @@ class deserializeReport(APIView):
 
     def get(self, request, *args, **kwargs):
         if 'pk' in kwargs:
-            # Retrieve a single report instance
             try:
                 report = RESOURCE_REPORT.objects.get(pk=kwargs['pk'])
                 serializer = ReportSerializer(report)
@@ -190,12 +189,19 @@ class deserializeReport(APIView):
             except RESOURCE_REPORT.DoesNotExist:
                 return Response({"error": "Report not found."}, status=status.HTTP_404_NOT_FOUND)
         else:
-            # List all report instances
             reports = RESOURCE_REPORT.objects.all()
             serializer = ReportSerializer(reports, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
+        resource_id = request.data.get('reportResource')
+        if resource_id:
+            try:
+                # Check if the resource exists
+                RESOURCE_METADATA.objects.get(id=resource_id)
+            except RESOURCE_METADATA.DoesNotExist:
+                return Response({"error": "Resource not found."}, status=status.HTTP_400_BAD_REQUEST)
+        #from here it goes to the serializer
         serializer = ReportSerializer(data=request.data)
         if serializer.is_valid():
             report = serializer.save()
@@ -203,7 +209,7 @@ class deserializeReport(APIView):
                 "id": report.id,
                 "reportComplaint": report.reportComplaint,
                 "reportDatetime": report.reportDatetime,
-                "reportResource": report.reportResource
+                "reportResource": report.reportResource.id
             }
             return Response(response_data, status=status.HTTP_201_CREATED)
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
@@ -214,6 +220,19 @@ class deserializeReport(APIView):
         except RESOURCE_REPORT.DoesNotExist:
             return Response({"error": "Report not found."}, status=status.HTTP_404_NOT_FOUND)
 
+        # Ensure 'reportResource' is passed as an ID
+        if 'reportResource' in request.data:
+            resource_id = request.data['reportResource']
+            if resource_id:
+                try:
+                    resource_instance = RESOURCE_METADATA.objects.get(id=resource_id)
+                    request.data['reportResource'] = resource_instance
+                except RESOURCE_METADATA.DoesNotExist:
+                    return Response({"error": "Resource not found."}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            # Keep the existing resource if not provided
+            request.data['reportResource'] = report.reportResource.id
+
         serializer = ReportSerializer(report, data=request.data, partial=True)
         if serializer.is_valid():
             report = serializer.save()
@@ -221,11 +240,10 @@ class deserializeReport(APIView):
                 "id": report.id,
                 "reportComplaint": report.reportComplaint,
                 "reportDatetime": report.reportDatetime,
-                "reportResource": report.reportResource
+                "reportResource": report.reportResource.id
             }
             return Response(response_data, status=status.HTTP_200_OK)
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-
     def delete(self, request, *args, **kwargs):
         try:
             report = RESOURCE_REPORT.objects.get(pk=kwargs['pk'])

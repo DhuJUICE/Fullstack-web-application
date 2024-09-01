@@ -26,19 +26,28 @@ class ReportSerializer(serializers.ModelSerializer):
     
     #functions to handle nested relationships between reports and resources    
     def create(self, validated_data):
-        resource_data = validated_data.pop('reportResource')
-        resource_instance = RESOURCE_METADATA.objects.get(id=resource_data['id'])
+        #this gets me the object associated with the reportResource that was posted by the user
+        resource_instance = validated_data.pop('reportResource')
+
+        #explicitly make the reportResource the above object
         report = RESOURCE_REPORT.objects.create(
             reportResource=resource_instance,
             **validated_data
         )
+        #from here it goes back to the views
         return report
 
     def update(self, instance, validated_data):
-        resource_data = validated_data.pop('reportResource')
-        instance.reportResource = RESOURCE_METADATA.objects.get(id=resource_data['id'])
+        #this is to get the resource object
+        instance.reportResource = validated_data.pop('reportResource')
+
+        #this is the information to update about the report object
         instance.reportComplaint = validated_data.get('reportComplaint', instance.reportComplaint)
-        instance.reportDatetime = validated_data.get('reportDatetime', instance.reportDatetime)
+        
+        #we wont need to update the reportDatetime as it is the time the report was first made
+        #instance.reportDatetime = validated_data.get('reportDatetime', instance.reportDatetime)
+
+        #save the instance to database
         instance.save()
         return instance
 
