@@ -26,17 +26,21 @@ class ReportSerializer(serializers.ModelSerializer):
     
     #functions to handle nested relationships between reports and resources    
     def create(self, validated_data):
-        resource_data = validated_data.pop('reportResource')
-        resource_instance = RESOURCE_METADATA.objects.get(id=resource_data['id'])
-        report = RESOURCE_REPORT.objects.create(
-            reportResource=resource_instance,
-            **validated_data
-        )
-        return report
+        resource_id = validated_data.pop('reportResource').id
+        if resource_id:
+            resource_instance = RESOURCE_METADATA.objects.get(id=resource_id)
+            report = RESOURCE_REPORT.objects.create(
+                reportResource=resource_instance,
+                **validated_data
+            )
+            #from here it goes back to the views
+            return report
+        raise ValidationError("Resource ID is required.")
 
     def update(self, instance, validated_data):
-        resource_data = validated_data.pop('reportResource')
-        instance.reportResource = RESOURCE_METADATA.objects.get(id=resource_data['id'])
+        resource_id = validated_data.pop('reportResource', None)
+        if resource_id:
+            instance.reportResource = RESOURCE_METADATA.objects.get(id=resource_id)
         instance.reportComplaint = validated_data.get('reportComplaint', instance.reportComplaint)
         instance.reportDatetime = validated_data.get('reportDatetime', instance.reportDatetime)
         instance.save()
