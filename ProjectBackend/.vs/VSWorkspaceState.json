@@ -1,9 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\ProjectBackend\\test-template",
-    "\\rest_API"
+    "\\ProjectBackend",
+    "\\ProjectBackend\\test-template"
   ],
-  "SelectedNode": "\\rest_API\\urls.py",
   "PreviewInSolutionExplorer": false
 }

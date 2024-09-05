@@ -1,0 +1,8 @@
+pip install djangorestframework-simplejwt
+pip install django
+pip install django-storages
+pip install psycopg2
+pip install boto3
+pip install pillow
+pip install djangorestframework
+pip install requests
