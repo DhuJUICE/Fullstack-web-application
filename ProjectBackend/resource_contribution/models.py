@@ -5,13 +5,13 @@ class RESOURCE_METADATA(models.Model):
 
     #Resource Metadata
     #identifier from aws s3
-    #file_Path = models.FileField(upload_to='aws')
+    file_path = models.CharField(max_length = 100, default="No/path")
 
     #what type of file is being stored as the resource
     file_type = models.CharField(max_length = 100)
 
     #get the id of the person uploading the resource
-    contributor = models.ForeignKey(User, on_delete=models.CASCADE)
+    contributor = models.CharField(max_length = 100)
 
     #details about the specific resource
     resource_name = models.CharField(max_length = 100)
