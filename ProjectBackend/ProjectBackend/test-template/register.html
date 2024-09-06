@@ -1,0 +1,59 @@
+{%extends 'base.html'%}
+{%block body%}
+<title>Register</title>
+<header>
+    <center>This is the registration page{{variable}}</center>
+</header>
+
+<form action="/" method="POST">
+    {% csrf_token %}
+    <center><input type="submit" value="Back" name="backButton" /></center>
+</form>
+
+<form action="registerButton" method='post'>
+    {% csrf_token %}
+    <table border="1" align="center">
+
+        <tr>
+            <td>
+                <input type="text" placeholder="First Name" name="firstname" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="text" placeholder="Last Name" name="lastname" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="text" placeholder="Username" name="username" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="text" placeholder="Email" name="email" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="password" placeholder="Password" name="password" />
+            </td>
+
+        </tr>
+        <tr>
+            <td>
+                <input type="password" placeholder="Confirm Password" name="confirmpassword" />
+            </td>
+        </tr>
+        <tr>
+
+
+            <td align="center">
+                <input type="submit" />
+            </td>
+
+        </tr>
+
+    </table>
+</form>
+{%endblock%}

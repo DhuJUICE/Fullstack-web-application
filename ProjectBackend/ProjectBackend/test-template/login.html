@@ -1,0 +1,33 @@
+{%extends 'base.html'%}
+{%block body%}
+<title>Login</title>
+<header><center>This is the login page</center></header>
+
+<form action="/" method="POST">
+    {% csrf_token %}
+    <center><input type="submit" value="Back" name="backButton" /></center>
+</form>
+
+<form action="loginButton" method="POST">
+    {% csrf_token %}
+    <table border="1" align="center">
+        <tr>
+            <td>
+                <input type="text" placeholder="Username" name="username" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="password" placeholder="Password" name="password" />
+            </td>
+        </tr>
+        <tr>
+
+            <td align="center">
+                <input type="submit" name="loginButton" />
+            </td>
+        </tr>
+    </table>
+</form>
+ 
+{%endblock%}
