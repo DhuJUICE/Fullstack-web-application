@@ -18,8 +18,8 @@ def registerPage(request):
 #function-view to get the login buttons navigation
 def loginUser(request):	
 	#get the username and password from the user
-	username = request.POST['username']
-	password = request.POST['password']
+	username = request.POST.get('username')
+	password = request.POST.get('password')
 
 	#validate and authenticate the User
 	user = auth.authenticate(username=username, password=password)
@@ -28,44 +28,42 @@ def loginUser(request):
 		#securly log in the user
 		auth.login(request, user)
 		print("User logged in")
-		
 		#get the users is_superuser field from database as an object
 		user_to_check = User.objects.get(username=username)
-
-		response = {"user name" : user_to_check.username}
-        return render(request, 'testpage.html', response)
+		return redirect("/loginpage")
+        
 	else:
 		print("user does not exist")
-		return redirect("/login")
+		return redirect("/loginpage")
 
 #handle the event of someone is registering to our store
 def registerUser(request):
 	#get all the customer information to be stored to the database
-	firstname = request.POST['firstname']
-	lastname = request.POST['lastname']
-	username = request.POST['username']
-	email = request.POST['email']
-	password = request.POST['password']
-	confPassword = request.POST['confirmpassword']
+	firstname = request.POST.get('firstname')
+	lastname = request.POST.get('lastname')
+	username = request.POST.get('username')
+	email = request.POST.get('email')
+	password = request.POST.get('password')
+	confPassword = request.POST.get('confirmpassword')
 
 	#check to see if the username is taken already
 	if User.objects.filter(username=username).exists():
 		print("Username already taken")
 		#open the register
-		return redirect("/register/")
+		return redirect("/loginpage")
 
 	#check to see if email is taken already
 	elif User.objects.filter(email=email).exists():
 		print("Email already taken")
 		#open the register
-		return redirect("/register/")
+		return redirect("/loginpage")
 
 	#check to see if the two passwords are the same
 	elif password != confPassword:
 		print("Passwords do not match - Try again")
 
 		#open the register
-		return redirect("/register/")
+		return redirect("/loginpage")
 	else:
 		print("Passwords match")
 		#create a user object to hold the data for a new user
@@ -77,11 +75,11 @@ def registerUser(request):
 		print("created user")
 		
 		#redirect new user to login page, where user can then log in with their user credentials
-		return redirect("/login")
+		return redirect("/loginpage")
 
 #function to logout of user account
 def logout(request):
 	auth.logout(request)
 
 	#redirect the user to the login page
-	return redirect("/login")
+	return redirect("/loginpage")
