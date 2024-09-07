@@ -11,16 +11,11 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-
 #import operating system to work with the filepaths
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-iz1g2p!w4*7!7qin7=c0psa(8d_rmn4zg1r=43gf*bd*v_8+4@'
@@ -28,11 +23,10 @@ SECRET_KEY = 'django-insecure-iz1g2p!w4*7!7qin7=c0psa(8d_rmn4zg1r=43gf*bd*v_8+4@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['fullstack-web-application-4.onrender.com']
+ALLOWED_HOSTS = ['fullstack-web-application-4.onrender.com', '127.0.0.1']
 
 
 # Application definition
-
 INSTALLED_APPS = [
     #functionality APPS
     'document_search',
@@ -51,7 +45,7 @@ INSTALLED_APPS = [
     #fileStorageSystem APP
     'storages',
 
-    'ProjectBackend',
+    #built in APPS
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -67,12 +61,12 @@ AWS_STORAGE_BUCKET_NAME = 'cpmg323-project-file-storage-django'
 AWS_S3_REGION_NAME = 'af-south-1'  # e.g., 'us-west-2'
 AWS_S3_SIGNATURE_VERSION = 's3v4'
 AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL = None  # S3 default access control
-# Static and Media files settings
+AWS_DEFAULT_ACL = None  # S3 default access 
 
+#This is the file path for where our files gets stored
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-
+# Static and Media files settings
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -104,10 +98,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ProjectBackend.wsgi.application'
 
-
 # Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -119,10 +110,7 @@ DATABASES = {
     }
 }
 
-
 # Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -155,24 +143,16 @@ REST_FRAMEWORK = {
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
-
 STATIC_URL = 'static/'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 """
 # Logging configuration
@@ -204,4 +184,4 @@ LOGGING = {
     },
 }
 """
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

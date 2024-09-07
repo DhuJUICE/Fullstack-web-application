@@ -6,3 +6,4 @@ pip install boto3
 pip install pillow
 pip install djangorestframework
 pip install requests
+pip install gunicorn
