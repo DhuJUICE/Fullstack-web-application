@@ -3,10 +3,10 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main  # Trigger on push to the 'main' branch
+      - CI/CD-pipeline  # Trigger on push to the 'CI/CD-pipeline' branch
   pull_request:
     branches:
-      - main  # Trigger on pull requests targeting the 'main' branch
+      - CI/CD-pipeline  # Trigger on pull requests targeting the 'CI/CD-pipeline' branch
 
 jobs:
   build:
@@ -29,18 +29,6 @@ jobs:
       - name: Run tests
         run: |
           python manage.py test
-
-      - name: Build Docker Image
-        if: ${{ github.event_name == 'push' }}
-        run: |
-          docker build -t my-django-app .
-
-      - name: Push Docker Image to Docker Hub
-        if: ${{ github.event_name == 'push' }}
-        run: |
-          docker tag my-django-app my-dockerhub-username/my-django-app:latest
-          echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
-          docker push my-dockerhub-username/my-django-app:latest
 
   deploy:
     runs-on: ubuntu-latest
