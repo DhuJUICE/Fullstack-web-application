@@ -15,7 +15,6 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
@@ -24,12 +23,10 @@ from .views import delete_faq_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('test/', views.testpage, name="testpage"),
-    
     #this path is for testing out AWS S3 file storage system connection to the backend
     #path('test-s3/', views.test_s3_connection, name='test_s3_connection'),
-    
-    #for now just include resource_contribution
+
+    #include other APPs url routings
     path('', include('resource_contribution.urls')),
     path('', include('resource_review.urls')),
     path('', include('resource_report.urls')),
@@ -38,5 +35,4 @@ urlpatterns = [
     path('', include('user_analytics.urls')),
     path('', include('faq.urls')),
 	path('', include('rest_API.urls')),
-    path('delete-faq/', delete_faq_view, name='delete_faq'),
 ]

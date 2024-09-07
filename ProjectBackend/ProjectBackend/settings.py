@@ -34,12 +34,23 @@ ALLOWED_HOSTS = ['fullstack-web-application-4.onrender.com']
 # Application definition
 
 INSTALLED_APPS = [
-    'user_management',
-	'rest_API',
-    'resource_report',
-    'resource_contribution',
+    #functionality APPS
+    'document_search',
     'faq',
+    'resource_contribution',
+    'resource_report',
+    'resource_review',
+    'rest_API',
+    'user_analytics',
+    'user_management',
+
+    #framework APPS
+    'rest_framework',
+	'rest_framework.authtoken',
+
+    #fileStorageSystem APP
     'storages',
+
     'ProjectBackend',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -47,8 +58,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-	'rest_framework.authtoken',
+    
 ]
 # AWS S3 Configuration
 AWS_ACCESS_KEY_ID = 'AKIAS66UCUDQ2AC2KBGM'
