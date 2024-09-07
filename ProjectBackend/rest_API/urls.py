@@ -1,12 +1,12 @@
 from django.contrib import admin
 
 from django.urls import path
-from .views import serializeFaq, serializeResource, serializeReport, serializeUser
+from .views import deserializeFaqPaginated, deserializeResourcePaginated, deserializeReportPaginated, deserializeUserPaginated
 from .views import deserializeFaq, deserializeResource, deserializeReport, deserializeUser
 from django.test import TestCase
 
 urlpatterns = [
-	#API ENDPOINTS - GET, POST, PUT, DELETE
+	#API ENDPOINTS for GET, POST, PUT, DELETE requests
 
 	#deserialized faq endpoint
     path('api/faq/deserial', deserializeFaq.as_view(), name='faq'),
