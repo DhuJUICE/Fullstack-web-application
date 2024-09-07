@@ -5,6 +5,17 @@ from django.contrib.auth.models import User
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    role = models.CharField(max_length=100, blank=True, null=True)
-    image = models.CharField(max_length=100, blank=True, null=True)
-    verificationCode = models.CharField(max_length=100, blank=True, null=True)
+
+    #options for users as roles
+    USER_ROLES_CHOICES = [
+    #this open access user option is not needed as open access users will only be default
+    ('openUser', 'Open Access'),
+    #these are the roles that can be applied for
+    ('adminUser', 'Admin'),
+    ('educatorUser', 'Educator'),
+    ('moderatorUser', 'Moderator'),
+]
+    #moderation details
+    role = models.CharField(max_length=20, choices=USER_ROLES_CHOICES, default='openUser')
+    image = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
+    verificationCode = models.CharField(max_length=8, blank=True, null=True)
