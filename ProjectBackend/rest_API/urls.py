@@ -8,19 +8,26 @@ from django.test import TestCase
 urlpatterns = [
 	#API ENDPOINTS for GET, POST, PUT, DELETE requests
 
-	#deserialized faq endpoint
+	#with pagination for GET requests of all objects
+	path('api/faq/deserial/paginated', deserializeFaqPaginated.as_view(), name='faq-paginated'),
+	path('api/resource/deserial/paginated', deserializeResourcePaginated.as_view(), name='resource-paginated'),
+	path('api/report/deserial/paginated', deserializeReportPaginated.as_view(), name='report-paginated'),
+	path('api/user/deserial/paginated', deserializeUserPaginated.as_view(), name='user-paginated'),
+
+	#No pagination for GET requests
+	#faq endpoints
     path('api/faq/deserial', deserializeFaq.as_view(), name='faq'),
 	path('api/faq/deserial/<int:pk>', deserializeFaq.as_view(), name='faq-object'),
 	
-	#deserialized resource endpoint
+	#resource endpoints
 	path('api/resource/deserial', deserializeResource.as_view(), name='resource'),
 	path('api/resource/deserial/<int:pk>', deserializeResource.as_view(), name='resource-object'),
 	
-	#deserialized report endpoint
+	#report endpoints
 	path('api/report/deserial', deserializeReport.as_view(), name='report'),
 	path('api/report/deserial/<int:pk>', deserializeReport.as_view(), name='report-object'),
 	
-	#deserialized User endpoint
+	#User endpoints
 	path('api/user/deserial', deserializeUser.as_view(), name='user'),
 	path('api/user/deserial/<int:pk>', deserializeUser.as_view(), name='user-object'),
 ]
