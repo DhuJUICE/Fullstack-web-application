@@ -1,8 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\ProjectBackend",
-    "\\ProjectBackend\\test-template"
+    "\\resource_contribution"
   ],
+  "SelectedNode": "\\resource_contribution\\models.py",
   "PreviewInSolutionExplorer": false
 }
