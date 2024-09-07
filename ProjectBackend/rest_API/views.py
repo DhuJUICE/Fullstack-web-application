@@ -27,24 +27,25 @@ from io import BytesIO
 
 #DESERIALIZE CLASSBASED VIEWS WITH PAGINATION
 class deserializeFaqPaginated(generics.ListCreateAPIView):
+    permission_classes = [AllowAny]
     queryset = FAQ.objects.all()
     serializer_class = FaqSerializer
-    permission_classes = [AllowAny]
+    
 
 class deserializeResourcePaginated(generics.ListCreateAPIView):
+    permission_classes = [AllowAny]
     queryset = RESOURCE_METADATA.objects.all()
     serializer_class = DocSerializer
-    permission_classes = [AllowAny]
 	
 class deserializeReportPaginated(generics.ListCreateAPIView):
+    permission_classes = [AllowAny]
     queryset = RESOURCE_REPORT.objects.all()
     serializer_class = ReportSerializer
-    permission_classes = [AllowAny]
 	
 class deserializeUserPaginated(generics.ListCreateAPIView):
+    permission_classes = [AllowAny]
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [AllowAny]
 	
 #DESERIALIZE CLASSBASED VIEWS
 class deserializeFaq(APIView):
