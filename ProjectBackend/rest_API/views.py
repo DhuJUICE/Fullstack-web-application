@@ -23,29 +23,31 @@ from django.http import JsonResponse
 from rest_framework import status
 from io import BytesIO
 
-#SERIALIZE DATA CLASSBASED VIEWS - Backend to Frontend
-class serializeFaq(generics.ListCreateAPIView):
+#FRONTEND MAKES REQUEST - BACKEND GIVES RESPONSE
+
+#DESERIALIZE CLASSBASED VIEWS WITH PAGINATION
+class deserializeFaqPaginated(generics.ListCreateAPIView):
+    permission_classes = [AllowAny]
     queryset = FAQ.objects.all()
     serializer_class = FaqSerializer
-    permission_classes = [AllowAny]
+    
 
-class serializeResource(generics.ListCreateAPIView):
+class deserializeResourcePaginated(generics.ListCreateAPIView):
+    permission_classes = [AllowAny]
     queryset = RESOURCE_METADATA.objects.all()
     serializer_class = DocSerializer
-    permission_classes = [AllowAny]
 	
-class serializeReport(generics.ListCreateAPIView):
+class deserializeReportPaginated(generics.ListCreateAPIView):
+    permission_classes = [AllowAny]
     queryset = RESOURCE_REPORT.objects.all()
     serializer_class = ReportSerializer
-    permission_classes = [AllowAny]
 	
-class serializeUser(generics.ListCreateAPIView):
+class deserializeUserPaginated(generics.ListCreateAPIView):
+    permission_classes = [AllowAny]
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [AllowAny]
 	
-#DESERIALIZE DATA CLASSBASED VIEWS(Uses serializers) - Frontend to Backend
-#WITH TEST DATA
+#DESERIALIZE CLASSBASED VIEWS
 class deserializeFaq(APIView):
     permission_classes = [AllowAny]
 
