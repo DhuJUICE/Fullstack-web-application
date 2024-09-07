@@ -10,6 +10,7 @@ class RESOURCE_METADATA(models.Model):
 
     #what type of file is being stored as the resource
     file_type = models.CharField(max_length = 100)
+    date_contributed = models.DateTimeField(auto_now_add=True)
 
     #get the id of the person uploading the resource
     contributor = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -21,9 +22,7 @@ class RESOURCE_METADATA(models.Model):
 
     #keywords contains a list of keywords to find the resource with(need an array later on),delimeter will be used
     keywords = models.TextField()
-
-    date_contributed = models.DateTimeField(auto_now_add=True)
-
+    
     #rating of the resource 1-5
     resource_rating = models.IntegerField()
 
