@@ -4,5 +4,5 @@ from . import views
 
 urlpatterns = [
 	#url to display all faqs from database
-    path('faqs', displayFaqs, name='faqs-display'),
+    path('faqs', views.displayFaqs, name='faqs-display'),
 ]
