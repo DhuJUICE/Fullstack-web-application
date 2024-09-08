@@ -25,11 +25,6 @@ class UserProfile(models.Model):
     #USE THE BELOW FUNCTION TO VALIDATE VERIFICATION CODES ENTERED BY USERS
     #function to check if the verification code is expired, only 5 minutes then code expires
     def is_code_expired(self, expiry_minutes=5):
-        """
-        Check if the verification code is expired.
-        :param expiry_minutes: Number of minutes until expiration
-        :return: True if expired, False otherwise
-        """
         expiry_time = self.codeTimestamp + datetime.timedelta(minutes=expiry_minutes)
 
         #return True or False, True if code is expired, False if code is not expired

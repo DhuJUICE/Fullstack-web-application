@@ -98,7 +98,7 @@ def generate_verification_code():
     codeLength = 8
     characters = string.ascii_letters + string.digits  # Includes a-z, A-Z, and 0-9
     code = ''.join(random.choice(characters) for _ in range(codeLength))  # Randomly select characters
-    timestamp = timezone.now()  # Current time in seconds since epoch
+    timestamp = timezone.now()  # Current time
 
     #give back the verification code
     return code, timestamp
@@ -128,13 +128,12 @@ def resetPassword(request):
 		userProfile = UserProfile.objects.get(user=user)
 		userProfile.verificationCode = code
 		userProfile.codeTimestamp = timestamp
-		print(userProfile.codeTimestamp)
 		userProfile.save()
 
 		#send email to the users email with the newly generated verificationCode(will timeout after some time)
-		#sendVerificationCode(email, code)
+		#EmailVerificationCode(user.username, userProfile.verificationCode, user.email)
 
-		response = {"email":email, "timestamp":UserProfile.codeTimestamp}
+		response = {"email":email}
 
 		return render(request, 'resetPasswordCode.html', response)
 
@@ -144,7 +143,7 @@ def resetPassword(request):
 			#save the user instance with new password
 			#redirect to log in page
 		#if the code is incorrect
-			#say code is incorrect and do this till code expires
+			#say code is incorrect 
 
 
 	#if user does not exist
@@ -155,15 +154,17 @@ def resetPassword(request):
 		return redirect("/resetPasswordPage")
 
 #function to send email to user with verification code
-def sendVerificationCode(recipient, code):
+def EmailVerificationCode(username, recipient, code):
 	pass
 
-#function to validate verification code
+#function to validate verification code - WHEN USER ENTERS THE CODE
 def validate_verification_code(user, code):
     try:
-        verification_code = VerificationCode.objects.get(user=user, code=code)
-        if verification_code.is_expired():
+        userProfile = UserProfile.objects.get(user=user, verificationCode=code)
+
+        if userProfile.is_code_expired():
             return False, "The verification code has expired."
+
         return True, "The verification code is valid."
     except VerificationCode.DoesNotExist:
         return False, "Invalid verification code."
