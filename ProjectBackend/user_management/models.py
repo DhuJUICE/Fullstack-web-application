@@ -15,8 +15,9 @@ class UserProfile(models.Model):
     ('educatorUser', 'Educator'),
     ('moderatorUser', 'Moderator'),
 ]
-    #moderation details
+    #User Profile details
+    #Acess role
     role = models.CharField(max_length=20, choices=USER_ROLES_CHOICES, default='openUser')
     image = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     verificationCode = models.CharField(max_length=8, blank=True, null=True)
-    codeTimeStamp = models.DateTimeField(blank=True, null=True)
+    codeTimestamp = models.DateTimeField(blank=True, null=True)
