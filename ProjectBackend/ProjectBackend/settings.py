@@ -54,6 +54,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
 ]
+
+#MAILGUN API DETAILS
+MAILGUN_API_KEY = 'bc0516004c9dd352e2c643356382496f-2b755df8-d87adfec'
+MAILGUN_DOMAIN = 'sandbox79e1217384fd4653b2336741edf0bfb3.mailgun.org'
+MAILGUN_API_URL = f'https://api.mailgun.net/v3/{MAILGUN_DOMAIN}/messages'
+
 # AWS S3 Configuration
 AWS_ACCESS_KEY_ID = 'AKIAS66UCUDQ2AC2KBGM'
 #secretAccessHere

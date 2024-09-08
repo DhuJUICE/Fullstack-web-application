@@ -4,6 +4,10 @@ from django.contrib.auth.models import User, auth
 from user_management.models import UserProfile
 from django.utils import timezone
 
+#mailgun email api import
+import requests
+from django.conf import settings
+
 #imports for handling verification code generation
 import random
 import string
@@ -131,7 +135,7 @@ def resetPassword(request):
 		userProfile.save()
 
 		#send email to the users email with the newly generated verificationCode(will timeout after some time)
-		#EmailVerificationCode(user.username, userProfile.verificationCode, user.email)
+		EmailVerificationCode(email, code)
 
 		response = {"email":email}
 
@@ -153,9 +157,30 @@ def resetPassword(request):
 		#give response that no user is registered with that email
 		return redirect("/resetPasswordPage")
 
+
+
+
 #function to send email to user with verification code
-def EmailVerificationCode(username, recipient, code):
-	pass
+def EmailVerificationCode(recipient, code):
+	subject = 'verificationCode'
+	message = 'Here is your verification code: ' + code
+
+	MAILGUN_API_KEY = settings.MAILGUN_API_KEY
+	MAILGUN_DOMAIN = settings.MAILGUN_DOMAIN
+	MAILGUN_API_URL = settings.MAILGUN_API_URL
+
+	response = requests.post(
+	MAILGUN_API_URL,auth=('api', MAILGUN_API_KEY),data={
+	'from': f'postmaster@{MAILGUN_DOMAIN}',
+	'to': recipient,
+	'subject': subject,
+	'text': message
+	}
+	)
+	if response.status_code == 200:
+		print("Email sent successfully.")
+	else:
+		print(f"Failed to send email: {response.status_code} - {response.text}")
 
 #function to validate verification code - WHEN USER ENTERS THE CODE
 def validate_verification_code(user, code):
