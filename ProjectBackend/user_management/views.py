@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.models import User, auth
 from user_management.models import UserProfile
+from django.utils import timezone
 
 #imports for handling verification code generation
 import random
@@ -97,9 +98,9 @@ def generate_verification_code():
     codeLength = 8
     characters = string.ascii_letters + string.digits  # Includes a-z, A-Z, and 0-9
     code = ''.join(random.choice(characters) for _ in range(codeLength))  # Randomly select characters
-    timestamp = time.time()  # Current time in seconds since epoch
+    timestamp = timezone.now()  # Current time in seconds since epoch
 
-    #give back the verification code and the generated timestamp of the code
+    #give back the verification code
     return code, timestamp
 
 #reset password page
@@ -115,7 +116,7 @@ def resetPassword(request):
 	if User.objects.filter(email=email).exists():
 		print("Email exists, You can get a verification code")
 
-		#generate and get the generated code with timestamp
+		#generate and get the generated code
 		code = generate_verification_code()[0]
 		timestamp = generate_verification_code()[1]		
 
@@ -126,13 +127,14 @@ def resetPassword(request):
 		user = User.objects.get(email=email)
 		userProfile = UserProfile.objects.get(user=user)
 		userProfile.verificationCode = code
+		userProfile.codeTimestamp = timestamp
+		print(userProfile.codeTimestamp)
 		userProfile.save()
 
 		#send email to the users email with the newly generated verificationCode(will timeout after some time)
 		#sendVerificationCode(email, code)
 
-		displayEmail = {"email":email}
-		response = displayEmail
+		response = {"email":email, "timestamp":UserProfile.codeTimestamp}
 
 		return render(request, 'resetPasswordCode.html', response)
 
@@ -155,3 +157,13 @@ def resetPassword(request):
 #function to send email to user with verification code
 def sendVerificationCode(recipient, code):
 	pass
+
+#function to validate verification code
+def validate_verification_code(user, code):
+    try:
+        verification_code = VerificationCode.objects.get(user=user, code=code)
+        if verification_code.is_expired():
+            return False, "The verification code has expired."
+        return True, "The verification code is valid."
+    except VerificationCode.DoesNotExist:
+        return False, "Invalid verification code."
