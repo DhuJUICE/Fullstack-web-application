@@ -83,3 +83,25 @@ def logout(request):
 
 	#redirect the user to the login page
 	return redirect("/loginpage")
+
+#function to reset forgotten password - will use email with a verification code
+def resetPassword(request):
+	#get email from user to send verification code to
+	#check if the user with that email exists
+	#if user exists
+		#generate verification code of 8 digits
+		#save this code into that users Users UserProfile object
+		#save the UserProfile instance with updated verificationCode which is valid for certain amount of time
+
+		#send email to the users email with the newly generated verificationCode(will timeout after some time)
+
+		#allow user to enter the verification code from their email
+		#if the code is correct
+			#Allow user to update their password
+			#save the user instance with new password
+			#redirect to log in page
+		#if the code is incorrect
+			#say code is incorrect and do this till code expires
+	#if user does not exist
+		#give response that no user is registered with that email
+	return None
