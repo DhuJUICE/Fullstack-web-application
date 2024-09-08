@@ -1,32 +1,37 @@
 from django.db import models
 from django.contrib.auth.models import User, auth
+
 # Create your models here.
 class RESOURCE_METADATA(models.Model):
 
     #Resource Metadata
     #identifier from aws s3
-    file_path = models.FileField(upload_to='resources/')  # Automatically handles file storage
+    file_path = models.FileField(upload_to='resources/')  # Files will be stored under 'resources/' in S3
 
     #what type of file is being stored as the resource
     file_type = models.CharField(max_length = 100)
+    date_contributed = models.DateTimeField(auto_now_add=True)
 
     #get the id of the person uploading the resource
-    contributor = models.CharField(max_length = 100)
+    contributor = models.ForeignKey(User, on_delete=models.CASCADE)
 
     #details about the specific resource
     resource_name = models.CharField(max_length = 100)
     subject = models.CharField(max_length = 100)
     grade = models.CharField(max_length = 100)
 
-    #keywords contains a list of keywords to find the resource with(need an array later on)
-    keywords = models.CharField(max_length = 100)
-
-    date_contributed = models.DateTimeField(auto_now_add=True)
-
-    #rating of the resource
+    #keywords contains a list of keywords to find the resource with(need an array later on),delimeter will be used
+    keywords = models.TextField()
+    
+    #rating of the resource 1-5
     resource_rating = models.IntegerField()
 
+    APPROVAL_STATUS_CHOICES = [
+    ('pending', 'Pending'),
+    ('approved', 'Approved'),
+    ('rejected', 'Rejected'),
+]
     #moderation details
-    approval_status = models.CharField(max_length = 100)
-    moderation_comment = models.CharField(max_length = 100)
+    approval_status = models.CharField(max_length=10, choices=APPROVAL_STATUS_CHOICES, default='pending')
+    moderation_comment = models.TextField()
     moderation_date = models.DateTimeField()
