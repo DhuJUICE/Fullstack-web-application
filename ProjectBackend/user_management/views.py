@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.models import User, auth
+from user_management.models import UserProfile
 
 #imports for handling verification code generation
 import random
@@ -121,9 +122,11 @@ def resetPassword(request):
 		#output code and timestamp
 		print("Verification Code: ", code, "\nGenerated Timestamp: ", timestamp, "\n")
 
-		#save this code into that users Users UserProfile object		
-		#save the UserProfile instance with updated verificationCode which is valid for certain amount of time
-
+		#save this code & timestamp into that users Users UserProfile object		
+		user = User.objects.get(email=email)
+		userProfile = UserProfile.objects.get(user=user)
+		userProfile.verificationCode = code
+		userProfile.save()
 
 		#send email to the users email with the newly generated verificationCode(will timeout after some time)
 		#call send email function here
