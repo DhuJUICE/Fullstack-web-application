@@ -129,7 +129,7 @@ def resetPassword(request):
 		userProfile.save()
 
 		#send email to the users email with the newly generated verificationCode(will timeout after some time)
-		#call send email function here
+		#sendVerificationCode(email, code)
 
 		displayEmail = {"email":email}
 		response = displayEmail
@@ -151,3 +151,7 @@ def resetPassword(request):
 		print("No user with that email\n")
 		#give response that no user is registered with that email
 		return redirect("/resetPasswordPage")
+
+#function to send email to user with verification code
+def sendVerificationCode(recipient, code):
+	pass
