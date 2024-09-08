@@ -3,5 +3,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    path('resourceRating', views.resourceRating, name='resourceRating'),
     #path('pageName', views.functionName, name='functionName'),
 ]
