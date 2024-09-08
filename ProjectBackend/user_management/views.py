@@ -2,6 +2,11 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.models import User, auth
 
+#imports for handling verification code generation
+import random
+import string
+import time
+
 # Create your views here.
 #this function should validate and authenticate the user
 def loginPage(request):
@@ -84,16 +89,49 @@ def logout(request):
 	#redirect the user to the login page
 	return redirect("/loginpage")
 
+
+#PASSWORD RESET
+#function to generate 8 character verification code
+def generate_verification_code():
+    codeLength = 8
+    characters = string.ascii_letters + string.digits  # Includes a-z, A-Z, and 0-9
+    code = ''.join(random.choice(characters) for _ in range(codeLength))  # Randomly select characters
+    timestamp = time.time()  # Current time in seconds since epoch
+
+    #give back the verification code and the generated timestamp of the code
+    return code, timestamp
+
+#reset password page
+def resetPasswordPage(request):
+	return render(request, 'resetPassword.html')
+
 #function to reset forgotten password - will use email with a verification code
 def resetPassword(request):
 	#get email from user to send verification code to
+	email = request.POST.get('email')		
+
 	#check if the user with that email exists
-	#if user exists
-		#generate verification code of 8 digits
-		#save this code into that users Users UserProfile object
+	if User.objects.filter(email=email).exists():
+		print("Email exists, You can get a verification code")
+
+		#generate and get the generated code with timestamp
+		code = generate_verification_code()[0]
+		timestamp = generate_verification_code()[1]		
+
+		#output code and timestamp
+		print("Verification Code: ", code, "\nGenerated Timestamp: ", timestamp, "\n")
+
+		#save this code into that users Users UserProfile object		
 		#save the UserProfile instance with updated verificationCode which is valid for certain amount of time
 
+
 		#send email to the users email with the newly generated verificationCode(will timeout after some time)
+		#call send email function here
+
+		displayEmail = {"email":email}
+		response = displayEmail
+
+		return render(request, 'resetPasswordCode.html', response)
 
 		#allow user to enter the verification code from their email
 		#if the code is correct
@@ -102,6 +140,11 @@ def resetPassword(request):
 			#redirect to log in page
 		#if the code is incorrect
 			#say code is incorrect and do this till code expires
+
+
 	#if user does not exist
+	else:
+		print("Email does not exist, You CANNOT get a verification code")
+		print("No user with that email\n")
 		#give response that no user is registered with that email
-	return None
+		return redirect("/resetPasswordPage")

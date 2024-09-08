@@ -10,6 +10,7 @@ urlpatterns = [
     path('register', views.registerUser, name='registerButton'),
     path('logout', views.logout, name='logout'),
 
+    path('resetPasswordPage', views.resetPasswordPage, name='resetPasswordPage'),
     path('resetPassword', views.resetPassword, name='resetPassword'),
     path('testpage', views.testPage, name='testpage')
 ]
