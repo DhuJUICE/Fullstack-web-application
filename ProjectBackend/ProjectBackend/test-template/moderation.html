@@ -1,0 +1,40 @@
+{%extends 'base.html'%} {%block body%}
+<title>Login</title>
+<header><center>This is the login page</center></header>
+
+<form action="/" method="POST">
+  {% csrf_token %}
+  <center><input type="submit" value="Back" name="backButton" /></center>
+</form>
+
+<form action="moderation" method="POST">
+  {% csrf_token %}
+  <table border="1" align="center">
+    <tr>
+      <td>
+        <input type="text" placeholder="Resource Name" name="source_id" />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <input
+          type="text"
+          placeholder="Moderation Comment"
+          name="mod_comment"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <input type="text" placeholder="Approval Status" name="mod_status" />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <input type="text" placeholder="Moderation Date" name="mod_dateTime" />
+      </td>
+    </tr>
+  </table>
+</form>
+
+{%endblock%}
