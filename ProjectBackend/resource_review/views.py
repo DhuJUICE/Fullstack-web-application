@@ -12,24 +12,34 @@ def resourceRating(request):
 	#return the rating page with updated rating
 	return None
 
+def moderationPage(request):
+	return render(request, 'moderation.html')
+    
+
 #get the resources from database and moderate them, then save them back in the database
 def resourceModeration(request):
 
-	resourceId = '1'
-	approval_status = 'approved'
-	moderation_comment = 'A cake/cupcake would work rn'
-	moderation_date = timezone.now()
-
+	resource_id = request.POST.get('source_id')
+	approval_status = request.POST.get('mod_status')
+	moderation_comment = request.POST.get('mod_comment')
+	moderation_date =request.POST.get('mod_dateTime')
+	print(resource_id)
+	print(approval_status)
+	print(moderation_comment)
+	print(moderation_date)
+	"""
 	#get resources from database with initial empty moderation comment and pending approval
-	resource = RESOURCE_METADATA.objects.get(pk=kwargs['pk'])
+	resource = RESOURCE_METADATA.objects.get(pk=resource_id)
 
 	#moderate the resource
 	resource.approval_status = approval_status
 	resource.moderation_comment = moderation_comment
-	moderation_date = timezone.now()
+	resource.moderation_date = moderation_date
 
 	#save resource with updated moderation details
 	resource.save()
 
 	#return the moderation page with updated moderation details
 	return None
+	"""
+	return render(request, 'moderation.html')

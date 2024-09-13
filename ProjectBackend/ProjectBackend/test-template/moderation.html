@@ -7,7 +7,7 @@
   <center><input type="submit" value="Back" name="backButton" /></center>
 </form>
 
-<form action="moderation" method="POST">
+<form action="resourceModeration" method="POST">
   {% csrf_token %}
   <table border="1" align="center">
     <tr>
@@ -32,6 +32,7 @@
     <tr>
       <td>
         <input type="text" placeholder="Moderation Date" name="mod_dateTime" />
+        <center><input type="submit" value="submit" name="modButton" /></center>
       </td>
     </tr>
   </table>
