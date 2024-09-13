@@ -24,7 +24,7 @@ class RESOURCE_METADATA(models.Model):
     keywords = models.TextField()
     
     #rating of the resource 1-5
-    resource_rating = models.IntegerField()
+    resource_rating = models.IntegerField(null=True, blank=True)
 
     APPROVAL_STATUS_CHOICES = [
     ('pending', 'Pending'),

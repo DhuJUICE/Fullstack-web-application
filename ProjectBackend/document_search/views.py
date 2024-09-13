@@ -3,9 +3,11 @@ from resource_contribution.models import RESOURCE_METADATA
 from django.db.models import Q
 
 def resourceSearch(request):
-    # Get search parameters from the request (e.g., from a form or query parameters)
-    subject = request.GET.get('subject', '').strip()  # Get the subject from the query parameters
-    keywords = request.GET.get('keywords', '').strip()  # Get the keywords from the query parameters
+    # Get the subject from the query parameters
+    subject = request.GET.get('subject', '').strip()
+
+    # Get the keywords from the query parameters
+    keywords = request.GET.get('keywords', '').strip() 
 
     # Initialize the queryset for RESOURCE_METADATA
     resources = RESOURCE_METADATA.objects.all()
