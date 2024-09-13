@@ -1,25 +1,30 @@
 {%extends 'base.html'%}
 {%block body%}
-<title>Report Resource</title>
-<header><center>Report Resource</center></header>
+<title>Login</title>
+<header><center>This is the login page</center></header>
 
 <form action="/" method="POST">
     {% csrf_token %}
     <center><input type="submit" value="Back" name="backButton" /></center>
 </form>
 
-<center>A verification code has been sent to {{email}}, you have 5 minutes to enter the code below</center>
-<form action="resetPassword" method="POST">
+<form action="resourceReport" method="POST">
     {% csrf_token %}
     <table border="1" align="center">
         <tr>
             <td>
-                <input type="text" placeholder="Enter verification code here" name="code" />
+                <input type="text" placeholder="Username" name="username" />
             </td>
         </tr>
         <tr>
+            <td>
+                <input type="password" placeholder="Password" name="password" />
+            </td>
+        </tr>
+        <tr>
+
             <td align="center">
-                <input type="submit" name="submitCode" />
+                <input type="submit" name="loginButton" />
             </td>
         </tr>
     </table>
