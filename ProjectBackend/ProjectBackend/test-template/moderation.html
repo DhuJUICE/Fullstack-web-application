@@ -1,18 +1,13 @@
 {%extends 'base.html'%} {%block body%}
-<title>Login</title>
-<header><center>This is the login page</center></header>
-
-<form action="/" method="POST">
-  {% csrf_token %}
-  <center><input type="submit" value="Back" name="backButton" /></center>
-</form>
+<title>Moderation</title>
+<header><center>This is the moderation page</center></header>
 
 <form action="resourceModeration" method="POST">
   {% csrf_token %}
   <table border="1" align="center">
     <tr>
       <td>
-        <input type="text" placeholder="Resource Name" name="source_id" />
+        <input type="text" placeholder="Resource ID" name="source_id" />
       </td>
     </tr>
     <tr>
@@ -26,12 +21,14 @@
     </tr>
     <tr>
       <td>
-        <input type="text" placeholder="Approval Status" name="mod_status" />
+        <select id="status" name="mod_status">
+          <option value="approve">Approve</option>
+          <option value="reject">Reject</option>
+        </select>
       </td>
     </tr>
     <tr>
       <td>
-        <input type="text" placeholder="Moderation Date" name="mod_dateTime" />
         <center><input type="submit" value="submit" name="modButton" /></center>
       </td>
     </tr>

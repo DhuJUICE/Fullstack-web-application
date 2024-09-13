@@ -22,24 +22,19 @@ def resourceModeration(request):
 	resource_id = request.POST.get('source_id')
 	approval_status = request.POST.get('mod_status')
 	moderation_comment = request.POST.get('mod_comment')
-	moderation_date =request.POST.get('mod_dateTime')
-	print(resource_id)
-	print(approval_status)
-	print(moderation_comment)
-	print(moderation_date)
-	"""
-	#get resources from database with initial empty moderation comment and pending approval
+	#moderation_date =request.POST.get('mod_dateTime')
+	
+	#get resource from database with initial empty moderation comment and pending approval
 	resource = RESOURCE_METADATA.objects.get(pk=resource_id)
-
+	
 	#moderate the resource
 	resource.approval_status = approval_status
 	resource.moderation_comment = moderation_comment
-	resource.moderation_date = moderation_date
 
 	#save resource with updated moderation details
 	resource.save()
 
 	#return the moderation page with updated moderation details
-	return None
-	"""
 	return render(request, 'moderation.html')
+	
+	
