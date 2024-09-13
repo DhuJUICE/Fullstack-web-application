@@ -14,8 +14,5 @@ def resourceReport(request):
 	#create the resource report object to be recorded
 	report = RESOURCE_REPORT.objects.create(reportResource=resource, reportComplaint=complaint)
 
-	#give/choose resource report complaint
-
-
 	#save resource report to database
 	return None
