@@ -6,7 +6,7 @@ class RESOURCE_METADATA(models.Model):
 
     #Resource Metadata
     #identifier from aws s3
-    file_path = models.FileField(upload_to='resources/')  # Files will be stored under 'resources/' in S3
+    file_path = models.FileField(upload_to='resources/', null=True, blank=True)  # Files will be stored under 'resources/' in S3
 
     #what type of file is being stored as the resource
     file_type = models.CharField(max_length = 100)
