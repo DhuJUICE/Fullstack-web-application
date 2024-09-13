@@ -34,4 +34,4 @@ class RESOURCE_METADATA(models.Model):
     #moderation details
     approval_status = models.CharField(max_length=10, choices=APPROVAL_STATUS_CHOICES, default='pending')
     moderation_comment = models.TextField()
-    moderation_date = models.DateTimeField()
+    moderation_date = models.DateTimeField(auto_now = True)
