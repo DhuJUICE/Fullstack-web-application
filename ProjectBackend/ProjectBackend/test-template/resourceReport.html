@@ -1,0 +1,38 @@
+{%extends 'base.html'%}
+{%block body%}
+<title>Login</title>
+<header><center>This is the login page</center></header>
+
+<form action="/" method="POST">
+    {% csrf_token %}
+    <center><input type="submit" value="Back" name="backButton" /></center>
+</form>
+
+<form action="resourceReport" method="POST">
+    {% csrf_token %}
+    <table border="1" align="center">
+        <tr>
+            <td>
+                <input type="text" placeholder="Resource Id" name="resourceId" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="text" placeholder="report User" name="userId" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="text" placeholder="Resource Complaint" name="reportComplaint" />
+            </td>
+        </tr>
+        <tr>
+
+            <td align="center">
+                <input type="submit" name="reportBtn" />
+            </td>
+        </tr>
+    </table>
+</form>
+ 
+{%endblock%}
