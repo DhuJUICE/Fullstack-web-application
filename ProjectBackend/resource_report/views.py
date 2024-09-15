@@ -1,35 +1,32 @@
 from django.shortcuts import render, redirect
 from .models import RESOURCE_REPORT
 import requests
+import json
+
+def reportPage(request):
+	return render(request, 'resourceReport.html')
 
 # Create your views here.
 #resport certain resource
 def resourceReport(request):
-	"""
 	#get the currently logged in user - must add resourceUser to the report model
-	user = request.user
+	#user = request.user
+	if request.method == 'POST':
 
-	#get the resource compaint from the frontend
-	complaint = request.POST.get('resourceComplaint')	
-	resource = request.POST.get('resourceId')
+		#get the resource compaint from the frontend
+		complaint = request.POST.get('reportComplaint')	
+		resourceId = request.POST.get('resourceId')
+		userId = request.POST.get('userId')
 
-	#create the resource report object to be recorded
-	report = RESOURCE_REPORT.objects.create(reportResource=resource, reportComplaint=complaint)
-	"""
+		api_url = 'http://127.0.0.1:8000/api/report/deserial'
 
-	api_url = 'http://127.0.0.1:8000/api/faq/deserial'  # Replace with your actual API endpoint
-	data = {
-        'question': 'newQuestion',
-        'answer': 'newAnswer'
-    }
-	headers = {'Content-Type': 'application/json'}
-	response = requests.post(api_url, json=data, headers=headers)
+		data = {
+		"reportComplaint": complaint,
+		"reportResource": resourceId,
+		"reportUser": userId
+		}
 
-	return redirect("api/faq/deserial")
-
-	    
-	    
-    
-    
-	#save resource report to database
-	return None
+		headers = {'Content-Type': 'application/json'}
+		response = requests.post(api_url, data=json.dumps(data), headers=headers)
+        
+	return redirect("reportPage")
