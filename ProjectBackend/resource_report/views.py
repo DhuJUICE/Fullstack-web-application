@@ -13,7 +13,7 @@ def resourceReport(request):
 	#user = request.user
 	if request.method == 'POST':
 
-		#get the resource compaint from the frontend
+		#get the report complaint from the frontend
 		complaint = request.POST.get('reportComplaint')	
 		resourceId = request.POST.get('resourceId')
 		userId = request.POST.get('userId')
