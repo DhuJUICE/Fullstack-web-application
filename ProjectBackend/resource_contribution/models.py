@@ -6,7 +6,7 @@ class RESOURCE_METADATA(models.Model):
 
     #Resource Metadata
     #identifier from aws s3
-    file_path = models.FileField(upload_to='resources/')  # Files will be stored under 'resources/' in S3
+    file_path = models.FileField(upload_to='resources/', null=True, blank=True)  # Files will be stored under 'resources/' in S3
 
     #what type of file is being stored as the resource
     file_type = models.CharField(max_length = 100)
@@ -24,7 +24,7 @@ class RESOURCE_METADATA(models.Model):
     keywords = models.TextField()
     
     #rating of the resource 1-5
-    resource_rating = models.IntegerField()
+    resource_rating = models.IntegerField(null=True, blank=True)
 
     APPROVAL_STATUS_CHOICES = [
     ('pending', 'Pending'),
@@ -34,4 +34,4 @@ class RESOURCE_METADATA(models.Model):
     #moderation details
     approval_status = models.CharField(max_length=10, choices=APPROVAL_STATUS_CHOICES, default='pending')
     moderation_comment = models.TextField()
-    moderation_date = models.DateTimeField()
+    moderation_date = models.DateTimeField(auto_now = True)

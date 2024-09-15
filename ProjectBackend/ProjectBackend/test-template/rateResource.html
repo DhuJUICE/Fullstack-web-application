@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rate Resource</title>
+</head>
+<body>
+    <h1>Rate Resource</h1>
+
+    <form method="POST" action="resourceRating">
+        {% csrf_token %}
+        <input type="text" placeholder="Resource ID" name="resourceId" />
+        <input type="text" placeholder="Rating (1-5)" name="rating" />
+        <button type="submit">Submit Rating</button>
+    </form>
+
+</body>
+</html>
