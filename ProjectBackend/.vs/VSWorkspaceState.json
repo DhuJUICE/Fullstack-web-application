@@ -1,8 +1,10 @@
 {
   "ExpandedNodes": [
     "",
-    "\\resource_contribution"
+    "\\.github\\workflows",
+    "\\ProjectBackend\\test-template",
+    "\\resource_report"
   ],
-  "SelectedNode": "\\resource_contribution\\models.py",
+  "SelectedNode": "\\resource_report\\urls.py",
   "PreviewInSolutionExplorer": false
 }

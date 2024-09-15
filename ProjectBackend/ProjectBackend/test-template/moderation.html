@@ -1,0 +1,38 @@
+{%extends 'base.html'%} {%block body%}
+<title>Moderation</title>
+<header><center>This is the moderation page</center></header>
+
+<form action="resourceModeration" method="POST">
+  {% csrf_token %}
+  <table border="1" align="center">
+    <tr>
+      <td>
+        <input type="text" placeholder="Resource ID" name="source_id" />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <input
+          type="text"
+          placeholder="Moderation Comment"
+          name="mod_comment"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <select id="status" name="mod_status">
+          <option value="approve">Approve</option>
+          <option value="reject">Reject</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <center><input type="submit" value="submit" name="modButton" /></center>
+      </td>
+    </tr>
+  </table>
+</form>
+
+{%endblock%}

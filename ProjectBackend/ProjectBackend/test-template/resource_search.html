@@ -1,0 +1,18 @@
+<form method="get" action="resourceSearch">
+    <label for="subject">Subject:</label>
+    <input type="text" name="subject" id="subject">
+
+    <label for="keywords">Keywords:</label>
+    <input type="text" name="keywords" id="keywords">
+
+    <button type="submit">Search</button>
+</form>
+
+<h2>Search Results:</h2>
+<ul>
+    {% for resource in resources %}
+        <li>{{ resource.resource_name }} - {{ resource.subject }} - {{ resource.grade }}</li>
+    {% empty %}
+        <li>No resources found.</li>
+    {% endfor %}
+</ul>

@@ -1,6 +1,17 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.models import User, auth
+from user_management.models import UserProfile
+from django.utils import timezone
+
+#mailgun email api import
+import requests
+from django.conf import settings
+
+#imports for handling verification code generation
+import random
+import string
+import time
 
 # Create your views here.
 #this function should validate and authenticate the user
@@ -83,3 +94,102 @@ def logout(request):
 
 	#redirect the user to the login page
 	return redirect("/loginpage")
+
+
+#PASSWORD RESET
+#function to generate 8 character verification code
+def generate_verification_code():
+    codeLength = 8
+    characters = string.ascii_letters + string.digits  # Includes a-z, A-Z, and 0-9
+    code = ''.join(random.choice(characters) for _ in range(codeLength))  # Randomly select characters
+    timestamp = timezone.now()  # Current time
+
+    #give back the verification code
+    return code, timestamp
+
+#reset password page
+def resetPasswordPage(request):
+	return render(request, 'resetPassword.html')
+
+#function to reset forgotten password - will use email with a verification code
+def resetPassword(request):
+	#get email from user to send verification code to
+	email = request.POST.get('email')		
+
+	#check if the user with that email exists
+	if User.objects.filter(email=email).exists():
+		print("Email exists, You can get a verification code")
+
+		#generate and get the generated code
+		code = generate_verification_code()[0]
+		timestamp = generate_verification_code()[1]		
+
+		#output code and timestamp
+		print("Verification Code: ", code, "\nGenerated Timestamp: ", timestamp, "\n")
+
+		#save this code & timestamp into that users Users UserProfile object		
+		user = User.objects.get(email=email)
+		userProfile = UserProfile.objects.get(user=user)
+		userProfile.verificationCode = code
+		userProfile.codeTimestamp = timestamp
+		userProfile.save()
+
+		#send email to the users email with the newly generated verificationCode(will timeout after some time)
+		EmailVerificationCode(email, code)
+
+		response = {"email":email}
+
+		return render(request, 'resetPasswordCode.html', response)
+
+		#allow user to enter the verification code from their email
+		#if the code is correct
+			#Allow user to update their password
+			#save the user instance with new password
+			#redirect to log in page
+		#if the code is incorrect
+			#say code is incorrect 
+
+
+	#if user does not exist
+	else:
+		print("Email does not exist, You CANNOT get a verification code")
+		print("No user with that email\n")
+		#give response that no user is registered with that email
+		return redirect("/resetPasswordPage")
+
+
+
+
+#function to send email to user with verification code
+def EmailVerificationCode(recipient, code):
+	subject = 'verificationCode'
+	message = 'Here is your verification code: ' + code
+
+	MAILGUN_API_KEY = settings.MAILGUN_API_KEY
+	MAILGUN_DOMAIN = settings.MAILGUN_DOMAIN
+	MAILGUN_API_URL = settings.MAILGUN_API_URL
+
+	response = requests.post(
+	MAILGUN_API_URL,auth=('api', MAILGUN_API_KEY),data={
+	'from': f'postmaster@{MAILGUN_DOMAIN}',
+	'to': recipient,
+	'subject': subject,
+	'text': message
+	}
+	)
+	if response.status_code == 200:
+		print("Email sent successfully.")
+	else:
+		print(f"Failed to send email: {response.status_code} - {response.text}")
+
+#function to validate verification code - WHEN USER ENTERS THE CODE
+def validate_verification_code(user, code):
+    try:
+        userProfile = UserProfile.objects.get(user=user, verificationCode=code)
+
+        if userProfile.is_code_expired():
+            return False, "The verification code has expired."
+
+        return True, "The verification code is valid."
+    except VerificationCode.DoesNotExist:
+        return False, "Invalid verification code."
