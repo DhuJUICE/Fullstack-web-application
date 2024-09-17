@@ -7,3 +7,4 @@ pip install pillow
 pip install djangorestframework
 pip install requests
 pip install gunicorn
+pip install django-cors-headers
