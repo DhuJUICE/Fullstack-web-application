@@ -3,15 +3,15 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - DEVELOPMENT  # Trigger on push to the 'DEVELOPMENT' branch
+      - DEVELOPMENT # Trigger on push to the 'DEVELOPMENT' branch
   pull_request:
     branches:
-      - DEVELOPMENT  # Trigger on pull requests targeting the 'DEVELOPMENT' branch
+      - DEVELOPMENT # Trigger on pull requests targeting the 'DEVELOPMENT' branch
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -19,7 +19,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
@@ -42,4 +42,4 @@ jobs:
         with:
           api_key: ${{ secrets.RENDER_API_KEY }}
           service_id: ${{ secrets.RENDER_SERVICE_ID }}
-          environment: 'production'
+          environment: "production"
