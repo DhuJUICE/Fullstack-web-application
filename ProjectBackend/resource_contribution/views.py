@@ -4,7 +4,8 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.views import View
 import os
-
+from .models import RESOURCE_METADATA
+from django.contrib.auth.models import User
 # Create your views here.
 
 #page to upload resources
@@ -21,7 +22,11 @@ def resourceUploading(request):
             # Handle the resource upload here
             # e.g., save it or process it
             # Get the file extension
+            #CHECK ALL THE EXTENSIONS THAT WE HAVE AVAILABLE WITH THE FILE EXTENSION
             file_extension = os.path.splitext(resource.name)[1].lower()
+
+            #what type of file is being stored as the resource
+            file_type = resource.content_type #get from uploaded file
 
             #get the id of the person uploading the resource
             contributor = request.POST.get('contributor')#fk to the user who uploaded the resource
@@ -40,6 +45,16 @@ def resourceUploading(request):
             print("Subject: ", subject)
             print("Grade: ", grade)
             print("Keywords: ", keywords)
+
+            user = User.objects.get(id=contributor)
+            #save the metadata to RESOURCE_METADATA database model table
+            uploadResource = RESOURCE_METADATA.objects.create(file_type=file_type,
+            contributor=user,
+            resource_name=resource_name,
+            subject=subject,
+            grade=grade,
+            keywords=keywords)
+
         else:
             # No file uploaded
             return render(request, 'fileUploadTagging.html')
@@ -47,19 +62,13 @@ def resourceUploading(request):
         # The file field does not exist
         print("No file was uploaded - please select a file to upload")
 
-    #CHECK ALL THE EXTENSIONS THAT WE HAVE AVAILABLE WITH THE FILE EXTENSION
-
-    #what type of file is being stored as the resource
-    #file_type = resource.content_type #get from uploaded file
-
-    #save the metadata to RESOURCE_METADATA database model table
-
+   
     #get the files ready to be converted to pdf
     #resourcePdfConversion() #pass the files to convert
     return redirect("resourceUpload")
 
 #function to handle pdf conversion
-def resourcePdfConversion():
+def resourcePdfConversion(request):
     #get the resource document(s) to convert, must handle a few file types
 
     #convert the document(s) to pdf
@@ -69,7 +78,7 @@ def resourcePdfConversion():
     return None
 
 #function to handle watermark/licence prepending
-def resourceLicencePrepending():
+def resourceLicencePrepending(request):
     #get the pdf versions of the resources to be uploaded to file storage
 
     #prepend the license/watermark to the pdf document(s) 
