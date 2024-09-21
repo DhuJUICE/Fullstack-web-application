@@ -1,33 +1,30 @@
-{%extends 'base.html'%}
-{%block body%}
-<title>File Uploading & Tagging</title>
-<header><center>This is the File Uploading & Tagging page</center></header>
+{%extends 'base.html'%} {%block body%}
+<title>Uploading & Tagging Resource</title>
+<header><center>This is the Uploading & Tagging Resource page</center></header>
 
-<form action="/" method="POST">
-    {% csrf_token %}
-    <center><input type="submit" value="Back" name="backButton" /></center>
+<form action="resourceUploadTagging" method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  <table border="1" align="center">
+    <tr>
+      <td>
+        <input type="file" placeholder="Upload File" name="upload_file" /><br>
+		<input type="text" placeholder="Contributor" name="contributor" /><br>
+		<input type="text" placeholder="Resource Name" name="resourceName" /><br>
+		<input type="text" placeholder="Subject" name="subject" /><br>
+		<input type="text" placeholder="Grade" name="grade" /><br>
+      </td>
+    </tr>
+	<tr>
+		<td>
+			<textarea name="keywords" placeholder="Keywords/Tags - CSV" rows="4" cols="50" style="font-size: 16px;"></textarea><br>
+		</td>
+	</tr>
+    
+	<tr>
+      <td align="center">
+        <input type="submit" name="Submit" />
+      </td>
+    </tr>
+  </table>
 </form>
-
-<form action="login" method="POST">
-    {% csrf_token %}
-    <table border="1" align="center">
-        <tr>
-            <td>
-                <input type="text" placeholder="Username or Email" name="username_or_email" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <input type="password" placeholder="Password" name="password" />
-            </td>
-        </tr>
-        <tr>
-
-            <td align="center">
-                <input type="submit" name="loginButton" />
-            </td>
-        </tr>
-    </table>
-</form>
- 
 {%endblock%}
