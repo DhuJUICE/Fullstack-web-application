@@ -3,6 +3,7 @@ import boto3
 from django.conf import settings
 from django.http import JsonResponse
 from django.views import View
+import os
 
 # Create your views here.
 #function to handle uploading and tagging(keywords) of resource
@@ -38,23 +39,14 @@ def uploadPage(request):
 
 #function to handle file system storage
 def resourceFileStorage(request):
-	#get the pdf resource with prepended watermark/license
-	print("Working")
-	#upload/save the document/resources to the file storage system
-	return render(request, 'fileStorage.html')
-
-import os
-class UploadFileToS3View(View):
-    def post(self, request):
+    if request.method == 'POST' and request.FILES.get('upload_file'):
         # Get the uploaded file from the request
-        file_obj = request.FILES.get('upload_file')
-
-        if not file_obj:
-            return JsonResponse({'error': 'No file uploaded'}, status=400)
+        file_obj = request.FILES['upload_file']
 
         # Initialize the S3 client using boto3
         s3 = boto3.client(
             's3',
+            region_name='af-south-1',  # Replace with your bucket's region
             aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
             aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY
         )
@@ -62,11 +54,10 @@ class UploadFileToS3View(View):
         # Upload the file to S3
         try:
             s3.upload_fileobj(
-                file_obj,                           # The file object to upload
-                settings.AWS_STORAGE_BUCKET_NAME,    # Your S3 bucket name
-                file_obj.name,                      # S3 object name (same as the file name)
+                file_obj,
+                settings.AWS_STORAGE_BUCKET_NAME,
+                file_obj.name,
                 ExtraArgs={
-                    'ACL': 'public-read',           # Make file publicly readable (optional)
                     'ContentType': file_obj.content_type  # Set appropriate content type
                 }
             )
@@ -76,3 +67,5 @@ class UploadFileToS3View(View):
 
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
+
+    return JsonResponse({'error': 'No file uploaded'}, status=400)

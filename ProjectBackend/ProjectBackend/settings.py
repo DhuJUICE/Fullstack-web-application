@@ -14,8 +14,8 @@ from pathlib import Path
 #import operating system to work with the filepaths
 import os
 
-#import for enviroment variables
-import environ
+#to use enviroment variables
+from decouple import config, Csv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -66,13 +66,9 @@ MAILGUN_API_KEY = 'bc0516004c9dd352e2c643356382496f-2b755df8-d87adfec'
 MAILGUN_DOMAIN = 'sandbox79e1217384fd4653b2336741edf0bfb3.mailgun.org'
 MAILGUN_API_URL = f'https://api.mailgun.net/v3/{MAILGUN_DOMAIN}/messages'
 
-#initialize enviroment variable
-env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-
 # AWS S3 Configuration
 AWS_ACCESS_KEY_ID = 'AKIAS66UCUDQ2AC2KBGM'
-AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = 'cpmg323-project-file-storage-django'
 AWS_S3_REGION_NAME = 'af-south-1'  # e.g., 'us-west-2'
 AWS_S3_SIGNATURE_VERSION = 's3v4'

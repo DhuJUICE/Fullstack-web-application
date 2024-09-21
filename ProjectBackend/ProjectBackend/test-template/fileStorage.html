@@ -2,7 +2,7 @@
 <title>File Storage</title>
 <header><center>This is the Upload File page</center></header>
 
-<form action="fileStorage" method="POST">
+<form action="fileStorage" method="POST" enctype="multipart/form-data">
   {% csrf_token %}
   <table border="1" align="center">
     <tr>
