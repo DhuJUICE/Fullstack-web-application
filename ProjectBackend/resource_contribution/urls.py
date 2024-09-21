@@ -4,4 +4,9 @@ from . import views
 
 urlpatterns = [
     path('resourceContribution', views.resourceUploading, name='resourceContribution'),
+    path('uploadPage', views.uploadPage, name='uploadPage'),
+    path('fileStorage', views.resourceFileStorage, name='fileStorage'),
+
+	path('resourceUpload', views.resourceUploadPage, name='resourceUpload'),
+	path('resourceUploadTagging', views.resourceUploading, name='resourceUploadTagging'),
 ]
