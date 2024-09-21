@@ -7,7 +7,7 @@ def reportPage(request):
 	return render(request, 'resourceReport.html')
 
 # Create your views here.
-#resport certain resource
+#report certain resource
 def resourceReport(request):
 	#get the currently logged in user - must add resourceUser to the report model
 	#user = request.user
