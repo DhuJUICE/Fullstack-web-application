@@ -21,13 +21,12 @@ from decouple import config, Csv
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-iz1g2p!w4*7!7qin7=c0psa(8d_rmn4zg1r=43gf*bd*v_8+4@'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ['share2teach.onrender.com', '127.0.0.1']
-
 
 # Application definition
 INSTALLED_APPS = [
@@ -56,30 +55,28 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    #django corsheaders for communicating over different ports
+    #django corsheaders for communicating over different ports between frontend and backend
     'corsheaders',
-    
 ]
 
 #MAILGUN API DETAILS
-MAILGUN_API_KEY = 'bc0516004c9dd352e2c643356382496f-2b755df8-d87adfec'
-MAILGUN_DOMAIN = 'sandbox79e1217384fd4653b2336741edf0bfb3.mailgun.org'
+MAILGUN_API_KEY = config('MAILGUN_API_KEY')
+MAILGUN_DOMAIN = config('MAILGUN_DOMAIN')
 MAILGUN_API_URL = f'https://api.mailgun.net/v3/{MAILGUN_DOMAIN}/messages'
 
 # AWS S3 Configuration
-AWS_ACCESS_KEY_ID = 'AKIAS66UCUDQ2AC2KBGM'
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = 'cpmg323-project-file-storage-django'
-AWS_S3_REGION_NAME = 'af-south-1'  # e.g., 'us-west-2'
-AWS_S3_SIGNATURE_VERSION = 's3v4'
-AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL = None  # S3 default access 
+AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME')
+AWS_S3_SIGNATURE_VERSION = config('AWS_S3_SIGNATURE_VERSION')
+AWS_S3_FILE_OVERWRITE = config('AWS_S3_FILE_OVERWRITE')
+AWS_DEFAULT_ACL = config('AWS_DEFAULT_ACL')  # S3 default access 
 
 #This is the file path for where our files gets stored
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # Static and Media files settings
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
