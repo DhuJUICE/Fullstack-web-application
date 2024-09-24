@@ -6,7 +6,10 @@ from django.views import View
 import os
 from .models import RESOURCE_METADATA
 from django.contrib.auth.models import User
-# Create your views here.
+from fpdf import FPDF
+from PIL import Image
+import win32com.client
+from io import BytesIO
 
 #page to upload resources
 def resourceUploadPage(request):
@@ -69,11 +72,117 @@ def resourceUploading(request):
 
 #function to handle pdf conversion
 def resourcePdfConversion(request):
-    #get the resource document(s) to convert, must handle a few file types
+	resource = request.FILES['upload_file']
+	
+	def txt_to_pdf(resource):
+		pdf_file = f"{resource.name}.pdf"
+		pdf = FPDF()
+		pdf.set_auto_page_break(auto=True, margin=15)
+		pdf.add_page()
+		pdf.set_font("Arial", size=12)
 
-    #convert the document(s) to pdf
+		try:
+			for line in resource:
+				pdf.multi_cell(0, 10, line.decode('utf-8').strip())
+		except Exception as e:
+			print(f"Error reading the file: {e}")
+			return
 
-    #get the files ready to be prepended with watermark/licence
+		pdf.output(pdf_file)
+		print(f"Successfully created {pdf_file}")
+
+	def image_to_pdf(resource):
+		pdf_filename = f"{resource.name}.pdf"
+		try:
+			image = Image.open(resource)
+			if image.mode in ("RGBA", "LA"):
+				image = image.convert("RGB")
+			image.save(pdf_filename, "PDF", resolution=100.0)
+			print(f"Successfully converted image to '{pdf_filename}'.")
+		except Exception as e:
+			print(f"An error occurred: {e}")
+
+	def docx_to_pdf(resource):
+		pdf_filename = f"{resource.name}.pdf"
+		word = win32com.client.Dispatch("Word.Application")
+
+		try:
+			doc = word.Documents.Open(resource.name)
+			doc.SaveAs(pdf_filename, FileFormat=17)
+			print(f"Successfully converted to '{pdf_filename}'.")
+			doc.Close(False)
+			word.Quit()
+		except Exception as e:
+			print(f"An error occurred: {e}")
+
+	def pptx_to_pdf(resource):
+		pdf_filename = f"{resource.name}.pdf"
+		powerpoint = win32com.client.Dispatch("PowerPoint.Application")
+
+		try:
+			presentation = powerpoint.Presentations.Open(resource.name, WithWindow=False)
+			presentation.SaveAs(pdf_filename, FileFormat=32)
+			print(f"Successfully converted to '{pdf_filename}'.")
+		except Exception as e:
+			print(f"An error occurred: {e}")
+		finally:
+			presentation.Close()
+			powerpoint.Quit()
+
+	def xlsx_to_pdf(resource):
+		pdf_filename = f"{resource.name}.pdf"
+		excel = win32com.client.Dispatch("Excel.Application")
+
+		try:
+			workbook = excel.Workbooks.Open(resource.name)
+			workbook.ExportAsFixedFormat(0, pdf_filename)
+			print(f"Successfully converted to '{pdf_filename}'.")
+		except Exception as e:
+			print(f"An error occurred: {e}")
+		finally:
+			workbook.Close(False)
+			excel.Quit()
+
+	# Define extensions
+	word_extensions = ["doc", "docx"]
+	excel_extensions = ["xlsx", "xls"]
+	image_extensions = ["png", "jpg", "bmp", "jpeg", "gif", "tiff", "tif", "webp"]
+	powerpoint_extensions = ["ppt", "pptx"]
+	text_extensions = ["txt"]
+	pdf_extensions = ["pdf"]
+
+	if resource:
+		extension = os.path.splitext(resource.name)[1][1:]
+
+		if extension in word_extensions:
+			print("Converting Word file to PDF")
+			docx_to_pdf(resource)
+			
+		elif extension in excel_extensions:
+			print("Converting Excel file to PDF")
+			xlsx_to_pdf(resource)
+			
+		elif extension in image_extensions:
+			print("Converting image file to PDF")
+			image_to_pdf(resource)
+			
+		elif extension in powerpoint_extensions:
+			print("Converting PowerPoint file to PDF")
+			pptx_to_pdf(resource)
+			
+		elif extension in text_extensions:
+			print("Converting text file to PDF")
+			txt_to_pdf(resource)
+			
+		elif extension in pdf_extensions:
+			print("File is already a PDF, ready to proceed to watermarking")
+			
+		else:
+			print("Invalid file type; we only support Word, Excel, PowerPoint, Text, Image, and PDF files.")
+	else:
+		print("Invalid file uploaded")
+
+	#file_resource.close()  # Ensure the file is closed after processing			
     resourceLicencePrepending() #pass the files to prepend licence to
     return None
 
