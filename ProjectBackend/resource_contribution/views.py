@@ -73,7 +73,7 @@ def resourceUploading(request):
 #function to handle pdf conversion
 def resourcePdfConversion(request):
 	resource = request.FILES['upload_file']
-	
+
 	def txt_to_pdf(resource):
 		pdf_file = f"{resource.name}.pdf"
 		pdf = FPDF()
@@ -88,7 +88,8 @@ def resourcePdfConversion(request):
 			print(f"Error reading the file: {e}")
 			return
 
-		pdf.output(pdf_file)
+		pdfOutput = pdf.output(pdf_file)
+		print(pdfOutput.name)
 		print(f"Successfully created {pdf_file}")
 
 	def image_to_pdf(resource):
