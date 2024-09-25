@@ -9,7 +9,7 @@ from fpdf import FPDF
 from PIL import Image
 from io import BytesIO
 import tempfile
-import pythoncom
+#import pythoncom
 from docx import Document
 from xlsx2html import xlsx2html
 import pdfkit
@@ -69,7 +69,6 @@ def pdfConversionPage(request):
 
 # Function to handle pdf conversion
 def resourcePdfConversion(request):
-    pythoncom.CoInitialize()
     resource = request.FILES['pdfFile']
 
     def txt_to_pdf(resource):
@@ -277,7 +276,6 @@ def resourcePdfConversion(request):
     else:
         print("Invalid file uploaded")
 
-    pythoncom.CoUninitialize()
     return redirect("pdfPage")
 
 # Function to handle watermark/license prepending
