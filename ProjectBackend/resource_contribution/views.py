@@ -9,7 +9,6 @@ from fpdf import FPDF
 from PIL import Image
 from io import BytesIO
 import tempfile
-#import pythoncom
 from docx import Document
 from xlsx2html import xlsx2html
 import pdfkit

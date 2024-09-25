@@ -19,7 +19,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11" 
+          python-version: "3.12" 
 
       - name: Install dependencies
         run: |
@@ -55,3 +55,4 @@ jobs:
           api_key: ${{ secrets.RENDER_API_KEY }}
           service_id: ${{ secrets.RENDER_SERVICE_ID }}
           environment: "production"
+          docker_image: juicebout01/web-container:latest # Specify the Docker image to deploy

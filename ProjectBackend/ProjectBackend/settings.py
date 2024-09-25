@@ -26,7 +26,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['share2teach.onrender.com', '127.0.0.1']
+ALLOWED_HOSTS = ['share2teach.onrender.com', 'contained-share2teach.onrender.com', '127.0.0.1']
 
 # Application definition
 INSTALLED_APPS = [
