@@ -19,7 +19,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11" 
+          python-version: "3.12" 
 
       - name: Install dependencies
         run: |
@@ -29,6 +29,18 @@ jobs:
       - name: Run tests
         run: |
           python manage.py test
+
+      - name: Build Docker image
+        run: |
+          docker build -t juicebout01/web-container:latest .
+
+      - name: Log in to Docker Hub
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Push Docker image
+        run: |
+          docker push juicebout01/web-container:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -43,3 +55,4 @@ jobs:
           api_key: ${{ secrets.RENDER_API_KEY }}
           service_id: ${{ secrets.RENDER_SERVICE_ID }}
           environment: "production"
+          docker_image: juicebout01/web-container:latest # Specify the Docker image to deploy
