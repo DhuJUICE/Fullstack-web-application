@@ -19,7 +19,7 @@ psycopg2==2.9.9
 PyJWT==2.9.0
 python-dateutil==2.9.0.post0
 python-decouple==3.8
-pywin32==306
+pywin32==227
 requests==2.32.3
 s3transfer==0.10.2
 six==1.16.0
