@@ -9,3 +9,10 @@ pip install requests
 pip install gunicorn
 pip install django-cors-headers
 pip install python-decouple
+pip install pywin32
+pip install fpdf
+
+pip install python-docx
+pip install xlsx2html
+pip install pdfkit
+pip install pypandoc
