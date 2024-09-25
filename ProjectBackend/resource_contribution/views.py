@@ -14,8 +14,8 @@ from docx import Document
 from xlsx2html import xlsx2html
 import pdfkit
 import subprocess
+import pypandoc
 
-print("Done checking modules")
 # Define extensions
 word_extensions = ["doc", "docx"]
 excel_extensions = ["xlsx", "xls"]
@@ -111,15 +111,32 @@ def resourcePdfConversion(request):
             print(f"An error occurred: {e}")
             return None
 
+    def update_miktex():
+        script_path = r"scripts\schedule_update.ps1"  # Ensure this path is correct
+        command = [
+            "powershell",
+            "-ExecutionPolicy", "Bypass",
+            "-File", script_path
+        ]
+        
+        try:
+            subprocess.run(command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print("MiKTeX update scheduled successfully.")
+        except Exception as e:
+            print(f"Error scheduling MiKTeX update: {e}")
+
+    # Call the function to update MiKTeX
+    update_miktex()
+
     def docx_to_pdf(resource):
         pdf_temp_path = tempfile.mktemp(suffix='.pdf')
-        try:
+        try:            
             with tempfile.NamedTemporaryFile(delete=False, suffix='.docx') as temp_doc:
                 for chunk in resource.chunks():
                     temp_doc.write(chunk)
                 temp_doc_path = temp_doc.name
 
-            pypandoc.convert_file(temp_doc_path, 'pdf', outputfile=pdf_temp_path)
+            pypandoc.convert_file(temp_doc_path, 'pdf', outputfile=pdf_temp_path, extra_args=['--pdf-engine=xelatex'])
             return pdf_temp_path
         except Exception as e:
             print(f"Error during conversion: {e}")
@@ -235,6 +252,7 @@ def resourcePdfConversion(request):
         if extension in word_extensions:
             print("Converting Word file to PDF")
             pdf_output = docx_to_pdf(resource)
+            print("Temp pdf path: ", pdf_output)
         elif extension in excel_extensions:
             print("Converting Excel file to PDF")
             pdf_output = xlsx_to_pdf(resource)
@@ -242,9 +260,11 @@ def resourcePdfConversion(request):
         elif extension in image_extensions:
             print("Converting image file to PDF")
             pdf_output = image_to_pdf(resource)
+            print("Temp pdf path: ", pdf_output)
         elif extension in text_extensions:
             print("Converting text file to PDF")
             pdf_output = txt_to_pdf(resource)
+            print("Temp pdf path: ", pdf_output)
         elif extension in powerpoint_extensions:
             print("Converting powerpoint file to PDF")
             pdf_output = pptx_to_pdf(resource) 
