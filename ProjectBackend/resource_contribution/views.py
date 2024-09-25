@@ -13,6 +13,7 @@ import pythoncom
 from docx import Document
 from xlsx2html import xlsx2html
 import pdfkit
+import subprocess
 
 print("Done checking modules")
 # Define extensions
@@ -20,6 +21,7 @@ word_extensions = ["doc", "docx"]
 excel_extensions = ["xlsx", "xls"]
 image_extensions = ["png", "jpg", "bmp", "jpeg", "gif", "tiff", "tif", "webp"]
 text_extensions = ["txt"]
+powerpoint_extensions = ["pptx", "ppt"]
 pdf_extensions = ["pdf"]
 
 # Page to upload resources
@@ -168,6 +170,54 @@ def resourcePdfConversion(request):
                 if path and os.path.exists(path):
                     os.remove(path)
 
+    def pptx_to_pdf(resource):
+        temp_pptx_path = None
+        temp_pdf_path = None
+
+        try:
+            # Create a temporary PPTX file
+            temp_pptx_fd, temp_pptx_path = tempfile.mkstemp(suffix='.pptx')
+            os.close(temp_pptx_fd)
+
+            # Write the uploaded PPTX content to the temporary file
+            with open(temp_pptx_path, 'wb') as temp_pptx:
+                for chunk in resource.chunks():
+                    temp_pptx.write(chunk)
+
+            # Set the output PDF path based on the PPTX path
+            temp_pdf_path = os.path.splitext(temp_pptx_path)[0] + '.pdf'
+
+            # Construct the command to convert PPTX to PDF
+            command = [
+                r"C:\Program Files\LibreOffice\program\soffice.exe",
+                '--headless',
+                '--convert-to', 'pdf',
+                '--outdir', os.path.dirname(temp_pdf_path),
+                temp_pptx_path
+            ]
+
+            # Execute the command and capture output and errors
+            result = subprocess.run(command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+            # Print the output and errors for debugging
+            print(result.stdout.decode())
+            print(result.stderr.decode())
+
+            # Check if the PDF was created successfully
+            if os.path.exists(temp_pdf_path):
+                return temp_pdf_path
+            else:
+                print("PDF conversion failed, no output file created.")
+                return None
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None
+        finally:
+            # Clean up temporary PPTX file
+            if temp_pptx_path and os.path.exists(temp_pptx_path):
+                os.remove(temp_pptx_path)
+                
     def pdf_to_pdfPath(resource):
         try:
             with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_pdf:
@@ -195,6 +245,10 @@ def resourcePdfConversion(request):
         elif extension in text_extensions:
             print("Converting text file to PDF")
             pdf_output = txt_to_pdf(resource)
+        elif extension in powerpoint_extensions:
+            print("Converting powerpoint file to PDF")
+            pdf_output = pptx_to_pdf(resource) 
+            print("Temp pdf path: ", pdf_output)
         elif extension in pdf_extensions:
             print("File is already a PDF, saving to temporary path for processing")
             temp_pdf_path = pdf_to_pdfPath(resource)
