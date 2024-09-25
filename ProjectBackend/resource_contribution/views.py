@@ -12,6 +12,20 @@ import win32com.client
 from io import BytesIO
 import tempfile
 import pythoncom
+from docx import Document
+from openpyxl import load_workbook
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet
+import pypandoc
+from xlsx2pdf import convert
+
+
+import pandas as pd
+from xlsx2html import xlsx2html
+import pdfkit
 
 # Define extensions
 word_extensions = ["doc", "docx"]
@@ -144,158 +158,80 @@ def resourcePdfConversion(request):
             return None
 
     def docx_to_pdf(resource):
-        pdf_output = BytesIO()
-        word = win32com.client.Dispatch("Word.Application")
-        temp_doc_path = None
-        temp_pdf_path = None
-
+        # Create a temporary PDF file
+        pdf_temp_path = tempfile.mktemp(suffix='.pdf')
+        
         try:
-            # Create a temporary file to save the uploaded document
+            # Save the uploaded DOCX file to a temporary file
             with tempfile.NamedTemporaryFile(delete=False, suffix='.docx') as temp_doc:
                 for chunk in resource.chunks():
                     temp_doc.write(chunk)
                 temp_doc_path = temp_doc.name
 
-            # Create a temporary PDF file
-            temp_pdf_path = tempfile.mktemp(suffix='.pdf')
-            try:
-                doc = word.Documents.Open(temp_doc_path)
-                doc.SaveAs(temp_pdf_path, FileFormat=17)
-                print(f"Successfully converted to '{temp_pdf_path}'.")
-                doc.Close(False)
-
-                # Read the PDF back into BytesIO
-                with open(temp_pdf_path, "rb") as f:
-                    pdf_output.write(f.read())
-
-            finally:
-                # Ensure that Word is closed even if an error occurs
-                word.Quit()
-
-            pdf_output.seek(0)
-            return temp_pdf_path
-
+            # Convert DOCX to PDF using the temporary file path
+            # Add extra args to help with formatting if needed
+            pypandoc.convert_file(temp_doc_path, 'pdf', outputfile=pdf_temp_path, extra_args=['--pdf-engine=pdflatex'])
+            
+            # Return the path to the generated PDF
+            return pdf_temp_path
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"Error during conversion: {e}")
             return None
-
         finally:
-            # Clean up the temporary docx file
-            if temp_doc_path:
-                try:
-                    os.remove(temp_doc_path)
-                    print(f"Temporary docx file deleted: {temp_doc_path}")
-                except OSError as e:
-                    print(f"Error deleting temporary docx file: {e}")
+            # Clean up the temporary DOCX file
+            if 'temp_doc_path' in locals():
+                os.remove(temp_doc_path)
 
-    def pptx_to_pdf(resource):
-        pdf_output = BytesIO()
-        powerpoint = win32com.client.Dispatch("PowerPoint.Application")
-        temp_pptx_path = None
-        temp_pdf_path = None
-
-        try:
-            # Create a temporary PowerPoint file
-            with tempfile.NamedTemporaryFile(suffix='.pptx', delete=False) as temp_pptx:
-                temp_pptx_path = temp_pptx.name
-                for chunk in resource.chunks():
-                    temp_pptx.write(chunk)
-
-            # Create a temporary PDF file
-            temp_pdf_path = tempfile.mktemp(suffix='.pdf')
-
-            try:
-                presentation = powerpoint.Presentations.Open(temp_pptx_path, WithWindow=False)
-                presentation.SaveAs(temp_pdf_path, FileFormat=32)
-                print(f"Successfully converted to '{temp_pdf_path}'.")
-
-                # Read the PDF back into BytesIO
-                with open(temp_pdf_path, "rb") as f:
-                    pdf_output.write(f.read())
-
-            finally:
-                presentation.Close()
-                powerpoint.Quit()
-
-            pdf_output.seek(0)
-            return temp_pdf_path
-
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            return None
-
-        finally:
-            # Clean up the temporary PowerPoint file
-            if temp_pptx_path:
-                try:
-                    os.remove(temp_pptx_path)
-                    print(f"Temporary PowerPoint file deleted: {temp_pptx_path}")
-                except OSError as e:
-                    print(f"Error deleting temporary PowerPoint file: {e}")
 
     def xlsx_to_pdf(resource):
         pdf_output = BytesIO()
-        excel = None
-        workbook = None
         temp_xlsx_path = None
+        temp_html_path = None
         temp_pdf_path = None
 
         try:
-            excel = win32com.client.Dispatch("Excel.Application")
-            
             # Create a temporary XLSX file
             temp_xlsx_fd, temp_xlsx_path = tempfile.mkstemp(suffix='.xlsx')
-            os.close(temp_xlsx_fd)  # Close the file descriptor
+            os.close(temp_xlsx_fd)
 
             # Write the uploaded Excel content to the temporary XLSX file
             with open(temp_xlsx_path, 'wb') as temp_xlsx:
                 for chunk in resource.chunks():
                     temp_xlsx.write(chunk)
 
-            print(f"Temporary XLSX created at: {temp_xlsx_path}")
+            # Create a temporary HTML file
+            temp_html_fd, temp_html_path = tempfile.mkstemp(suffix='.html')
+            os.close(temp_html_fd)
 
-            # Open the workbook
-            workbook = excel.Workbooks.Open(os.path.abspath(temp_xlsx_path))
+            # Convert XLSX to HTML
+            xlsx2html(temp_xlsx_path, temp_html_path)
 
             # Create a temporary PDF file
             temp_pdf_fd, temp_pdf_path = tempfile.mkstemp(suffix='.pdf')
-            os.close(temp_pdf_fd)  # Close the file descriptor
+            os.close(temp_pdf_fd)
 
-            # Export as PDF
-            workbook.ExportAsFixedFormat(0, os.path.abspath(temp_pdf_path))
-            print(f"Successfully converted to PDF at: {temp_pdf_path}")
+            # Convert HTML to PDF
+            pdfkit.from_file(temp_html_path, temp_pdf_path)
 
             # Read the PDF back into BytesIO
             with open(temp_pdf_path, "rb") as f:
                 pdf_output.write(f.read())
 
             pdf_output.seek(0)
-            return temp_pdf_path
+            return pdf_output  # Return the BytesIO object
 
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {e}")  # More explicit logging
             return None
 
         finally:
-            if workbook:
-                try:
-                    workbook.Close(False)
-                except Exception as e:
-                    print(f"Error closing workbook: {e}")
-
-            if excel:
-                try:
-                    excel.Quit()
-                except Exception as e:
-                    print(f"Error quitting Excel: {e}")
-
-            # Clean up the temporary Excel file
-            if temp_xlsx_path and os.path.exists(temp_xlsx_path):
-                try:
-                    os.remove(temp_xlsx_path)
-                    print(f"Temporary XLSX file deleted: {temp_xlsx_path}")
-                except OSError as e:
-                    print(f"Error deleting temporary XLSX file: {e}")
+            # Clean up temporary files
+            for path in [temp_xlsx_path, temp_html_path, temp_pdf_path]:
+                if path and os.path.exists(path):
+                    try:
+                        os.remove(path)
+                    except OSError as e:
+                        print(f"Error deleting temporary file: {e}")
                 
     def pdf_to_pdfPath(resource):
         try:
@@ -317,7 +253,8 @@ def resourcePdfConversion(request):
         if extension in word_extensions:
             print("Converting Word file to PDF")
             pdf_output = docx_to_pdf(resource)
-            
+            print("This is the path you will use further: ", pdf_output)
+
         elif extension in excel_extensions:
             print("Converting Excel file to PDF")
             pdf_output = xlsx_to_pdf(resource)
