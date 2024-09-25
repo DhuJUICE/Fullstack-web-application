@@ -10,5 +10,6 @@ urlpatterns = [
 	path('resourceUpload', views.resourceUploadPage, name='resourceUpload'),
 	path('resourceUploadTagging', views.resourceUploading, name='resourceUploadTagging'),
 
-	path('pdfConversion', views.uploadPage, name='pdfConversion'),
+	path('pdfPage', views.pdfConversionPage, name='pdfPage'),
+	path('pdfConversion', views.resourcePdfConversion, name='pdfConversion'),
 ]
