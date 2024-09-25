@@ -12,6 +12,15 @@ import win32com.client
 from io import BytesIO
 import tempfile
 import pythoncom
+
+# Define extensions
+word_extensions = ["doc", "docx"]
+excel_extensions = ["xlsx", "xls"]
+image_extensions = ["png", "jpg", "bmp", "jpeg", "gif", "tiff", "tif", "webp"]
+powerpoint_extensions = ["ppt", "pptx"]
+text_extensions = ["txt"]
+pdf_extensions = ["pdf"]
+
 #page to upload resources
 def resourceUploadPage(request):
     return render(request, 'fileUploadTagging.html')
@@ -75,8 +84,6 @@ def pdfConversionPage(request):
     return render(request, 'pdfConversion.html')
 
 #function to handle pdf conversion
-
-
 def resourcePdfConversion(request):
     # Initialize COM
     pythoncom.CoInitialize()
@@ -97,17 +104,19 @@ def resourcePdfConversion(request):
             print(f"Error reading the file: {e}")
             return None
 
+        temp_pdf_path = None
         # Create a temporary PDF file
         with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as temp_pdf:
             pdf.output(temp_pdf.name)
             pdf_output.seek(0)
+            temp_pdf_path = temp_pdf.name
             print(f"Successfully converted to '{temp_pdf.name}'.")
             # Read the PDF back into BytesIO
             with open(temp_pdf.name, "rb") as f:
                 pdf_output.write(f.read())
 
         pdf_output.seek(0)
-        return pdf_output
+        return temp_pdf_path
 
     def image_to_pdf(resource):
         pdf_output = BytesIO()
@@ -128,7 +137,8 @@ def resourcePdfConversion(request):
                 pdf_output.write(f.read())
 
             pdf_output.seek(0)
-            return pdf_output
+            return temp_pdf_path
+            
         except Exception as e:
             print(f"An error occurred: {e}")
             return None
@@ -163,7 +173,7 @@ def resourcePdfConversion(request):
                 word.Quit()
 
             pdf_output.seek(0)
-            return pdf_output
+            return temp_pdf_path
 
         except Exception as e:
             print(f"An error occurred: {e}")
@@ -177,7 +187,6 @@ def resourcePdfConversion(request):
                     print(f"Temporary docx file deleted: {temp_doc_path}")
                 except OSError as e:
                     print(f"Error deleting temporary docx file: {e}")
-
 
     def pptx_to_pdf(resource):
         pdf_output = BytesIO()
@@ -209,7 +218,7 @@ def resourcePdfConversion(request):
                 powerpoint.Quit()
 
             pdf_output.seek(0)
-            return pdf_output
+            return temp_pdf_path
 
         except Exception as e:
             print(f"An error occurred: {e}")
@@ -224,14 +233,13 @@ def resourcePdfConversion(request):
                 except OSError as e:
                     print(f"Error deleting temporary PowerPoint file: {e}")
 
-
     def xlsx_to_pdf(resource):
         pdf_output = BytesIO()
         excel = None
         workbook = None
         temp_xlsx_path = None
         temp_pdf_path = None
-        
+
         try:
             excel = win32com.client.Dispatch("Excel.Application")
             
@@ -262,7 +270,7 @@ def resourcePdfConversion(request):
                 pdf_output.write(f.read())
 
             pdf_output.seek(0)
-            return pdf_output
+            return temp_pdf_path
 
         except Exception as e:
             print(f"An error occurred: {e}")
@@ -280,6 +288,14 @@ def resourcePdfConversion(request):
                     excel.Quit()
                 except Exception as e:
                     print(f"Error quitting Excel: {e}")
+
+            # Clean up the temporary Excel file
+            if temp_xlsx_path and os.path.exists(temp_xlsx_path):
+                try:
+                    os.remove(temp_xlsx_path)
+                    print(f"Temporary XLSX file deleted: {temp_xlsx_path}")
+                except OSError as e:
+                    print(f"Error deleting temporary XLSX file: {e}")
                 
     def pdf_to_pdfPath(resource):
         try:
@@ -295,14 +311,6 @@ def resourcePdfConversion(request):
             print(f"An error occurred while saving the PDF: {e}")
             return None
 
-    # Define extensions
-    word_extensions = ["doc", "docx"]
-    excel_extensions = ["xlsx", "xls"]
-    image_extensions = ["png", "jpg", "bmp", "jpeg", "gif", "tiff", "tif", "webp"]
-    powerpoint_extensions = ["ppt", "pptx"]
-    text_extensions = ["txt"]
-    pdf_extensions = ["pdf"]
-
     if resource:
         extension = os.path.splitext(resource.name)[1][1:]
 
@@ -313,18 +321,22 @@ def resourcePdfConversion(request):
         elif extension in excel_extensions:
             print("Converting Excel file to PDF")
             pdf_output = xlsx_to_pdf(resource)
-            
+            print("This is the path you will use further: ", pdf_output)
+
         elif extension in image_extensions:
             print("Converting image file to PDF")
             pdf_output = image_to_pdf(resource)
-            
+            print("This is the path you will use further: ", pdf_output)
+
         elif extension in powerpoint_extensions:
             print("Converting PowerPoint file to PDF")
             pdf_output = pptx_to_pdf(resource)
-            
+            print("This is the path you will use further: ", pdf_output)
+
         elif extension in text_extensions:
             print("Converting text file to PDF")
             pdf_output = txt_to_pdf(resource)
+            print("This is the path you will use further: ", pdf_output)
             
         elif extension in pdf_extensions:
             print("File is already a PDF, saving to temporary path for processing")
@@ -335,6 +347,8 @@ def resourcePdfConversion(request):
                 print(f"Successfully saved PDF to '{temp_pdf_path}'.")
             else:
                 print("Failed to save PDF to temporary path.")
+            
+            print("This is the path you will use further: ", temp_pdf_path)
 
         else:
             print("Invalid file type; we only support Word, Excel, PowerPoint, Text, Image, and PDF files.")
@@ -343,7 +357,8 @@ def resourcePdfConversion(request):
 
     # Uninitialize COM
     pythoncom.CoUninitialize()
-    return render(request, 'pdfConversion.html')	
+    return redirect("pdfPage")	
+
 #function to handle watermark/licence prepending
 def resourceLicencePrepending(request):
     #get the pdf versions of the resources to be uploaded to file storage
