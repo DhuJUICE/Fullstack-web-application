@@ -69,7 +69,6 @@ def pdfConversionPage(request):
 
 # Function to handle pdf conversion
 def resourcePdfConversion(request):
-    #pythoncom.CoInitialize()
     resource = request.FILES['pdfFile']
 
     def txt_to_pdf(resource):
@@ -277,7 +276,6 @@ def resourcePdfConversion(request):
     else:
         print("Invalid file uploaded")
 
-    #pythoncom.CoUninitialize()
     return redirect("pdfPage")
 
 # Function to handle watermark/license prepending
