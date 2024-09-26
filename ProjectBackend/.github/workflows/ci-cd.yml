@@ -32,7 +32,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t juicebout01/web-container:latest .
+          docker build -t docker-image:latest .
 
       - name: Log in to Docker Hub
         run: |
@@ -40,7 +40,7 @@ jobs:
 
       - name: Push Docker image
         run: |
-          docker push juicebout01/web-container:latest
+          docker push docker-image:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -55,4 +55,4 @@ jobs:
           api_key: ${{ secrets.RENDER_API_KEY }}
           service_id: ${{ secrets.RENDER_SERVICE_ID }}
           environment: "production"
-          docker_image: juicebout01/web-container:latest # Specify the Docker image to deploy
+          docker_image: docker-image:latest # Specify the Docker image to deploy
