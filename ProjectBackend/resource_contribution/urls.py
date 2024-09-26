@@ -12,4 +12,7 @@ urlpatterns = [
 
 	path('pdfPage', views.pdfConversionPage, name='pdfPage'),
 	path('pdfConversion', views.resourcePdfConversion, name='pdfConversion'),
+
+	path('watermarkPage', views.watermarkPage, name='watermarkPage'),
+	path('watermarkAdd', views.resourceLicencePrepending, name='watermarkAdd'),
 ]

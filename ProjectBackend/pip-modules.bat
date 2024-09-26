@@ -16,3 +16,6 @@ pip install python-docx
 pip install xlsx2html
 pip install pdfkit
 pip install pypandoc
+
+pip install reportlab
+pip install PyPDF2
