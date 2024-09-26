@@ -33,35 +33,57 @@ def resourceUploadPage(request):
 
 # Function to handle uploading and tagging (keywords) of resource
 def resourceUploading(request):
-    if 'upload_file' in request.FILES:
+    if ('upload_file' in request.FILES) or ('upload_file1' in request.FILES) or ('upload_file2' in request.FILES) or ('upload_file3' in request.FILES) :
         resource = request.FILES['upload_file']
+        resource1 = request.FILES['upload_file1']
+        resource2 = request.FILES['upload_file2']
+        resource3 = request.FILES['upload_file3']
 
-        if resource:
+        print("Files: ", resource, "\n", resource1, "\n", resource2, "\n", resource3)
+        if resource or resource1 or resource2 or resource3:
             #get the values for the resource to be uploaded
             file_extension = os.path.splitext(resource.name)[1].lower()
             file_type = resource.content_type
+
             contributor = request.POST.get('contributor')
-            resource_name = request.POST.get('resourceName')
-            subject = request.POST.get('subject')
-            grade = request.POST.get('grade')
-            keywords = request.POST.get('keywords')
+            if contributor != "":
+                if str(contributor).isdigit():
 
-            print("File extension: ", file_extension)
-            print("Contributor: ", contributor)
-            print("Resource Name: ", resource_name)
-            print("Subject: ", subject)
-            print("Grade: ", grade)
-            print("Keywords: ", keywords)
+                    resource_name = request.POST.get('resourceName')
+                    if resource_name != "":
 
-            user = User.objects.get(id=contributor)
-            RESOURCE_METADATA.objects.create(
-                file_type=file_type,
-                contributor=user,
-                resource_name=resource_name,
-                subject=subject,
-                grade=grade,
-                keywords=keywords
-            )
+                        subject = request.POST.get('subject')
+                        if subject != "":
+
+                            grade = request.POST.get('grade')
+                            if grade != "":
+
+                                keywords = request.POST.get('keywords')
+                                if keywords != "":
+                                    user = User.objects.get(id=contributor)
+                                    RESOURCE_METADATA.objects.create(
+                                        file_type=file_type,
+                                        contributor=user,
+                                        resource_name=resource_name,
+                                        subject=subject,
+                                        grade=grade,
+                                        keywords=keywords
+                                    )
+                                else:
+                                    print("No keywords provided, provide at least one keyword")
+                            else:
+                                print("No grade selected, please selecta grade or choose a grade option")
+                        else:
+                            print("No subject selected, please select a subject or choose an subject option")
+
+                        
+                    else:
+                        print("Please enter a Resource name")
+                else:
+                    print("The user id must be an integer")
+            else:
+                print("There is no contributor, please log in to be a contributor, or enter a contributor user id")
+            
         else:
             return render(request, 'fileUploadTagging.html')
     else:
