@@ -156,7 +156,7 @@ REST_FRAMEWORK = {
 }
 
 CSRF_TRUSTED_ORIGINS = [
-    'contained-share2teach.onrender.com',
+    'contained-share2teach.onrender.com', 'share2teach.onrender.com', "127.0.0.1",
 ]
 
 # Internationalization
