@@ -484,7 +484,7 @@ def resourceFileStorage(request):
 
         s3 = boto3.client(
             's3',
-            region_name='af-south-1',  # Replace with your bucket's region
+            region_name='af-south-1', 
             aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
             aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY
         )
