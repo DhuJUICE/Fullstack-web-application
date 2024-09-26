@@ -14,6 +14,9 @@ from xlsx2html import xlsx2html
 import pdfkit
 import subprocess
 import pypandoc
+from PyPDF2 import PdfWriter, PdfReader
+from reportlab.lib.pagesizes import landscape, A4
+from reportlab.pdfgen import canvas
 
 # Define extensions
 word_extensions = ["doc", "docx"]
@@ -277,11 +280,80 @@ def resourcePdfConversion(request):
 
     return redirect("pdfPage")
 
+#display the watermark page
+def watermarkPage(request):
+    return render(request, 'watermarkPage.html')
+
 # Function to handle watermark/license prepending
 def resourceLicencePrepending(request):
     # Code to prepend watermark/license
-    resourceFileStorage()  # save the files to the File Storage System
-    return None
+    def create_license_pdf(license_text, width, height):
+        # Create a PDF with the license text
+        packet = BytesIO()
+        can = canvas.Canvas(packet, pagesize=(width, height))
+        
+        # Set initial font and size
+        font_name = "Helvetica"
+        font_size = 100
+        
+        # Calculate available text width
+        available_width = width - 20  # Leave 10pt margins on each side
+        
+        # Calculate text width
+        text_width = can.stringWidth(license_text, font_name, font_size)
+        
+        # Shrink font size if text is too wide
+        while text_width > available_width and font_size > 6:
+            font_size -= 1
+            text_width = can.stringWidth(license_text, font_name, font_size)
+        
+        # Set font and size
+        can.setFont(font_name, font_size)
+
+        # Add the license text at coordinates (100, 800)
+        can.drawString(10, int(height)/2, license_text)
+        can.save()
+        
+        # Move to the beginning of the BytesIO buffer
+        packet.seek(0)
+        return packet
+
+    def prepend_license_to_pdf(original_pdf_path, license_text, output_pdf_path):
+        # Read the original PDF
+        original_pdf = PdfReader(original_pdf_path)
+        
+        #get the orientation of the original pdf
+        page = original_pdf.pages[0]
+        width = page.mediabox.right
+        height = page.mediabox.top
+
+        # Create a PDF with the license text
+        license_pdf = create_license_pdf(license_text, width, height)
+        
+        # Create a new PDF writer
+        output_pdf = PdfWriter()
+        
+        # Add the license page first
+        license_reader = PdfReader(license_pdf)
+        output_pdf.add_page(license_reader.pages[0])
+        
+        # Add all pages from the original PDF
+        for page_num in range(len(original_pdf.pages)):
+            output_pdf.add_page(original_pdf.pages[page_num])
+        
+        # Write the combined PDF to a file
+        with open(output_pdf_path, 'wb') as output_file:
+            output_pdf.write(output_file)
+
+    # Example usage
+    license_text = "This document is licensed under NexTech License."
+    original_pdf_path = "Rename.pdf"
+    output_pdf_path = "output_with_license.pdf"
+
+    prepend_license_to_pdf(original_pdf_path, license_text, output_pdf_path)
+
+    return render(request, 'watermarkPage.html')
+    #resourceFileStorage()  # save the files to the File Storage System
 
 def uploadPage(request):
     return render(request, 'fileStorage.html')
