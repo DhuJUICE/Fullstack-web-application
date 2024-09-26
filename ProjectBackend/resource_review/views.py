@@ -8,19 +8,26 @@ def ratingPage(request):
 #get the resources from database and rate them, then save them back in the database
 def resourceRating(request):
 	resourceId = request.POST.get("resourceId")
-	rating = request.POST.get("rating")
+	rating = str(request.POST.get("rating"))
 
-	print(resourceId)
-	print(rating)
+	if rating.isdigit() :
+		if int(rating) >= 1 and int(rating) <=5:
+			print(resourceId)
+			print(rating)
 
-	#get resources from database with intial empty rating
-	resource = RESOURCE_METADATA.objects.get(id=resourceId)
+			#get resources from database with intial empty rating
+			resource = RESOURCE_METADATA.objects.get(id=resourceId)
 
-	#rate the resource
-	resource.resource_rating = rating
+			#rate the resource
+			resource.resource_rating = rating
 
-	#save resource with updated rating
-	resource.save()
+			#save resource with updated rating
+			resource.save()
+		else:
+			print("must be integer from 1-5")
+	else:
+		print("Invalid input for rating, must be integer")
+
 
 	#return the rating page with updated rating
 	return render(request, 'rateResource.html')

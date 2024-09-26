@@ -345,9 +345,13 @@ def resourcePdfConversion(request):
             file_path = storePdf(resource)
 
             #prepend licence to the pdf
-            resourceLicencePrepending(file_path, resource)
+            watermark_path = resourceLicencePrepending(file_path, resource)
 
-            return file_path
+            #remove the original pdf without watermark
+            os.remove(file_path)
+
+            return watermark_path
+            
         except Exception as e:
             print(f"An error occurred while saving the PDF: {e}")
             return None
