@@ -17,6 +17,7 @@ import pypandoc
 from PyPDF2 import PdfWriter, PdfReader
 from reportlab.lib.pagesizes import landscape, A4
 from reportlab.pdfgen import canvas
+from django.conf import settings
 
 # Define extensions
 word_extensions = ["doc", "docx"]
@@ -73,6 +74,13 @@ def pdfConversionPage(request):
 def resourcePdfConversion(request):
     resource = request.FILES['pdfFile']
 
+    #function to store the text pdf file to the temp_files folder
+    def storeTextPdf(pdf_file_name, pdf):
+        file_name = os.path.splitext(pdf_file_name)[0] + '.pdf'
+        file_path = os.path.join(settings.BASE_DIR, 'temp_files', file_name)
+        # Write file contents
+        pdf.output(file_path)
+
     def txt_to_pdf(resource):
         pdf_output = BytesIO()
         pdf = FPDF()
@@ -87,6 +95,9 @@ def resourcePdfConversion(request):
             print(f"Error reading the file: {e}")
             return None
 
+        #save the pdf version of the uploaded text file
+        storeTextPdf(resource.name, pdf)
+
         temp_pdf_path = None
         with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as temp_pdf:
             pdf.output(temp_pdf.name)
@@ -95,12 +106,21 @@ def resourcePdfConversion(request):
 
         return temp_pdf_path
 
+    #function to store the image pdf file to the temp_files folder
+    def storeImagePdf(pdf_file_name, image):
+        file_name = os.path.splitext(pdf_file_name)[0] + '.pdf'
+        file_path = os.path.join(settings.BASE_DIR, 'temp_files', file_name)
+        # Write file contents
+        image.save(file_path, "PDF", resolution=100.0)
+
     def image_to_pdf(resource):
         pdf_output = BytesIO()
         try:
             image = Image.open(resource)
             if image.mode in ("RGBA", "LA"):
                 image = image.convert("RGB")
+
+            storeImagePdf(resource.name, image)
 
             temp_pdf_path = tempfile.mktemp(suffix='.pdf')
             image.save(temp_pdf_path, "PDF", resolution=100.0)
@@ -129,15 +149,31 @@ def resourcePdfConversion(request):
     # Call the function to update MiKTeX
     update_miktex()
 
+    #function to store the doc file to the temp_files folder & as the pdf version
+    def storeDoc(resource):
+        pdf_file_name = resource.name
+        file_path = os.path.join(settings.BASE_DIR, 'temp_files', pdf_file_name)
+        
+        #store the doc to temp_files
+        with open(file_path, 'wb') as file:
+            for chunk in resource.chunks():
+                file.write(chunk)
+        print(f"File saved to: {file_path}")
+
+        #store the pdf based on the stored doc
+        storeDocPdf(file_path, pdf_file_name)
+
+    #function to store the pdf of the docx or doc file
+    def storeDocPdf(temp_doc_path, pdf_file_name):
+        file_name = os.path.splitext(pdf_file_name)[0] + '.pdf'
+        file_path = os.path.join(settings.BASE_DIR, 'temp_files', file_name)
+        pypandoc.convert_file(temp_doc_path, 'pdf', outputfile=file_path, extra_args=['--pdf-engine=xelatex'])
+
     def docx_to_pdf(resource):
         pdf_temp_path = tempfile.mktemp(suffix='.pdf')
-        try:            
-            with tempfile.NamedTemporaryFile(delete=False, suffix='.docx') as temp_doc:
-                for chunk in resource.chunks():
-                    temp_doc.write(chunk)
-                temp_doc_path = temp_doc.name
-
-            pypandoc.convert_file(temp_doc_path, 'pdf', outputfile=pdf_temp_path, extra_args=['--pdf-engine=xelatex'])
+        try:          
+            storeDoc(resource)
+            #pypandoc.convert_file(temp_doc_path, 'pdf', outputfile=pdf_temp_path, extra_args=['--pdf-engine=xelatex'])
             return pdf_temp_path
         except Exception as e:
             print(f"Error during conversion: {e}")
@@ -146,6 +182,43 @@ def resourcePdfConversion(request):
             if 'temp_doc_path' in locals():
                 os.remove(temp_doc_path)
 
+    
+    #function to store the excel file to the temp_files folder & as the pdf version
+    def storeExcel(resource):
+        pdf_file_name = resource.name
+        file_path = os.path.join(settings.BASE_DIR, 'temp_files', pdf_file_name)
+        
+        #store the excel pdf to temp_files
+        with open(file_path, 'wb') as file:
+            for chunk in resource.chunks():
+                file.write(chunk)
+        print(f"File saved to: {file_path}")
+
+        #store the html file based on the excel file
+        storeHtmlExcel(file_path, pdf_file_name)
+
+    def storeHtmlExcel(temp_xlsx_path, pdf_file_name):
+        file_name = os.path.splitext(pdf_file_name)[0] + '.html'
+        file_path = os.path.join(settings.BASE_DIR, 'temp_files', file_name)
+        xlsx2html(temp_xlsx_path, file_path)
+
+        #store the pdf version based on the html file
+        storeExcelPdf(file_path, pdf_file_name)
+    
+    #function to store the pdf of the docx or doc file
+    def storeExcelPdf(temp_html_path, pdf_file_name):
+        pdf_output = BytesIO()
+
+        file_name = os.path.splitext(pdf_file_name)[0] + '.pdf'
+        file_path = os.path.join(settings.BASE_DIR, 'temp_files', file_name)
+        # Convert HTML to PDF
+        pdfkit.from_file(temp_html_path, file_path)
+
+        with open(file_path, "rb") as f:
+            pdf_output.write(f.read())
+
+        pdf_output.seek(0)
+
     def xlsx_to_pdf(resource):
         pdf_output = BytesIO()
         temp_xlsx_path = None
@@ -153,31 +226,16 @@ def resourcePdfConversion(request):
         temp_html_path = None
 
         try:
+            #store the excel file along the then pdf version of it
+            storeExcel(resource)
+
             temp_xlsx_fd, temp_xlsx_path = tempfile.mkstemp(suffix='.xlsx')
             os.close(temp_xlsx_fd)
 
             with open(temp_xlsx_path, 'wb') as temp_xlsx:
                 for chunk in resource.chunks():
                     temp_xlsx.write(chunk)
-
-            # Create a temporary HTML file
-            temp_html_fd, temp_html_path = tempfile.mkstemp(suffix='.html')
-            os.close(temp_html_fd)
-
-            # Convert XLSX to HTML
-            xlsx2html(temp_xlsx_path, temp_html_path)
-
-            # Create a temporary PDF file
-            temp_pdf_fd, temp_pdf_path = tempfile.mkstemp(suffix='.pdf')
-            os.close(temp_pdf_fd)
-
-            # Convert HTML to PDF
-            pdfkit.from_file(temp_html_path, temp_pdf_path)
-
-            with open(temp_pdf_path, "rb") as f:
-                pdf_output.write(f.read())
-
-            pdf_output.seek(0)
+                    
             return temp_pdf_path
 
         except Exception as e:
@@ -286,6 +344,10 @@ def watermarkPage(request):
 
 # Function to handle watermark/license prepending
 def resourceLicencePrepending(request):
+    # process file data
+    file_name = 'file.pdf'
+    original_pdf_path = os.path.join(settings.BASE_DIR, 'temp_files', file_name)
+
     # Code to prepend watermark/license
     def create_license_pdf(license_text, width, height):
         # Create a PDF with the license text
@@ -318,7 +380,7 @@ def resourceLicencePrepending(request):
         packet.seek(0)
         return packet
 
-    def prepend_license_to_pdf(original_pdf_path, license_text, output_pdf_path):
+    def prepend_license_to_pdf(original_pdf_path, license_text):
         # Read the original PDF
         original_pdf = PdfReader(original_pdf_path)
         
@@ -341,16 +403,19 @@ def resourceLicencePrepending(request):
         for page_num in range(len(original_pdf.pages)):
             output_pdf.add_page(original_pdf.pages[page_num])
         
+        final_file_name = file_name[::-1] + 'licenced-'[::-1]
+        output_pdf_path = os.path.join(settings.BASE_DIR, 'temp_files', final_file_name[::-1])
+        
         # Write the combined PDF to a file
         with open(output_pdf_path, 'wb') as output_file:
             output_pdf.write(output_file)
 
+        #SHOULD THEN DELETE THE ORIGINAL PDF IN THE TEMP_FILES FOLDER
+
     # Example usage
     license_text = "This document is licensed under NexTech License."
-    original_pdf_path = "Rename.pdf"
-    output_pdf_path = "output_with_license.pdf"
 
-    prepend_license_to_pdf(original_pdf_path, license_text, output_pdf_path)
+    prepend_license_to_pdf(original_pdf_path, license_text)
 
     return render(request, 'watermarkPage.html')
     #resourceFileStorage()  # save the files to the File Storage System
