@@ -7,27 +7,30 @@ def ratingPage(request):
 
 #get the resources from database and rate them, then save them back in the database
 def resourceRating(request):
-	resourceId = request.POST.get("resourceId")
-	rating = str(request.POST.get("rating"))
+	try:
+		resourceId = request.POST.get("resourceId")
+		rating = str(request.POST.get("rating"))
 
-	if rating.isdigit() :
-		if int(rating) >= 1 and int(rating) <=5:
-			print(resourceId)
-			print(rating)
+		if rating.isdigit() :
+			if int(rating) >= 1 and int(rating) <=5:
+				print(resourceId)
+				print(rating)
 
-			#get resources from database with intial empty rating
-			resource = RESOURCE_METADATA.objects.get(id=resourceId)
+				#get resources from database with intial empty rating
+				resource = RESOURCE_METADATA.objects.get(id=resourceId)
 
-			#rate the resource
-			resource.resource_rating = rating
+				#rate the resource
+				resource.resource_rating = rating
 
-			#save resource with updated rating
-			resource.save()
+				#save resource with updated rating
+				resource.save()
+			else:
+				print("must be integer from 1-5")
 		else:
-			print("must be integer from 1-5")
-	else:
-		print("Invalid input for rating, must be integer")
+			print("Invalid input for rating, must be integer")
 
+	except Exception as e:
+		print(f"An error occurred: {e}")
 
 	#return the rating page with updated rating
 	return render(request, 'rateResource.html')
@@ -38,21 +41,23 @@ def moderationPage(request):
 
 #get the resources from database and moderate them, then save them back in the database
 def resourceModeration(request):
+	try:
+		resource_id = request.POST.get('source_id')
+		approval_status = request.POST.get('mod_status')
+		moderation_comment = request.POST.get('mod_comment')
+		#moderation_date = request.POST.get('mod_dateTime')
+		
+		#get resource from database with initial empty moderation comment and pending approval
+		resource = RESOURCE_METADATA.objects.get(pk=resource_id)
+		
+		#moderate the resource
+		resource.approval_status = approval_status
+		resource.moderation_comment = moderation_comment
 
-	resource_id = request.POST.get('source_id')
-	approval_status = request.POST.get('mod_status')
-	moderation_comment = request.POST.get('mod_comment')
-	#moderation_date =request.POST.get('mod_dateTime')
-	
-	#get resource from database with initial empty moderation comment and pending approval
-	resource = RESOURCE_METADATA.objects.get(pk=resource_id)
-	
-	#moderate the resource
-	resource.approval_status = approval_status
-	resource.moderation_comment = moderation_comment
-
-	#save resource with updated moderation details
-	resource.save()
+		#save resource with updated moderation details
+		resource.save()
+	except Exception as e:
+		print(f"An error occurred: {e}")
 
 	#return the moderation page with updated moderation details
 	return render(request, 'moderation.html')
