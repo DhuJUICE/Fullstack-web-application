@@ -35,7 +35,9 @@ def resourceUploadPage(request):
 def resourceUploading(request):
     if 'upload_file' in request.FILES:
         resource = request.FILES['upload_file']
+
         if resource:
+            #get the values for the resource to be uploaded
             file_extension = os.path.splitext(resource.name)[1].lower()
             file_type = resource.content_type
             contributor = request.POST.get('contributor')
@@ -81,6 +83,8 @@ def resourcePdfConversion(request):
         # Write file contents
         pdf.output(file_path)
 
+        return file_path
+
     def txt_to_pdf(resource):
         pdf_output = BytesIO()
         pdf = FPDF()
@@ -96,22 +100,25 @@ def resourcePdfConversion(request):
             return None
 
         #save the pdf version of the uploaded text file
-        storeTextPdf(resource.name, pdf)
+        file_path = storeTextPdf(resource.name, pdf)
 
-        temp_pdf_path = None
-        with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as temp_pdf:
-            pdf.output(temp_pdf.name)
-            temp_pdf_path = temp_pdf.name
-            print(f"Successfully converted to '{temp_pdf.name}'.")
+        #prepend licence to the pdf
+        watermark_path = resourceLicencePrepending(file_path, resource)
 
-        return temp_pdf_path
+        #delete the original pdf file
+        os.remove(file_path)
+
+        return watermark_path
 
     #function to store the image pdf file to the temp_files folder
-    def storeImagePdf(pdf_file_name, image):
+    def storeImagePdf(resource, image):
+        pdf_file_name = resource.name
         file_name = os.path.splitext(pdf_file_name)[0] + '.pdf'
         file_path = os.path.join(settings.BASE_DIR, 'temp_files', file_name)
         # Write file contents
         image.save(file_path, "PDF", resolution=100.0)
+
+        return file_path
 
     def image_to_pdf(resource):
         pdf_output = BytesIO()
@@ -120,13 +127,15 @@ def resourcePdfConversion(request):
             if image.mode in ("RGBA", "LA"):
                 image = image.convert("RGB")
 
-            storeImagePdf(resource.name, image)
+            file_path = storeImagePdf(resource, image)
 
-            temp_pdf_path = tempfile.mktemp(suffix='.pdf')
-            image.save(temp_pdf_path, "PDF", resolution=100.0)
-            print(f"Successfully converted to '{temp_pdf_path}'.")
+            #prepend licence to the pdf
+            watermark_path = resourceLicencePrepending(file_path, resource)
 
-            return temp_pdf_path
+            #delete the original pdf file
+            os.remove(file_path)
+
+            return watermark_path
             
         except Exception as e:
             print(f"An error occurred: {e}")
@@ -146,9 +155,6 @@ def resourcePdfConversion(request):
         except Exception as e:
             print(f"Error scheduling MiKTeX update: {e}")
 
-    # Call the function to update MiKTeX
-    update_miktex()
-
     #function to store the doc file to the temp_files folder & as the pdf version
     def storeDoc(resource):
         pdf_file_name = resource.name
@@ -161,7 +167,7 @@ def resourcePdfConversion(request):
         print(f"File saved to: {file_path}")
 
         #store the pdf based on the stored doc
-        storeDocPdf(file_path, pdf_file_name)
+        return storeDocPdf(file_path, pdf_file_name)
 
     #function to store the pdf of the docx or doc file
     def storeDocPdf(temp_doc_path, pdf_file_name):
@@ -169,12 +175,24 @@ def resourcePdfConversion(request):
         file_path = os.path.join(settings.BASE_DIR, 'temp_files', file_name)
         pypandoc.convert_file(temp_doc_path, 'pdf', outputfile=file_path, extra_args=['--pdf-engine=xelatex'])
 
+        #remove the temporary document file
+        #delete the original pdf file
+        os.remove(temp_doc_path)
+
+        return file_path
+
     def docx_to_pdf(resource):
         pdf_temp_path = tempfile.mktemp(suffix='.pdf')
         try:          
-            storeDoc(resource)
-            #pypandoc.convert_file(temp_doc_path, 'pdf', outputfile=pdf_temp_path, extra_args=['--pdf-engine=xelatex'])
-            return pdf_temp_path
+            file_path = storeDoc(resource)
+
+            #prepend licence to the pdf
+            watermark_path = resourceLicencePrepending(file_path, resource)
+
+            #delete the original pdf file
+            os.remove(file_path)
+
+            return watermark_path
         except Exception as e:
             print(f"Error during conversion: {e}")
             return None
@@ -195,7 +213,7 @@ def resourcePdfConversion(request):
         print(f"File saved to: {file_path}")
 
         #store the html file based on the excel file
-        storeHtmlExcel(file_path, pdf_file_name)
+        return storeHtmlExcel(file_path, pdf_file_name)
 
     def storeHtmlExcel(temp_xlsx_path, pdf_file_name):
         file_name = os.path.splitext(pdf_file_name)[0] + '.html'
@@ -203,7 +221,12 @@ def resourcePdfConversion(request):
         xlsx2html(temp_xlsx_path, file_path)
 
         #store the pdf version based on the html file
-        storeExcelPdf(file_path, pdf_file_name)
+        excel_pdf_file_path = storeExcelPdf(file_path, pdf_file_name)
+        
+        #delete the excel file
+        os.remove(temp_xlsx_path)
+
+        return  excel_pdf_file_path
     
     #function to store the pdf of the docx or doc file
     def storeExcelPdf(temp_html_path, pdf_file_name):
@@ -219,72 +242,81 @@ def resourcePdfConversion(request):
 
         pdf_output.seek(0)
 
-    def xlsx_to_pdf(resource):
-        pdf_output = BytesIO()
-        temp_xlsx_path = None
-        temp_pdf_path = None
-        temp_html_path = None
+        #delete the html file
+        os.remove(temp_html_path)
 
+        return file_path
+
+    def xlsx_to_pdf(resource):
         try:
             #store the excel file along the then pdf version of it
-            storeExcel(resource)
+            file_path = storeExcel(resource)
+            
+            #prepend licence to the pdf
+            watermark_path = resourceLicencePrepending(file_path, resource)
 
-            temp_xlsx_fd, temp_xlsx_path = tempfile.mkstemp(suffix='.xlsx')
-            os.close(temp_xlsx_fd)
-
-            with open(temp_xlsx_path, 'wb') as temp_xlsx:
-                for chunk in resource.chunks():
-                    temp_xlsx.write(chunk)
-                    
-            return temp_pdf_path
+            #delete the original pdf
+            os.remove(file_path)
+            
+            return watermark_path
 
         except Exception as e:
             print(f"An error occurred: {e}")
             return None
-        finally:
-            for path in [temp_xlsx_path, temp_html_path]:
-                if path and os.path.exists(path):
-                    os.remove(path)
+
+        #function to store the doc file to the temp_files folder & as the pdf version
+    def storePowerpoint(resource):
+        pdf_file_name = resource.name
+        file_path = os.path.join(settings.BASE_DIR, 'temp_files', pdf_file_name)
+        
+        #store the powerpoint to temp_files
+        with open(file_path, 'wb') as file:
+            for chunk in resource.chunks():
+                file.write(chunk)
+
+        print(f"File saved to: {file_path}")
+
+        #store the pdf based on the stored doc
+        return storePowerpointPdf(file_path, pdf_file_name)
+
+    #function to store the powerpoint as a pdf file in temp_files
+    def storePowerpointPdf(temp_pptx_path, pdf_file_name):
+        # Set the output PDF path based on the PPTX path
+        file_name = os.path.splitext(pdf_file_name)[0] + '.pdf'
+        file_path = os.path.join(settings.BASE_DIR, 'temp_files', file_name)
+
+        # Construct the command to convert PPTX to PDF
+        command = [
+            r"C:\Program Files\LibreOffice\program\soffice.exe",
+            '--headless',
+            '--convert-to', 'pdf',
+            '--outdir', os.path.dirname(file_path),
+            temp_pptx_path
+        ]
+
+        # Execute the command and capture output and errors
+        result = subprocess.run(command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        #delete the original powerpoint file
+        os.remove(temp_pptx_path)
+
+        return file_path
 
     def pptx_to_pdf(resource):
         temp_pptx_path = None
         temp_pdf_path = None
 
         try:
-            # Create a temporary PPTX file
-            temp_pptx_fd, temp_pptx_path = tempfile.mkstemp(suffix='.pptx')
-            os.close(temp_pptx_fd)
+            #convert and store the pdf version of the powerpoint
+            file_path = storePowerpoint(resource)
+        
+            #prepend licence to the pdf
+            watermark_path = resourceLicencePrepending(file_path, resource)
 
-            # Write the uploaded PPTX content to the temporary file
-            with open(temp_pptx_path, 'wb') as temp_pptx:
-                for chunk in resource.chunks():
-                    temp_pptx.write(chunk)
+            #delete the original pdf
+            os.remove(file_path)
 
-            # Set the output PDF path based on the PPTX path
-            temp_pdf_path = os.path.splitext(temp_pptx_path)[0] + '.pdf'
-
-            # Construct the command to convert PPTX to PDF
-            command = [
-                r"C:\Program Files\LibreOffice\program\soffice.exe",
-                '--headless',
-                '--convert-to', 'pdf',
-                '--outdir', os.path.dirname(temp_pdf_path),
-                temp_pptx_path
-            ]
-
-            # Execute the command and capture output and errors
-            result = subprocess.run(command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-            # Print the output and errors for debugging
-            print(result.stdout.decode())
-            print(result.stderr.decode())
-
-            # Check if the PDF was created successfully
-            if os.path.exists(temp_pdf_path):
-                return temp_pdf_path
-            else:
-                print("PDF conversion failed, no output file created.")
-                return None
+            return watermark_path
 
         except Exception as e:
             print(f"An error occurred: {e}")
@@ -294,40 +326,62 @@ def resourcePdfConversion(request):
             if temp_pptx_path and os.path.exists(temp_pptx_path):
                 os.remove(temp_pptx_path)
                 
+    #function to store the excel file to the temp_files folder & as the pdf version
+    def storePdf(resource):
+        pdf_file_name = resource.name
+        file_path = os.path.join(settings.BASE_DIR, 'temp_files', pdf_file_name)
+        
+        #store the pdf to temp_files
+        with open(file_path, 'wb') as file:
+            for chunk in resource.chunks():
+                file.write(chunk)
+        print(f"File saved to: {file_path}")
+
+        return file_path
+
     def pdf_to_pdfPath(resource):
         try:
-            with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_pdf:
-                for chunk in resource.chunks():
-                    temp_pdf.write(chunk)
-                temp_pdf_path = temp_pdf.name
-            return temp_pdf_path
+            #store the pdf file to the temp_files folder
+            file_path = storePdf(resource)
+
+            #prepend licence to the pdf
+            resourceLicencePrepending(file_path, resource)
+
+            return file_path
         except Exception as e:
             print(f"An error occurred while saving the PDF: {e}")
             return None
 
     if resource:
         extension = os.path.splitext(resource.name)[1][1:]
+        # Call the function to update MiKTeX
+        update_miktex()
 
         if extension in word_extensions:
             print("Converting Word file to PDF")
             pdf_output = docx_to_pdf(resource)
             print("Temp pdf path: ", pdf_output)
+
         elif extension in excel_extensions:
             print("Converting Excel file to PDF")
             pdf_output = xlsx_to_pdf(resource)
             print("Temp pdf path: ", pdf_output)
+
         elif extension in image_extensions:
             print("Converting image file to PDF")
             pdf_output = image_to_pdf(resource)
             print("Temp pdf path: ", pdf_output)
+
         elif extension in text_extensions:
             print("Converting text file to PDF")
             pdf_output = txt_to_pdf(resource)
             print("Temp pdf path: ", pdf_output)
+
         elif extension in powerpoint_extensions:
             print("Converting powerpoint file to PDF")
             pdf_output = pptx_to_pdf(resource) 
             print("Temp pdf path: ", pdf_output)
+            
         elif extension in pdf_extensions:
             print("File is already a PDF, saving to temporary path for processing")
             temp_pdf_path = pdf_to_pdfPath(resource)
@@ -343,10 +397,8 @@ def watermarkPage(request):
     return render(request, 'watermarkPage.html')
 
 # Function to handle watermark/license prepending
-def resourceLicencePrepending(request):
-    # process file data
-    file_name = 'file.pdf'
-    original_pdf_path = os.path.join(settings.BASE_DIR, 'temp_files', file_name)
+def resourceLicencePrepending(original_pdf_path, resource):
+    full_file_name = resource.name
 
     # Code to prepend watermark/license
     def create_license_pdf(license_text, width, height):
@@ -380,7 +432,7 @@ def resourceLicencePrepending(request):
         packet.seek(0)
         return packet
 
-    def prepend_license_to_pdf(original_pdf_path, license_text):
+    def prepend_license_to_pdf(original_pdf_path, license_text, full_file_name):
         # Read the original PDF
         original_pdf = PdfReader(original_pdf_path)
         
@@ -403,6 +455,7 @@ def resourceLicencePrepending(request):
         for page_num in range(len(original_pdf.pages)):
             output_pdf.add_page(original_pdf.pages[page_num])
         
+        file_name = os.path.splitext(resource.name)[0] + '.pdf'
         final_file_name = file_name[::-1] + 'licenced-'[::-1]
         output_pdf_path = os.path.join(settings.BASE_DIR, 'temp_files', final_file_name[::-1])
         
@@ -410,14 +463,15 @@ def resourceLicencePrepending(request):
         with open(output_pdf_path, 'wb') as output_file:
             output_pdf.write(output_file)
 
+        return output_pdf_path
         #SHOULD THEN DELETE THE ORIGINAL PDF IN THE TEMP_FILES FOLDER
 
-    # Example usage
+    #license text to add for our watermark
     license_text = "This document is licensed under NexTech License."
 
-    prepend_license_to_pdf(original_pdf_path, license_text)
+    #add license to pdf and save the licensed pdf to temp_files
+    return prepend_license_to_pdf(original_pdf_path, license_text, full_file_name)
 
-    return render(request, 'watermarkPage.html')
     #resourceFileStorage()  # save the files to the File Storage System
 
 def uploadPage(request):
