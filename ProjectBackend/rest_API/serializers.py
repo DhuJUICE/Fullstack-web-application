@@ -12,13 +12,13 @@ class FaqSerializer(serializers.ModelSerializer):
         model = FAQ
         
         fields = '__all__'  # or specify fields explicitly
-		
+        
 class DocSerializer(serializers.ModelSerializer):
     class Meta:
         model = RESOURCE_METADATA
         
         fields = '__all__'  # or specify fields explicitly
-		
+        
 class ReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = RESOURCE_REPORT
@@ -52,7 +52,7 @@ class ReportSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-		
+        
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -77,9 +77,20 @@ class UserSerializer(serializers.ModelSerializer):
             user_serializer.is_valid(raise_exception=True)
             user_serializer.save()
 
+        instance.email = validated_data.get('email', instance.email)
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.password = validated_data.get('password', instance.password)  # Make sure to handle password hashing
+        instance.is_superuser = validated_data.get('is_superuser', instance.is_superuser)
+        instance.username = validated_data.get('username', instance.username)
+        instance.is_active = validated_data.get('is_active', instance.is_active)
+         
+
         # Update the UserProfile instance
-        instance.role = validated_data.get('role', instance.role)
-        instance.image = validated_data.get('image', instance.image)
-        instance.verificationCode = validated_data.get('verificationCode', instance.verificationCode)
+        #instance.role = validated_data.get('role', instance.role)
+        
+        #Must still do
+        #instance.image = validated_data.get('image', instance.image)
+        #instance.verificationCode = validated_data.get('verificationCode', instance.verificationCode)
         instance.save()
         return instance

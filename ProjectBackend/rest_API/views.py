@@ -36,17 +36,17 @@ class deserializeResourcePaginated(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
     queryset = RESOURCE_METADATA.objects.all()
     serializer_class = DocSerializer
-	
+    
 class deserializeReportPaginated(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
     queryset = RESOURCE_REPORT.objects.all()
     serializer_class = ReportSerializer
-	
+    
 class deserializeUserPaginated(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
     queryset = User.objects.all()
     serializer_class = UserSerializer
-	
+    
 #DESERIALIZE CLASSBASED VIEWS
 class deserializeFaq(APIView):
     permission_classes = [AllowAny]
@@ -227,8 +227,7 @@ class deserializeReport(APIView):
             resource_id = request.data['reportResource']
             if resource_id:
                 try:
-                    resource_instance = RESOURCE_METADATA.objects.get(id=resource_id)
-                    request.data['reportResource'] = resource_instance
+                    request.data['reportResource'] = resource_id
                 except RESOURCE_METADATA.DoesNotExist:
                     return Response({"error": "Resource not found."}, status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -296,7 +295,11 @@ class deserializeUser(APIView):
             response_data = {
                 "id": user.id,
                 "username": user.username,
-                "email": user.email
+                "email": user.email,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "is_superuser": user.is_superuser,
+                "is_active": user.is_active
             }
             return Response(response_data, status=status.HTTP_200_OK)
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
