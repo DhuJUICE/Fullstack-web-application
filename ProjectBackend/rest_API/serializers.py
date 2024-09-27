@@ -84,13 +84,14 @@ class UserSerializer(serializers.ModelSerializer):
         instance.is_superuser = validated_data.get('is_superuser', instance.is_superuser)
         instance.username = validated_data.get('username', instance.username)
         instance.is_active = validated_data.get('is_active', instance.is_active)
-         
 
+        user = User.objects.get(email=email)
         # Update the UserProfile instance
-        #instance.role = validated_data.get('role', instance.role)
-        
-        #Must still do
-        #instance.image = validated_data.get('image', instance.image)
-        #instance.verificationCode = validated_data.get('verificationCode', instance.verificationCode)
-        instance.save()
+        userProfile = UserProfile.objects.get(user=user)
+        userProfile.role = validated_data.get('role', instance.role)
+        print(userProfile.role)
+        #userProfile.image = validated_data.get('image', instance.image)
+        #print(userProfile.image)
+        userProfile.save()
+
         return instance

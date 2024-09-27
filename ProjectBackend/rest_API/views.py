@@ -153,6 +153,11 @@ class deserializeResource(APIView):
         serializer = DocSerializer(resource, data=request.data, partial=True)
         if serializer.is_valid():
             resource = serializer.save()
+            
+            # Check if the file_path is associated after saving
+            if not resource.file_path:
+                return Response({"error": "No file associated with the resource after update."}, status=status.HTTP_400_BAD_REQUEST)
+
             response_data = {
                 "id": resource.id,
                 "file_path": resource.file_path,
@@ -169,8 +174,9 @@ class deserializeResource(APIView):
                 "moderation_date": resource.moderation_date
             }
             return Response(response_data, status=status.HTTP_200_OK)
+        
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-
+        
     def delete(self, request, *args, **kwargs):
         try:
             resource = RESOURCE_METADATA.objects.get(pk=kwargs['pk'])

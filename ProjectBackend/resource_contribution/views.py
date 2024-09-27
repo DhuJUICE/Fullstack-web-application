@@ -33,14 +33,40 @@ def resourceUploadPage(request):
 
 # Function to handle uploading and tagging (keywords) of resource
 def resourceUploading(request):
-    if ('upload_file' in request.FILES) or ('upload_file1' in request.FILES) or ('upload_file2' in request.FILES) or ('upload_file3' in request.FILES) :
-        resource = request.FILES['upload_file']
-        resource1 = request.FILES['upload_file1']
-        resource2 = request.FILES['upload_file2']
-        resource3 = request.FILES['upload_file3']
+    resource_list = []
 
-        print("Files: ", resource, "\n", resource1, "\n", resource2, "\n", resource3)
-        if resource or resource1 or resource2 or resource3:
+    if 'upload_file' in request.FILES:
+        resource = request.FILES['upload_file']
+        if resource != "":
+            resource_list.append(resource)
+
+    if 'upload_file1' in request.FILES:
+        resource1 = request.FILES['upload_file1']
+        if resource1 != "":
+            resource_list.append(resource1)
+
+    if 'upload_file2' in request.FILES:
+        resource2 = request.FILES['upload_file2']
+        if resource2 != "":
+            resource_list.append(resource2)
+
+    if 'upload_file3' in request.FILES:
+        resource3 = request.FILES['upload_file3']
+        if resource3 != "":
+            resource_list.append(resource3)
+
+    #for loop to check what file types where uploaded, we only support our 5 file types
+    for resource in resource_list:
+        #get the values for the resource to be uploaded
+        extension = os.path.splitext(resource.name)[1][1:]
+
+        if (extension not in word_extensions) and (extension not in excel_extensions) and (extension not in image_extensions) and (extension not in text_extensions) and (extension not in powerpoint_extensions) and (extension in pdf_extensions):
+            print("Invalid file type for :", resource.name, " - try again(ONLY WORD, EXCEL, POWERPOINT, TEXT, PDF Files)")
+            return redirect("resourceUpload")
+
+    #for loop to convert my documents into watermarked pdfs
+    for resource in resource_list:  
+        if resource:
             #get the values for the resource to be uploaded
             file_extension = os.path.splitext(resource.name)[1].lower()
             file_type = resource.content_type
@@ -60,15 +86,16 @@ def resourceUploading(request):
 
                                 keywords = request.POST.get('keywords')
                                 if keywords != "":
-                                    user = User.objects.get(id=contributor)
-                                    RESOURCE_METADATA.objects.create(
-                                        file_type=file_type,
-                                        contributor=user,
-                                        resource_name=resource_name,
-                                        subject=subject,
-                                        grade=grade,
-                                        keywords=keywords
-                                    )
+                                    #user = User.objects.get(id=contributor)
+                                    #RESOURCE_METADATA.objects.create(
+                                    #    file_type=file_type,
+                                    #    contributor=user,
+                                    #    resource_name=resource_name,
+                                    #    subject=subject,
+                                    #    grade=grade,
+                                    #    keywords=keywords
+                                    #)
+                                    resourcePdfConversion(resource)
                                 else:
                                     print("No keywords provided, provide at least one keyword")
                             else:
@@ -86,17 +113,19 @@ def resourceUploading(request):
             
         else:
             return render(request, 'fileUploadTagging.html')
-    else:
-        print("No file was uploaded - please select a file to upload")
 
-    return redirect("resourceUpload")
+    if len(resource_list) == 0:
+        print("No file uploaded - upload at least one file to the resource")
+        return redirect("resourceUpload")
+    else:
+        return redirect("resourceUpload")
 
 def pdfConversionPage(request):
     return render(request, 'pdfConversion.html')
 
 # Function to handle pdf conversion
-def resourcePdfConversion(request):
-    resource = request.FILES['pdfFile']
+def resourcePdfConversion(resource):
+    #resource = request.FILES['pdfFile']
 
     #function to store the text pdf file to the temp_files folder
     def storeTextPdf(pdf_file_name, pdf):

@@ -13,6 +13,13 @@ import random
 import string
 import time
 
+def homepage(request):
+    context = {
+        'url': 'http://127.0.0.1:8000',
+        'link_text': 'Click here',
+    }
+    return render(request, 'homepage.html', context)
+
 # Create your views here.
 #this function should validate and authenticate the user
 def loginPage(request):
@@ -47,7 +54,14 @@ def loginUser(request):
         # Securely log in the user
         auth.login(request, user)
         print("User logged in")
-        return redirect("/loginpage")
+
+        if user.is_authenticated:
+            userProfile = UserProfile.objects.get(user=user)
+            response = {'userProfile':userProfile}
+            return render(request, 'homepage.html', response)
+        else:
+            print("Something went wrong - log in again")
+            return redirect("/loginpage")
     else:
         print("Invalid credentials or user does not exist")
         return redirect("/loginpage")
@@ -98,7 +112,7 @@ def logout(request):
     auth.logout(request)
 
     #redirect the user to the login page
-    return redirect("/loginpage")
+    return redirect("/")
 
 
 #PASSWORD RESET
