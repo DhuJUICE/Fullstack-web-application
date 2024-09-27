@@ -19,3 +19,5 @@ pip install pypandoc
 
 pip install reportlab
 pip install PyPDF2
+pip install drf-yasg
+pip install --upgrade setuptools
