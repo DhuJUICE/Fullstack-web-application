@@ -57,6 +57,9 @@ INSTALLED_APPS = [
 
     #django corsheaders for communicating over different ports between frontend and backend
     'corsheaders',
+
+	#api documentation
+	'drf_yasg',
 ]
 
 #MAILGUN API DETAILS
