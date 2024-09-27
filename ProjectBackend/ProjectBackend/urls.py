@@ -24,9 +24,9 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Your API Title",
+        title="NexTech RESTAPI",
         default_version='v1',
-        description="Description of your API",
+        description="This api will serve data from our Share2Teach Backend with any Frontend",
         terms_of_service="https://www.google.com/policies/terms/",
         contact=openapi.Contact(email="contact@yourapi.local"),
         license=openapi.License(name="BSD License"),
@@ -53,7 +53,6 @@ urlpatterns = [
 
 	#documentation urls
 	path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('openapi.yaml/', schema_view.without_ui(cache_timeout=0), name='schema-openapi'),
 ]
 
