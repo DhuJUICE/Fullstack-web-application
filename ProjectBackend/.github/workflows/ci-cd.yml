@@ -48,7 +48,7 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker buildx build --push -t juicebout01/docker-repo:docker-image -f Dockerfile .
+          docker buildx build --push -t juicebout01/docker-repo:docker-image -f .
 
   deploy:
     runs-on: ubuntu-latest
