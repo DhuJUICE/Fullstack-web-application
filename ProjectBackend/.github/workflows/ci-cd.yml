@@ -48,7 +48,7 @@ jobs:
           
       - name: Build and push Docker image
         run: |
-          docker buildx build --push -t juicebout01/docker-repo:dockerimage -f .github/workflows/../Dockerfile .
+          docker buildx build -t juicebout01/docker-repo:docker-image -f ProjectBackend/Dockerfile .
 
   deploy:
     runs-on: ubuntu-latest
