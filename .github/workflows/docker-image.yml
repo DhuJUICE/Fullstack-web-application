@@ -17,14 +17,14 @@ jobs:
         run: |
           pwd  # Print the current working directory
 
-      - name: List root directory contents
+      - name: List contents of the project directory
         run: |
-          ls -la  # List all files in the root directory
+          ls -la /home/runner/work/Fullstack-web-application/Fullstack-web-application  # List all files
 
-      - name: Find Dockerfile from the root
+      - name: Find Dockerfile from the correct root
         id: find_dockerfile
         run: |
-          DOCKERFILE_PATH=$(find . -name Dockerfile -print -quit)  # Find the Dockerfile path from the root
+          DOCKERFILE_PATH=$(find /home/runner/work/Fullstack-web-application/Fullstack-web-application -name Dockerfile -print -quit)  # Adjusted search path
           if [ -z "$DOCKERFILE_PATH" ]; then
             echo "Dockerfile not found"
             exit 1
