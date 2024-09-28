@@ -13,6 +13,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: List entire repository structure
+        run: |
+          ls -R /home/runner/work/Fullstack-web-application/Fullstack-web-application
+    
       - name: Print working directory
         run: |
           pwd  # Print the current working directory
