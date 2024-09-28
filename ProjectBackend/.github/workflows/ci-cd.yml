@@ -45,10 +45,10 @@ jobs:
       - name: Set up Buildx
         run: |
           docker buildx create --use
-
+          
       - name: Build and push Docker image
         run: |
-          docker buildx build --push -t juicebout01/docker-repo:docker-image -f .
+          docker buildx build --push -t your-username/your-image:latest -f .github/workflows/../Dockerfile .
 
   deploy:
     runs-on: ubuntu-latest
