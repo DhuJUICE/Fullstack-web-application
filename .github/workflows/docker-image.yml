@@ -31,6 +31,7 @@ jobs:
           
       - name: Build Docker image
         run: |
+          cd "$DOCKERFILE_DIR"  # Ensure we're in the correct directory
           docker build -t juicebout01/docker-repo:docker-image .
 
       - name: Push Docker image
