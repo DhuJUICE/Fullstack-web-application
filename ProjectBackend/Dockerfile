@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y \
     && apt-get install -y \
     python3.12 \
     python3.12-distutils \
+	
     libreoffice \
     pandoc \
     wkhtmltopdf \
