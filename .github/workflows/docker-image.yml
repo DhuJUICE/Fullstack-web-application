@@ -19,7 +19,6 @@ jobs:
           
       - name: Build Docker image
         run: |
-          cd Fullstack-web-application
           docker build -t juicebout01/docker-repo:docker-image .
 
       - name: Push Docker image
