@@ -18,11 +18,11 @@ jobs:
         run: |
           DOCKERFILE_PATH=$(find . -name Dockerfile | head -n 1)  # Find the Dockerfile path
           echo "Dockerfile found at: $DOCKERFILE_PATH"
-          echo "::set-output name=path::$DOCKERFILE_PATH"  # Set the output variable
+          echo "DOCKERFILE_PATH=$DOCKERFILE_PATH" >> $GITHUB_ENV  # Set the environment variable
 
       - name: Navigate to Dockerfile directory
         run: |
-          DOCKERFILE_DIR=$(dirname ${{ steps.find_dockerfile.outputs.path }})  # Get directory of Dockerfile
+          DOCKERFILE_DIR=$(dirname "$DOCKERFILE_PATH")  # Get directory of Dockerfile
           cd "$DOCKERFILE_DIR" && pwd  # Change to that directory and print it
           
       - name: Log in to Docker Hub
