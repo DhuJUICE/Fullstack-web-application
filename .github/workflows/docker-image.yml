@@ -13,6 +13,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Find Dockerfile
+        id: find_dockerfile
+        run: |
+          DOCKERFILE_PATH=$(find . -name Dockerfile | head -n 1)  # Find the Dockerfile path
+          echo "Dockerfile found at: $DOCKERFILE_PATH"
+          echo "::set-output name=path::$DOCKERFILE_PATH"  # Set the output variable
+
+      - name: Navigate to Dockerfile directory
+        run: |
+          DOCKERFILE_DIR=$(dirname ${{ steps.find_dockerfile.outputs.path }})  # Get directory of Dockerfile
+          cd "$DOCKERFILE_DIR" && pwd  # Change to that directory and print it
+          
       - name: Log in to Docker Hub
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
