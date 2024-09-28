@@ -19,7 +19,7 @@ jobs:
           
       - name: Build Docker image
         run: |
-          docker build -t juicebout01/docker-repo:docker-image . -f ProjectBackend/Dockerfile ProjectBackend
+          docker buildx build -t juicebout01/docker-repo:docker-image . -f ProjectBackend/Dockerfile ProjectBackend
 
       - name: Push Docker image
         run: |
