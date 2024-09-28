@@ -20,7 +20,7 @@ jobs:
       - name: Print working directory
         run: |
           pwd  # Print the current working directory
-          cd..
+          cd ..
           pwd
 
       - name: List contents of the project directory
