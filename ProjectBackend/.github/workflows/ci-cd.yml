@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - DEVELOPMENT
+  workflow_dispatch:
 
 
 jobs:
