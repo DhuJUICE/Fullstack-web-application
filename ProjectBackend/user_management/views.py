@@ -57,7 +57,14 @@ def loginUser(request):
 
         if user.is_authenticated:
             userProfile = UserProfile.objects.get(user=user)
-            response = {'userProfile':userProfile}
+            role = userProfile.role
+            print("Users Role in real life: ", role)
+            #UserPRofile
+                #fk#User = user
+                #role
+                #code
+                #image
+            response = {'userRole':role}
             return render(request, 'homepage.html', response)
         else:
             print("Something went wrong - log in again")
@@ -240,3 +247,21 @@ def changePassword(request):
         print("Passwords do not match")
         return render(request, 'newPassword.html')
  
+#function to display update user role page
+def updateRolePage(request):
+    return render(request, 'updateUser.html')
+
+#function to update user role
+def updateRole(request):
+    userId = request.POST.get('user_id')
+    userRole = request.POST.get('role')
+    print(str(userId) + " " + userRole)
+
+    user = User.objects.get(id = userId)
+    userProfile = UserProfile.objects.get(user = user)
+    userProfile.role = userRole
+    userProfile.save()
+
+    response = {'userRole':userRole}
+
+    return render(request, 'homepage.html', response)
