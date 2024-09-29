@@ -256,6 +256,12 @@ def updateRole(request):
     userId = request.POST.get('user_id')
     userRole = request.POST.get('role')
     print(str(userId) + " " + userRole)
+
+    user = User.objects.get(id = userId)
+    userProfile = UserProfile.objects.get(user = user)
+    userProfile.role = userRole
+    userProfile.save()
+
     response = {'userRole':userRole}
 
     return render(request, 'homepage.html', response)
