@@ -240,3 +240,6 @@ def changePassword(request):
         print("Passwords do not match")
         return render(request, 'newPassword.html')
  
+ #function to update user role
+def updateRole(request):
+    return render(request, 'updateUser.html')
