@@ -1,26 +1,28 @@
 {%extends 'base.html'%} {%block body%}
 <title>Update User Role</title>
 <header><center>This Update User Role page</center></header>
-
-<form action="fileStorage" method="POST" enctype="multipart/form-data">
+<center>
+<form action="updateRole" method="POST">
   {% csrf_token %}
-  <p></p>
+  <p>
     User ID:
-  </p>
+ 
   <input type="text" placeholder="User ID" name="user_id" />
-
+  </p>
+  
   <p>
     Role:
-  </p>
-  <select id="status" name="mod_status">
+  
+  <select id="user_role" name="role">
     <option value="adminUser">Admin</option>
     <option value="moderatorUser">Moderator</option>
     <option value="educatorUser">Educator</option>
   </select>
+  </p>
 
-  <br>
   <br>
 
   <input type="submit" name="Update" value="Update"/>
 </form>
+</center>
 {%endblock%}

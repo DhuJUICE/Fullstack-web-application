@@ -18,5 +18,6 @@ urlpatterns = [
     path('validateCode', views.validate_verification_code, name='validateCode'),
 	path('changePassword', views.changePassword, name='changePassword'),
 
+	path('updateRolePage', views.updateRolePage, name='updateRolePage'),
 	path('updateRole', views.updateRole, name='updateRole'),
 ]
