@@ -247,3 +247,15 @@ def changePassword(request):
         print("Passwords do not match")
         return render(request, 'newPassword.html')
  
+#function to display update user role page
+def updateRolePage(request):
+    return render(request, 'updateUser.html')
+
+#function to update user role
+def updateRole(request):
+    userId = request.POST.get('user_id')
+    userRole = request.POST.get('role')
+    print(str(userId) + " " + userRole)
+    response = {'userRole':userRole}
+
+    return render(request, 'homepage.html', response)
