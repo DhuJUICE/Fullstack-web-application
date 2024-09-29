@@ -8,7 +8,7 @@
 
     <a href="logout">Logout</a><br><br>
 
-    {% if user_profile.role == "adminUser" %}
+    {% if userRole == "adminUser" %}
         <p>ROLE: ADMINISTRATOR</p>
         <a href="resourceSearch">Search For Resources</a><br><br>
         <a href="resourceUpload">Upload a resource to the platform</a><br><br><br><br>
@@ -19,7 +19,7 @@
         <a href="ratingPage">Rate a Resource</a><br><br><br><br>
         <a href="faqs">See Frequently asked questions</a><br><br>
 
-    {% elif user_profile.role == "moderatorUser" %}
+    {% elif userRole == "moderatorUser" %}
         <p>ROLE: MODERATOR</p>    
         <a href="resourceSearch">Search For Resources</a><br><br>
         <a href="resourceUpload">Upload a resource to the platform</a><br><br><br><br>
@@ -27,7 +27,7 @@
         <a href="faqs">See Frequently asked questions</a><br><br>
         <a href="moderationPage">Moderate a Resource</a><br><br>
 
-    {% elif user_profile.role == "educatorUser" %}
+    {% elif userRole == "educatorUser" %}
         <p>ROLE: EDUCATOR</p>
         <a href="resourceSearch">Search For Resources</a><br><br>
         <a href="resourceUpload">Upload a resource to the platform</a><br><br><br><br>

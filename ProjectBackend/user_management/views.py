@@ -57,7 +57,14 @@ def loginUser(request):
 
         if user.is_authenticated:
             userProfile = UserProfile.objects.get(user=user)
-            response = {'userProfile':userProfile}
+            role = userProfile.role
+            print("Users Role in real life: ", role)
+            #UserPRofile
+                #fk#User = user
+                #role
+                #code
+                #image
+            response = {'userRole':role}
             return render(request, 'homepage.html', response)
         else:
             print("Something went wrong - log in again")
