@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from resource_contribution.models import RESOURCE_METADATA
 from datetime import datetime
-
+from django.utils import timezone
 # Create your views here.
 def ratingPage(request):
 	return render(request, 'rateResource.html')
@@ -46,7 +46,7 @@ def resourceModeration(request):
         resource_id = request.POST.get('source_id')
         approval_status = request.POST.get('mod_status')
         moderation_comment = request.POST.get('mod_comment')
-        moderation_date = request.POST.get('mod_dateTime')
+        moderation_date = timezone.now()#request.POST.get('mod_dateTime')
         
         # Validate that resource_id is a digit
         if resource_id.isdigit():
@@ -65,8 +65,8 @@ def resourceModeration(request):
                     # Validate moderation_date is a valid date
                     try:
                         # Attempt to parse the moderation_date
-                        parsed_date = datetime.strptime(moderation_date, '%Y-%m-%d') 
-                        resource.moderation_date = parsed_date
+                        #parsed_date = datetime.strptime(moderation_date, '%Y-%m-%d') 
+                        resource.moderation_date = moderation_date#parsed_date
                         
                         # Save resource with updated moderation details
                         resource.save()
