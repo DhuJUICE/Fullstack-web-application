@@ -27,6 +27,8 @@ text_extensions = ["txt"]
 powerpoint_extensions = ["pptx", "ppt"]
 pdf_extensions = ["pdf"]
 
+uploadList = []
+
 # Page to upload resources
 def resourceUploadPage(request):
     return render(request, 'fileUploadTagging.html')
@@ -60,7 +62,7 @@ def resourceUploading(request):
         #get the values for the resource to be uploaded
         extension = os.path.splitext(resource.name)[1][1:]
 
-        if (extension not in word_extensions) and (extension not in excel_extensions) and (extension not in image_extensions) and (extension not in text_extensions) and (extension not in powerpoint_extensions) and (extension in pdf_extensions):
+        if (extension not in word_extensions) and (extension not in excel_extensions) and (extension not in image_extensions) and (extension not in text_extensions) and (extension not in powerpoint_extensions) and (extension not in pdf_extensions):
             print("Invalid file type for :", resource.name, " - try again(ONLY WORD, EXCEL, POWERPOINT, TEXT, PDF Files)")
             return redirect("resourceUpload")
 
@@ -95,7 +97,9 @@ def resourceUploading(request):
                                     #    grade=grade,
                                     #    keywords=keywords
                                     #)
+                                    
                                     resourcePdfConversion(resource)
+                                    resourceFileStorage(uploadList)
                                 else:
                                     print("No keywords provided, provide at least one keyword")
                             else:
@@ -518,24 +522,51 @@ def resourceLicencePrepending(original_pdf_path, resource):
         with open(output_pdf_path, 'wb') as output_file:
             output_pdf.write(output_file)
 
+
         return output_pdf_path
         #SHOULD THEN DELETE THE ORIGINAL PDF IN THE TEMP_FILES FOLDER
 
     #license text to add for our watermark
     license_text = "This document is licensed under NexTech License."
-
+    output_path = prepend_license_to_pdf(original_pdf_path, license_text, full_file_name)
+    
+    #add the output licenced pdf to the uploadList
+    uploadList.append(output_path)
+    
     #add license to pdf and save the licensed pdf to temp_files
-    return prepend_license_to_pdf(original_pdf_path, license_text, full_file_name)
+    return output_path
 
     #resourceFileStorage()  # save the files to the File Storage System
 
 def uploadPage(request):
     return render(request, 'fileStorage.html')
 
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.files import File
+
+def convert_to_file_like_object(file_path):
+    # Open the file in binary mode
+    with open(file_path, 'rb') as f:
+        # Read the content and create a file-like object
+        file_content = f.read()
+        # Create an InMemoryUploadedFile object
+        file_like_object = InMemoryUploadedFile(
+            file=f,
+            field_name='upload_file',
+            name=os.path.basename(file_path),
+            content_type='application/octet-stream',  # Adjust as necessary
+            size=os.path.getsize(file_path),
+            charset=None
+        )
+    return file_like_object
+
+
+
 # Function to handle file system storage
-def resourceFileStorage(request):
-    if request.method == 'POST' and request.FILES.get('upload_file'):
-        file_obj = request.FILES['upload_file']
+def resourceFileStorage(uploadList):
+    for path in uploadList:
+        file_path = path  # Path to your file
+        file_obj = convert_to_file_like_object(file_path)
 
         s3 = boto3.client(
             's3',
@@ -552,9 +583,10 @@ def resourceFileStorage(request):
                 ExtraArgs={'ContentType': file_obj.content_type}
             )
             file_url = f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{file_obj.name}"
-            return JsonResponse({'file_url': file_url}, status=200)
+            print("File uploaded")
+            #return #JsonResponse({'file_url': file_url}, status=200)
 
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
-
+    uploadList = []
     return JsonResponse({'error': 'No file uploaded'}, status=400)
