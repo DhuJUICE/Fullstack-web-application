@@ -18,6 +18,8 @@ from PyPDF2 import PdfWriter, PdfReader
 from reportlab.lib.pagesizes import landscape, A4
 from reportlab.pdfgen import canvas
 from django.conf import settings
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.files import File
 
 # Define extensions
 word_extensions = ["doc", "docx"]
@@ -66,6 +68,9 @@ def resourceUploading(request):
             print("Invalid file type for :", resource.name, " - try again(ONLY WORD, EXCEL, POWERPOINT, TEXT, PDF Files)")
             return redirect("resourceUpload")
 
+    #create a list to store the output paths of the licenced pdfs
+    licencedPdfList = []
+
     #for loop to convert my documents into watermarked pdfs
     for resource in resource_list:  
         if resource:
@@ -88,18 +93,15 @@ def resourceUploading(request):
 
                                 keywords = request.POST.get('keywords')
                                 if keywords != "":
-                                    #user = User.objects.get(id=contributor)
-                                    #RESOURCE_METADATA.objects.create(
-                                    #    file_type=file_type,
-                                    #    contributor=user,
-                                    #    resource_name=resource_name,
-                                    #    subject=subject,
-                                    #    grade=grade,
-                                    #    keywords=keywords
-                                    #)
+
                                     
-                                    resourcePdfConversion(resource)
-                                    resourceFileStorage(uploadList)
+                                    licencedPdfPath = resourcePdfConversion(resource)
+
+                                    #add the output for the licenced pdf to the licencedPdfList
+                                    licencedPdfList.append(licencedPdfPath)
+
+                                    print("Licenced pdf path: ", licencedPdfPath)
+
                                 else:
                                     print("No keywords provided, provide at least one keyword")
                             else:
@@ -122,6 +124,12 @@ def resourceUploading(request):
         print("No file uploaded - upload at least one file to the resource")
         return redirect("resourceUpload")
     else:
+        print("This is the licenced pdf list: ", licencedPdfList)
+
+        #call the function to store the files at the paths in the licencedPdfList
+        return resourceFileStorage(licencedPdfList, request)
+        licencedPdfList = []
+
         return redirect("resourceUpload")
 
 def pdfConversionPage(request):
@@ -420,30 +428,36 @@ def resourcePdfConversion(resource):
             print("Converting Word file to PDF")
             pdf_output = docx_to_pdf(resource)
             print("Temp pdf path: ", pdf_output)
+            return pdf_output
 
         elif extension in excel_extensions:
             print("Converting Excel file to PDF")
             pdf_output = xlsx_to_pdf(resource)
             print("Temp pdf path: ", pdf_output)
+            return pdf_output
 
         elif extension in image_extensions:
             print("Converting image file to PDF")
             pdf_output = image_to_pdf(resource)
             print("Temp pdf path: ", pdf_output)
+            return pdf_output
 
         elif extension in text_extensions:
             print("Converting text file to PDF")
             pdf_output = txt_to_pdf(resource)
             print("Temp pdf path: ", pdf_output)
+            return pdf_output
 
         elif extension in powerpoint_extensions:
             print("Converting powerpoint file to PDF")
             pdf_output = pptx_to_pdf(resource) 
             print("Temp pdf path: ", pdf_output)
+            return pdf_output
             
         elif extension in pdf_extensions:
             print("File is already a PDF, saving to temporary path for processing")
             temp_pdf_path = pdf_to_pdfPath(resource)
+            return temp_pdf_path
         else:
             print("Invalid file type; we only support Word, Excel, Image, Text, and PDF files.")
     else:
@@ -536,13 +550,10 @@ def resourceLicencePrepending(original_pdf_path, resource):
     #add license to pdf and save the licensed pdf to temp_files
     return output_path
 
-    #resourceFileStorage()  # save the files to the File Storage System
-
 def uploadPage(request):
     return render(request, 'fileStorage.html')
 
-from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.core.files import File
+
 
 def convert_to_file_like_object(file_path):
     # Open the file in binary mode
@@ -558,15 +569,22 @@ def convert_to_file_like_object(file_path):
             size=os.path.getsize(file_path),
             charset=None
         )
-    return file_like_object
 
+        # Create a BytesIO object from the InMemoryUploadedFile
+        file_object = BytesIO(file_like_object.read())
+        file_object.seek(0)  # Rewind the file-like object to the beginning
 
+    return file_object, file_like_object
 
 # Function to handle file system storage
-def resourceFileStorage(uploadList):
+def resourceFileStorage(uploadList, request):
+    storedList = []
+    uploaded_paths_string = ""
     for path in uploadList:
+        print("PATH: ", path)
         file_path = path  # Path to your file
-        file_obj = convert_to_file_like_object(file_path)
+        file_obj = convert_to_file_like_object(file_path)[0]
+        file_like_object = convert_to_file_like_object(file_path)[1]
 
         s3 = boto3.client(
             's3',
@@ -579,14 +597,37 @@ def resourceFileStorage(uploadList):
             s3.upload_fileobj(
                 file_obj,
                 settings.AWS_STORAGE_BUCKET_NAME,
-                file_obj.name,
-                ExtraArgs={'ContentType': file_obj.content_type}
+                file_like_object.name,
+                ExtraArgs={'ContentType': file_like_object.content_type}
             )
-            file_url = f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{file_obj.name}"
+            file_url = f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{file_like_object.name}"
             print("File uploaded")
-            #return #JsonResponse({'file_url': file_url}, status=200)
-
+            storedList.append(file_url)
+            
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
-    uploadList = []
-    return JsonResponse({'error': 'No file uploaded'}, status=400)
+
+
+    #after storing the file without errors then store the document metadata
+    user = request.user
+    resource_name = request.POST.get('resourceName')
+    subject = request.POST.get('subject')
+    grade = request.POST.get('grade')
+    keywords = request.POST.get('keywords')
+
+    try:
+            
+        RESOURCE_METADATA.objects.create(
+        #    file_type=file_type,
+            contributor=user,
+            resource_name=resource_name,
+            subject=subject,
+            grade=grade,
+            keywords=keywords
+        )
+    except Exception as e:
+        print(e)
+                                
+
+    return JsonResponse({'uploaded_files': storedList}, status=200)
+    #return JsonResponse({'error': 'No file uploaded'}, status=400)

@@ -14,11 +14,30 @@ import string
 import time
 
 def homepage(request):
-    context = {
-        'url': 'http://127.0.0.1:8000',
-        'link_text': 'Click here',
-    }
-    return render(request, 'homepage.html', context)
+    user = request.user  # Access the logged-in user
+    if user.is_authenticated:
+        # The user is logged in
+        userProfile = UserProfile.objects.get(user=user)
+        role = userProfile.role
+        if role == "adminUser":
+            response = {"userRole":role}
+        elif role == "moderatorUser":
+            response = {"userRole":role}   
+        elif role == "educatorUser":
+            response = {"userRole":role}
+
+        return render(request, 'homepage.html', response)
+
+    else:
+        # The user is not logged in
+        return render(request, 'homepage.html')
+
+    #context = {
+    #    'url': 'http://127.0.0.1:8000',
+    #    'link_text': 'Click here',
+    #}
+
+    return render(request, 'homepage.html')
 
 # Create your views here.
 #this function should validate and authenticate the user
