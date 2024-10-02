@@ -59,6 +59,7 @@ def resourceUploading(request):
         if resource3 != "":
             resource_list.append(resource3)
 
+
     #for loop to check what file types where uploaded, we only support our 5 file types
     for resource in resource_list:
         #get the values for the resource to be uploaded
@@ -96,9 +97,9 @@ def resourceUploading(request):
 
                                     
                                     licencedPdfPath = resourcePdfConversion(resource)
-
-                                    #add the output for the licenced pdf to the licencedPdfList
-                                    licencedPdfList.append(licencedPdfPath)
+                                    if licencedPdfPath is not None:
+                                        #add the output for the licenced pdf to the licencedPdfList
+                                        licencedPdfList.append(licencedPdfPath)
 
                                     print("Licenced pdf path: ", licencedPdfPath)
 
@@ -127,7 +128,13 @@ def resourceUploading(request):
         print("This is the licenced pdf list: ", licencedPdfList)
 
         #call the function to store the files at the paths in the licencedPdfList
+        print("LICENECD PATH LIST: ")
+        for i in licencedPdfList:
+            print(i, "\n")
+
+        print("END OF LICENCED OATH LIST")
         return resourceFileStorage(licencedPdfList, request)
+
         licencedPdfList = []
 
         return redirect("resourceUpload")
@@ -626,7 +633,7 @@ def resourceFileStorage(uploadList, request):
             keywords=keywords
         )
     except Exception as e:
-        print(e)
+        print("METADATA ERROR: ",e)
                                 
 
     return JsonResponse({'uploaded_files': storedList}, status=200)
