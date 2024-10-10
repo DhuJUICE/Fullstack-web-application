@@ -78,46 +78,35 @@ def resourceUploading(request):
             #get the values for the resource to be uploaded
             file_extension = os.path.splitext(resource.name)[1].lower()
             file_type = resource.content_type
+			resource_name = request.POST.get('resourceName')
+			
+			if resource_name != "":
 
-            contributor = request.POST.get('contributor')
-            if contributor != "":
-                if str(contributor).isdigit():
+				subject = request.POST.get('subject')
+				if subject != "":
 
-                    resource_name = request.POST.get('resourceName')
-                    if resource_name != "":
+					grade = request.POST.get('grade')
+					if grade != "":
 
-                        subject = request.POST.get('subject')
-                        if subject != "":
+						keywords = request.POST.get('keywords')
+						if keywords != "":
 
-                            grade = request.POST.get('grade')
-                            if grade != "":
+							
+							licencedPdfPath = resourcePdfConversion(resource)
+							if licencedPdfPath is not None:
+								#add the output for the licenced pdf to the licencedPdfList
+								licencedPdfList.append(licencedPdfPath)
 
-                                keywords = request.POST.get('keywords')
-                                if keywords != "":
+							print("Licenced pdf path: ", licencedPdfPath)
 
-                                    
-                                    licencedPdfPath = resourcePdfConversion(resource)
-                                    if licencedPdfPath is not None:
-                                        #add the output for the licenced pdf to the licencedPdfList
-                                        licencedPdfList.append(licencedPdfPath)
-
-                                    print("Licenced pdf path: ", licencedPdfPath)
-
-                                else:
-                                    print("No keywords provided, provide at least one keyword")
-                            else:
-                                print("No grade selected, please selecta grade or choose a grade option")
-                        else:
-                            print("No subject selected, please select a subject or choose an subject option")
-
-                        
-                    else:
-                        print("Please enter a Resource name")
-                else:
-                    print("The user id must be an integer")
-            else:
-                print("There is no contributor, please log in to be a contributor, or enter a contributor user id")
-            
+						else:
+							print("No keywords provided, provide at least one keyword")
+					else:
+						print("No grade selected, please selecta grade or choose a grade option")
+				else:
+					print("No subject selected, please select a subject or choose an subject option")
+			else:
+				print("Please enter a Resource name")
         else:
             return render(request, 'fileUploadTagging.html')
 
