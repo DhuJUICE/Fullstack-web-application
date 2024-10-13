@@ -5,6 +5,7 @@ from django.contrib.auth.models import User, auth
 class RESOURCE_METADATA(models.Model):
 
     #Resource Metadata
+    #OPTIONAL ONES
     #identifier from aws s3
     file_path1 = models.FileField(upload_to='resources/', null=True, blank=True)
     file_path2 = models.FileField(upload_to='resources/', null=True, blank=True)
@@ -12,9 +13,9 @@ class RESOURCE_METADATA(models.Model):
     file_path4 = models.FileField(upload_to='resources/', null=True, blank=True)
 
     #what type of file is being stored as the resource
-    file_type = models.CharField(max_length = 100)
     date_contributed = models.DateTimeField(auto_now_add=True)
 
+    #MUST HAVE THESE WHEN INPUTING RESOURCE DATA
     #get the id of the person uploading the resource
     contributor = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -26,6 +27,7 @@ class RESOURCE_METADATA(models.Model):
     #keywords contains a list of keywords to find the resource with(need an array later on),delimeter will be used
     keywords = models.TextField()
     
+    #BACK TO OPTIONAL ONES
     #rating of the resource 1-5
     resource_rating = models.IntegerField(null=True, blank=True)
 

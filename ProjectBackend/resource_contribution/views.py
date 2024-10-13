@@ -572,7 +572,6 @@ def convert_to_file_like_object(file_path):
 
     return file_object, file_like_object
 
-# Function to handle file system storage
 def resourceFileStorage(uploadList, request):
     storedList = []
     
@@ -636,5 +635,14 @@ def resourceFileStorage(uploadList, request):
     except Exception as e:
         print("METADATA ERROR: ", e)
         return JsonResponse({'error': str(e)}, status=500)
+
+    # Delete files in the uploadList after successful upload
+    for path in uploadList:
+        try:
+            if os.path.exists(path):
+                os.remove(path)  # Delete the file
+                print(f"Deleted file: {path}")
+        except Exception as e:
+            print(f"Error deleting file {path}: {e}")
 
     return JsonResponse({'uploaded_files': file_urls}, status=200)
