@@ -5,7 +5,11 @@ from .views import deserializeFaqPaginated, deserializeResourcePaginated, deseri
 from .views import deserializeFaq, deserializeResource, deserializeReport, deserializeUser
 from django.test import TestCase
 
+from .views import ContributorsListView
+
 urlpatterns = [
+    
+	path('api/contributors', ContributorsListView.as_view(), name='contributors-list'),
 	#API ENDPOINTS for GET, POST, PUT, DELETE requests
 
 	#with pagination for GET requests of all objects

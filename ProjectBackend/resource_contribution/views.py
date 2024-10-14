@@ -78,46 +78,35 @@ def resourceUploading(request):
             #get the values for the resource to be uploaded
             file_extension = os.path.splitext(resource.name)[1].lower()
             file_type = resource.content_type
-
-            contributor = request.POST.get('contributor')
-            if contributor != "":
-                if str(contributor).isdigit():
-
-                    resource_name = request.POST.get('resourceName')
-                    if resource_name != "":
-
-                        subject = request.POST.get('subject')
-                        if subject != "":
-
-                            grade = request.POST.get('grade')
-                            if grade != "":
-
-                                keywords = request.POST.get('keywords')
-                                if keywords != "":
-
-                                    
-                                    licencedPdfPath = resourcePdfConversion(resource)
-                                    if licencedPdfPath is not None:
-                                        #add the output for the licenced pdf to the licencedPdfList
-                                        licencedPdfList.append(licencedPdfPath)
-
-                                    print("Licenced pdf path: ", licencedPdfPath)
-
-                                else:
-                                    print("No keywords provided, provide at least one keyword")
-                            else:
-                                print("No grade selected, please selecta grade or choose a grade option")
-                        else:
-                            print("No subject selected, please select a subject or choose an subject option")
-
-                        
-                    else:
-                        print("Please enter a Resource name")
-                else:
-                    print("The user id must be an integer")
-            else:
-                print("There is no contributor, please log in to be a contributor, or enter a contributor user id")
+            resource_name = request.POST.get('resourceName')
             
+            if resource_name != "":
+
+                subject = request.POST.get('subject')
+                if subject != "":
+
+                    grade = request.POST.get('grade')
+                    if grade != "":
+
+                        keywords = request.POST.get('keywords')
+                        if keywords != "":
+
+                            
+                            licencedPdfPath = resourcePdfConversion(resource)
+                            if licencedPdfPath is not None:
+                                #add the output for the licenced pdf to the licencedPdfList
+                                licencedPdfList.append(licencedPdfPath)
+
+                            print("Licenced pdf path: ", licencedPdfPath)
+
+                        else:
+                            print("No keywords provided, provide at least one keyword")
+                    else:
+                        print("No grade selected, please selecta grade or choose a grade option")
+                else:
+                    print("No subject selected, please select a subject or choose an subject option")
+            else:
+                print("Please enter a Resource name")
         else:
             return render(request, 'fileUploadTagging.html')
 
@@ -583,22 +572,22 @@ def convert_to_file_like_object(file_path):
 
     return file_object, file_like_object
 
-# Function to handle file system storage
 def resourceFileStorage(uploadList, request):
     storedList = []
-    uploaded_paths_string = ""
+    
+    s3 = boto3.client(
+        's3',
+        region_name='af-south-1',
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY
+    )
+
+    file_urls = []
+
     for path in uploadList:
         print("PATH: ", path)
-        file_path = path  # Path to your file
-        file_obj = convert_to_file_like_object(file_path)[0]
-        file_like_object = convert_to_file_like_object(file_path)[1]
-
-        s3 = boto3.client(
-            's3',
-            region_name='af-south-1', 
-            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY
-        )
+        file_obj = convert_to_file_like_object(path)[0]
+        file_like_object = convert_to_file_like_object(path)[1]
 
         try:
             s3.upload_fileobj(
@@ -609,13 +598,12 @@ def resourceFileStorage(uploadList, request):
             )
             file_url = f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{file_like_object.name}"
             print("File uploaded")
-            storedList.append(file_url)
+            file_urls.append(file_url)
             
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
 
-
-    #after storing the file without errors then store the document metadata
+    # After storing the files, store the document metadata
     user = request.user
     resource_name = request.POST.get('resourceName')
     subject = request.POST.get('subject')
@@ -623,18 +611,38 @@ def resourceFileStorage(uploadList, request):
     keywords = request.POST.get('keywords')
 
     try:
-            
-        RESOURCE_METADATA.objects.create(
-        #    file_type=file_type,
+        # Create a new RESOURCE_METADATA object
+        resource_instance = RESOURCE_METADATA(
             contributor=user,
             resource_name=resource_name,
             subject=subject,
             grade=grade,
             keywords=keywords
         )
-    except Exception as e:
-        print("METADATA ERROR: ",e)
-                                
 
-    return JsonResponse({'uploaded_files': storedList}, status=200)
-    #return JsonResponse({'error': 'No file uploaded'}, status=400)
+        # Save the files to the respective FileFields
+        if len(file_urls) > 0:
+            resource_instance.file_path1 = file_urls[0] if len(file_urls) > 0 else None
+        if len(file_urls) > 1:
+            resource_instance.file_path2 = file_urls[1] if len(file_urls) > 1 else None
+        if len(file_urls) > 2:
+            resource_instance.file_path3 = file_urls[2] if len(file_urls) > 2 else None
+        if len(file_urls) > 3:
+            resource_instance.file_path4 = file_urls[3] if len(file_urls) > 3 else None
+        
+        resource_instance.save()
+
+    except Exception as e:
+        print("METADATA ERROR: ", e)
+        return JsonResponse({'error': str(e)}, status=500)
+
+    # Delete files in the uploadList after successful upload
+    for path in uploadList:
+        try:
+            if os.path.exists(path):
+                os.remove(path)  # Delete the file
+                print(f"Deleted file: {path}")
+        except Exception as e:
+            print(f"Error deleting file {path}: {e}")
+
+    return JsonResponse({'uploaded_files': file_urls}, status=200)

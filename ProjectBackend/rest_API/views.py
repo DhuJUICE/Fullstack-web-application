@@ -318,3 +318,16 @@ class deserializeUser(APIView):
         except User.DoesNotExist:
             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
+class ContributorsListView(APIView):
+    permission_classes = [AllowAny]
+    
+    def get(self, requests):
+        try:
+            # Get all user IDs who have contributed resources
+            contributor_ids = RESOURCE_METADATA.objects.values_list('contributor', flat=True).distinct()
+            # Return users who have contributed resources
+            users =  User.objects.filter(id__in=contributor_ids)
+            serializer = UserSerializer(users, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK) 
+        except User.DoesNotExist:
+            return Response({"error": "Contributor not found."}, status=status.HTTP_404_NOT_FOUND)
