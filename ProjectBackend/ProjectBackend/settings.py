@@ -92,7 +92,8 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # React app's URL
+    "http://localhost:3000",
+	"https://frontend-bm1e.onrender.com",  # React app's URL
 ]
 
 ROOT_URLCONF = 'ProjectBackend.urls'
