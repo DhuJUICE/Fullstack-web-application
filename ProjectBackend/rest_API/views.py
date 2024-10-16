@@ -103,7 +103,6 @@ class deserializeFaq(APIView):
         except FAQ.DoesNotExist:
             return Response({"error": "FAQ not found."}, status=status.HTTP_404_NOT_FOUND)
 
-
 class deserializeResource(APIView):
     permission_classes = [AllowAny]
 
@@ -126,21 +125,7 @@ class deserializeResource(APIView):
         serializer = DocSerializer(data=request.data)
         if serializer.is_valid():
             resource = serializer.save()
-            response_data = {
-                "id": resource.id,
-                "file_path": resource.file_path,
-                "file_type": resource.file_type,
-                "contributor": resource.contributor,
-                "resource_name": resource.resource_name,
-                "subject": resource.subject,
-                "grade": resource.grade,
-                "keywords": resource.keywords,
-                "date_contributed": resource.date_contributed,
-                "resource_rating": resource.resource_rating,
-                "approval_status": resource.approval_status,
-                "moderation_comment": resource.moderation_comment,
-                "moderation_date": resource.moderation_date
-            }
+            response_data = serializer.data
             return Response(response_data, status=status.HTTP_201_CREATED)
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -153,30 +138,11 @@ class deserializeResource(APIView):
         serializer = DocSerializer(resource, data=request.data, partial=True)
         if serializer.is_valid():
             resource = serializer.save()
-            
-            # Check if the file_path is associated after saving
-            if not resource.file_path:
-                return Response({"error": "No file associated with the resource after update."}, status=status.HTTP_400_BAD_REQUEST)
-
-            response_data = {
-                "id": resource.id,
-                "file_path": resource.file_path,
-                "file_type": resource.file_type,
-                "contributor": resource.contributor,
-                "resource_name": resource.resource_name,
-                "subject": resource.subject,
-                "grade": resource.grade,
-                "keywords": resource.keywords,
-                "date_contributed": resource.date_contributed,
-                "resource_rating": resource.resource_rating,
-                "approval_status": resource.approval_status,
-                "moderation_comment": resource.moderation_comment,
-                "moderation_date": resource.moderation_date
-            }
+            response_data = serializer.data
             return Response(response_data, status=status.HTTP_200_OK)
         
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-        
+
     def delete(self, request, *args, **kwargs):
         try:
             resource = RESOURCE_METADATA.objects.get(pk=kwargs['pk'])
