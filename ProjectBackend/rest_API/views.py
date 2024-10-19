@@ -152,7 +152,7 @@ class deserializeResource(APIView):
             return Response({"error": "Resource not found."}, status=status.HTTP_404_NOT_FOUND)
 
 class deserializeReport(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         if 'pk' in kwargs:
@@ -167,25 +167,33 @@ class deserializeReport(APIView):
             serializer = ReportSerializer(reports, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
+class deserializeReport(APIView):
+    permission_classes = [AllowAny]  # Adjust based on your authentication logic
+
     def post(self, request, *args, **kwargs):
         resource_id = request.data.get('reportResource')
+
         if resource_id:
             try:
-                # Check if the resource exists
-                RESOURCE_METADATA.objects.get(id=resource_id)
+                resource = RESOURCE_METADATA.objects.get(id=resource_id)
             except RESOURCE_METADATA.DoesNotExist:
                 return Response({"error": "Resource not found."}, status=status.HTTP_400_BAD_REQUEST)
-        #from here it goes to the serializer
+        else:
+            return Response({"error": "reportResource is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Automatically set reportUser based on the authenticated user
+        if not request.user.is_authenticated:
+            return Response({"error": "User must be logged in."}, status=status.HTTP_403_FORBIDDEN)
+
+        # Set reportUser to the current user
+        request.data['reportUser'] = request.user
+
         serializer = ReportSerializer(data=request.data)
         if serializer.is_valid():
             report = serializer.save()
-            response_data = {
-                "id": report.id,
-                "reportComplaint": report.reportComplaint,
-                "reportDatetime": report.reportDatetime,
-                "reportResource": report.reportResource.id
-            }
+            response_data = serializer.data
             return Response(response_data, status=status.HTTP_201_CREATED)
+        
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, *args, **kwargs):
@@ -194,29 +202,26 @@ class deserializeReport(APIView):
         except RESOURCE_REPORT.DoesNotExist:
             return Response({"error": "Report not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Ensure 'reportResource' is passed as an ID
+        # Ensure 'reportResource' is passed and valid
         if 'reportResource' in request.data:
             resource_id = request.data['reportResource']
             if resource_id:
                 try:
-                    request.data['reportResource'] = resource_id
+                    RESOURCE_METADATA.objects.get(id=resource_id)
                 except RESOURCE_METADATA.DoesNotExist:
                     return Response({"error": "Resource not found."}, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            # Keep the existing resource if not provided
-            request.data['reportResource'] = report.reportResource.id
+
+        # Keep the existing reportUser if not provided
+        if 'reportUser' not in request.data:
+            request.data['reportUser'] = report.reportUser.id
 
         serializer = ReportSerializer(report, data=request.data, partial=True)
         if serializer.is_valid():
             report = serializer.save()
-            response_data = {
-                "id": report.id,
-                "reportComplaint": report.reportComplaint,
-                "reportDatetime": report.reportDatetime,
-                "reportResource": report.reportResource.id
-            }
+            response_data = serializer.data
             return Response(response_data, status=status.HTTP_200_OK)
         return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
     def delete(self, request, *args, **kwargs):
         try:
             report = RESOURCE_REPORT.objects.get(pk=kwargs['pk'])

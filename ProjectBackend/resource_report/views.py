@@ -9,13 +9,11 @@ def reportPage(request):
 # Create your views here.
 #report certain resource
 def resourceReport(request):
-    # Get the currently logged-in user - must add resourceUser to the report model
-    # user = request.user
     if request.method == 'POST':
         # Get the report complaint from the frontend
         complaint = request.POST.get('reportComplaint')
         resourceId = request.POST.get('resourceId')
-        userId = request.POST.get('userId')
+        userId = request.user.id  # This line assumes the user is authenticated
 
         # Validate that complaint is not empty
         if complaint == "":
@@ -31,33 +29,24 @@ def resourceReport(request):
             print("Invalid input for resourceId, must be an integer.")
             return redirect("reportPage")
 
-        # Validate that userId is a digit (assuming it's an integer ID)
-        if userId == "":
-            print("The user id field cannot be empty.")
-            return redirect("reportPage")
-        
-        if not userId.isdigit():
-            print("Invalid input for userId, must be an integer.")
-            return redirect("reportPage")
-
-        # If all validations pass, proceed with the API call
+        # Prepare data for the API call
         api_url = 'http://127.0.0.1:8000/api/report/deserial'
         
         data = {
             "reportComplaint": complaint,
-            "reportResource": resourceId,
-            "reportUser": userId
+            "reportResource": resourceId
+            # Do not include reportUser here
         }
 
         headers = {'Content-Type': 'application/json'}
         
         try:
-            response = requests.post(api_url, data=json.dumps(data), headers=headers)
+            response = requests.post(api_url, json=data, headers=headers)  # Use json=data
             
-            if response.status_code == 200:
+            if response.status_code == 201:  # 201 for created
                 print("Report submitted successfully.")
             else:
-                print(f"Failed to submit report. Status code: {response.status_code}")
+                print(f"Failed to submit report. Status code: {response.status_code}. Response: {response.text}")
         except requests.exceptions.RequestException as e:
             print(f"An error occurred while making the API request: {e}")
 
