@@ -250,13 +250,11 @@ def validate_verification_code(request):
 
         # Check if the verification code is valid
         if userProfile.verificationCode != code:
-            print("Incorrect verification code\n")
             response = {"error": "Invalid verification code."}
             return JsonResponse(response, status=400)
 
         # Check if the verification code is expired
         if userProfile.is_code_expired():
-            print("Verification code expired\n")
             response = {"error": "Verification code expired."}
             return JsonResponse(response, status=400)
 
@@ -287,12 +285,10 @@ def changePassword(request):
             # Change the user's password with the hashed version
             user.set_password(newPassword)
             user.save()
-            print("Password changed")
 
             response = {"message": "Password successfully changed."}
             return JsonResponse(response, status=200)
         else:
-            print("Passwords do not match")
             response = {"error": "Passwords do not match."}
             return JsonResponse(response, status=400)
 
@@ -307,15 +303,24 @@ def updateRolePage(request):
 
 #function to update user role
 def updateRole(request):
-    userId = request.POST.get('user_id')
-    userRole = request.POST.get('role')
-    print(str(userId) + " " + userRole)
+    # Check if the request method is POST
+    if request.method == "POST":
+        userId = request.POST.get('user_id')
+        userRole = request.POST.get('role')
+        print(f"{userId} {userRole}")
 
-    user = User.objects.get(id = userId)
-    userProfile = UserProfile.objects.get(user = user)
-    userProfile.role = userRole
-    userProfile.save()
+        # Get the user and their profile
+        user = get_object_or_404(User, id=userId)
+        userProfile = get_object_or_404(UserProfile, user=user)
 
-    response = {'userRole':userRole}
+        # Update the user's role
+        userProfile.role = userRole
+        userProfile.save()
 
-    return render(request, 'homepage.html', response)
+        response = {'userRole': userRole}
+        return JsonResponse(response, status=200)
+
+    # If the request method is not POST
+    else:
+        response = {'error': 'Invalid request method.'}
+        return JsonResponse(response, status=400)

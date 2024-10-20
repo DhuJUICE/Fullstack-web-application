@@ -50,6 +50,24 @@ import json
 
 #EXTERNAL APP FUNCTIONALITY FOR API ENDPOINTS
 
+
+
+#change user password after the verification code has been verified
+class UpdateUserRole(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        # Call the regular function
+        response = updateRole(request)
+
+        # If the other function returns a JsonResponse, return its content as JSON
+        if isinstance(response, JsonResponse):
+            # Deserialize the content if it's a JsonResponse
+            return JsonResponse(json.loads(response.content), status=response.status_code)
+
+        # Handle other response types if necessary
+        return JsonResponse({"error": "Unexpected response type"}, status=500)
+
 #change user password after the verification code has been verified
 class NewPassword(APIView):
     permission_classes = [AllowAny]
