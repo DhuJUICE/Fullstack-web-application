@@ -14,7 +14,10 @@ import random
 import string
 import time
 
+from django.shortcuts import get_object_or_404
+
 def homepage(request):
+    return render(request, 'homepage.html')
     user = request.user  # Access the logged-in user
     if user.is_authenticated:
         # The user is logged in
@@ -137,8 +140,7 @@ def registerUser(request):
 def logout(request):
     auth.logout(request)
 
-    #redirect the user to the login page
-    return redirect("/")
+    return JsonResponse({"message": "User logged out successfully"}, status=200)
 
 
 #PASSWORD RESET
@@ -156,51 +158,49 @@ def generate_verification_code():
 def resetPasswordPage(request):
     return render(request, 'resetPassword.html')
 
-#function to reset forgotten password - will use email with a verification code
+#function to reset password using your email
 def resetPassword(request):
-    #get email from user to send verification code to
-    email = request.POST.get('email')		
+    # Check if the request method is POST
+    if request.method == "POST":
+        # Get email from user to send verification code to
+        email = request.POST.get('email')
 
-    #check if the user with that email exists
-    if User.objects.filter(email=email).exists():
-        print("Email exists, You can get a verification code")
+        # Check if the user with that email exists
+        if User.objects.filter(email=email).exists():
+            print("Email exists, You can get a verification code")
 
-        #generate and get the generated code
-        code = generate_verification_code()[0]
-        timestamp = generate_verification_code()[1]		
+            # Generate and get the generated code
+            code, timestamp = generate_verification_code()
 
-        #output code and timestamp
-        print("Verification Code: ", code, "\nGenerated Timestamp: ", timestamp, "\n")
+            # Output code and timestamp
+            print("Verification Code: ", code, "\nGenerated Timestamp: ", timestamp, "\n")
 
-        #save this code & timestamp into that users Users UserProfile object		
-        user = User.objects.get(email=email)
-        userProfile = UserProfile.objects.get(user=user)
-        userProfile.verificationCode = code
-        userProfile.codeTimestamp = timestamp
-        userProfile.save()
+            # Save this code & timestamp into that user's UserProfile object
+            user = get_object_or_404(User, email=email)
+            userProfile = get_object_or_404(UserProfile, user=user)
+            userProfile.verificationCode = code
+            userProfile.codeTimestamp = timestamp
+            userProfile.save()
 
-        #send email to the users email with the newly generated verificationCode(will timeout after some time)
-        EmailVerificationCode(email, code)
+            # Send email to the user's email with the newly generated verification code
+            EmailVerificationCode(email, code)
 
-        response = {"email":email}
+            # Prepare JSON response
+            response = {"message": "Verification code sent to your email.", "email": email}
+            return JsonResponse(response, status=200)
 
-        return render(request, 'resetPasswordCode.html', response)
+        # If user does not exist
+        else:
+            print("Email does not exist, You CANNOT get a verification code")
+            print("No user with that email\n")
+            # Give response that no user is registered with that email
+            response = {"error": "No user registered with that email."}
+            return JsonResponse(response, status=404)
 
-        #allow user to enter the verification code from their email
-        #if the code is correct
-            #Allow user to update their password
-            #save the user instance with new password
-            #redirect to log in page
-        #if the code is incorrect
-            #say code is incorrect 
-
-
-    #if user does not exist
+    # If the request method is not POST
     else:
-        print("Email does not exist, You CANNOT get a verification code")
-        print("No user with that email\n")
-        #give response that no user is registered with that email
-        return redirect("/resetPasswordPage")
+        response = {"error": "Invalid request method."}
+        return JsonResponse(response, status=400)
 
 
 
@@ -227,44 +227,79 @@ def EmailVerificationCode(recipient, code):
     else:
         print(f"Failed to send email: {response.status_code} - {response.text}")
 
+def validateCodePage(request):
+    return render(request, 'resetPasswordCode.html', {'email':'james@gmail.com'})
+
 #function to validate verification code - WHEN USER ENTERS THE CODE
 def validate_verification_code(request):
-    code = request.POST.get('code')
-    email = request.POST.get('email')
+    # Check if the request method is POST
+    if request.method == "POST":
+        code = request.POST.get('code')
+        email = request.POST.get('email')
 
-    try:
-        user = User.objects.get(email=email)
-        userProfile = UserProfile.objects.get(user=user, verificationCode=code)
-    except UserProfile.DoesNotExist:
-        print("Incorrect/no verification code\n")
-        return redirect("/resetPasswordPage")
+        # Try to get the user
+        user = get_object_or_404(User, email=email)
 
-    if userProfile.is_code_expired():
-        print("Verification code expired\n")
-        return redirect("/resetPasswordPage")
-    response = {"email":email}
-    return render(request, 'newPassword.html', response)  # Code is valid
+        # Check if the user profile exists
+        userProfile = UserProfile.objects.filter(user=user).first()
+
+        # Check if the user profile exists and if the verification code matches
+        if userProfile is None:
+            response = {"error": "User profile not found."}
+            return JsonResponse(response, status=404)
+
+        # Check if the verification code is valid
+        if userProfile.verificationCode != code:
+            print("Incorrect verification code\n")
+            response = {"error": "Invalid verification code."}
+            return JsonResponse(response, status=400)
+
+        # Check if the verification code is expired
+        if userProfile.is_code_expired():
+            print("Verification code expired\n")
+            response = {"error": "Verification code expired."}
+            return JsonResponse(response, status=400)
+
+        # Code is valid
+        response = {"message": "Verification code is valid and verified.", "email": email}
+        return JsonResponse(response, status=200)
+
+    # If the request method is not POST
+    else:
+        response = {"error": "Invalid request method."}
+        return JsonResponse(response, status=400)
+
+def changePasswordPage(request):
+    return render(request, 'newPassword.html', {'email':'james@gmail.com'})
 
 #function to change user password after verification code is validated
 def changePassword(request):
-    newPassword = request.POST.get('newPassword')
-    confirmPassword = request.POST.get('confirmPassword')
-    email = request.POST.get('email')
+    # Check if the request method is POST
+    if request.method == "POST":
+        newPassword = request.POST.get('newPassword')
+        confirmPassword = request.POST.get('confirmPassword')
+        email = request.POST.get('email')
 
-    #get the user using the email
-    user = User.objects.get(email=email)
+        # Get the user using the email
+        user = get_object_or_404(User, email=email)
 
-    if newPassword == confirmPassword:
-        #change the users password with the hashed version of the text password
-        #this helps in terms of authentication
-        user.set_password(newPassword)
-        user.save()
-        print("Password changed")
+        if newPassword == confirmPassword:
+            # Change the user's password with the hashed version
+            user.set_password(newPassword)
+            user.save()
+            print("Password changed")
 
-        return redirect("/loginpage")
+            response = {"message": "Password successfully changed."}
+            return JsonResponse(response, status=200)
+        else:
+            print("Passwords do not match")
+            response = {"error": "Passwords do not match."}
+            return JsonResponse(response, status=400)
+
+    # If the request method is not POST
     else:
-        print("Passwords do not match")
-        return render(request, 'newPassword.html')
+        response = {"error": "Invalid request method."}
+        return JsonResponse(response, status=400)
  
 #function to display update user role page
 def updateRolePage(request):

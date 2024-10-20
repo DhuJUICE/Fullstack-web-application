@@ -7,9 +7,17 @@ from .views import deserializeFaq, deserializeResource, deserializeReport, deser
 from django.test import TestCase
 
 from .views import ContributorsListView
-from .views import Login, Register
+from .views import Login, Register, Logout, ResetPassword, ValidateCode, NewPassword
 
 urlpatterns = [
+	path('api/new-password', NewPassword.as_view(), name='api-new_password'),
+
+	path('api/validate-code', ValidateCode.as_view(), name='api-validate_code'),
+
+	path('api/reset-password', ResetPassword.as_view(), name='api-reset_password'),
+
+	path('api/logout', Logout.as_view(), name='api-logout'),
+
 	path('api/register', Register.as_view(), name='api-register'),
 
 	path('api/login', Login.as_view(), name='api-login'),

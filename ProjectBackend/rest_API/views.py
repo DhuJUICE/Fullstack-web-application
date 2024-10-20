@@ -47,8 +47,66 @@ from user_management.views import updateRole
 
 import json
 
+
 #EXTERNAL APP FUNCTIONALITY FOR API ENDPOINTS
-#login users from frontend/clientside
+
+#change user password after the verification code has been verified
+class NewPassword(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        # Call the regular function
+        response = changePassword(request)
+
+        # If the other function returns a JsonResponse, return its content as JSON
+        if isinstance(response, JsonResponse):
+            # Deserialize the content if it's a JsonResponse
+            return JsonResponse(json.loads(response.content), status=response.status_code)
+
+        # Handle other response types if necessary
+        return JsonResponse({"error": "Unexpected response type"}, status=500)
+
+#validate verification code and check expiry
+class ValidateCode(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        # Call the regular function
+        response = validate_verification_code(request)
+
+        # If the other function returns a JsonResponse, return its content as JSON
+        if isinstance(response, JsonResponse):
+            # Deserialize the content if it's a JsonResponse
+            return JsonResponse(json.loads(response.content), status=response.status_code)
+
+        # Handle other response types if necessary
+        return JsonResponse({"error": "Unexpected response type"}, status=500)
+
+#reset password for user account based on email
+class ResetPassword(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        # Call the regular function
+        response = resetPassword(request)
+
+        # If the other function returns a JsonResponse, return its content as JSON
+        if isinstance(response, JsonResponse):
+            # Deserialize the content if it's a JsonResponse
+            return JsonResponse(json.loads(response.content), status=response.status_code)
+
+        # Handle other response types if necessary
+        return JsonResponse({"error": "Unexpected response type"}, status=500)
+
+#logout user from frontend/clientside
+class Logout(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        auth.logout(request)
+        return JsonResponse({"message": "User logged out successfully"}, status=200)
+
+#register users from frontend/clientside
 class Register(APIView):
     permission_classes = [AllowAny]
 
