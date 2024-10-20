@@ -3,12 +3,17 @@ from django.contrib import admin
 from django.urls import path
 from .views import deserializeFaqPaginated, deserializeResourcePaginated, deserializeReportPaginated, deserializeUserPaginated
 from .views import deserializeFaq, deserializeResource, deserializeReport, deserializeUser
+
 from django.test import TestCase
 
 from .views import ContributorsListView
+from .views import Login, Register
 
 urlpatterns = [
-    
+	path('api/register', Register.as_view(), name='api-register'),
+
+	path('api/login', Login.as_view(), name='api-login'),
+
 	path('api/contributors', ContributorsListView.as_view(), name='contributors-list'),
 	#API ENDPOINTS for GET, POST, PUT, DELETE requests
 

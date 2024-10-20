@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User, auth
 from user_management.models import UserProfile
 from django.utils import timezone
+from django.http import JsonResponse
 
 #mailgun email api import
 import requests
@@ -54,17 +55,23 @@ def registerPage(request):
 
 #function-view to get the login buttons navigation
 def loginUser(request):
+    # Only allow POST requests
+    if request.method != 'POST':
+        return JsonResponse({"error": "Method not allowed"}, status=405)
+
     # Get the username or email and password from the user
     username_or_email = request.POST.get('username_or_email')
     password = request.POST.get('password')
-    print(username_or_email)
-    print(password)
-    
+
     # Try to authenticate based on email or username
+    user = None
     if '@' in username_or_email:
         # Attempt to get the user by email
-        email_user = User.objects.get(email=username_or_email)
-        user = auth.authenticate(username=email_user.username, password=password)
+        try:
+            email_user = User.objects.get(email=username_or_email)
+            user = auth.authenticate(username=email_user.username, password=password)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Invalid credentials"}, status=401)
     else:
         # Attempt to authenticate using username directly
         user = auth.authenticate(username=username_or_email, password=password)
@@ -72,29 +79,26 @@ def loginUser(request):
     if user is not None:
         # Securely log in the user
         auth.login(request, user)
-        print("User logged in")
 
         if user.is_authenticated:
             userProfile = UserProfile.objects.get(user=user)
             role = userProfile.role
-            print("Users Role in real life: ", role)
-            #UserPRofile
-                #fk#User = user
-                #role
-                #code
-                #image
-            response = {'userRole':role}
-            return render(request, 'homepage.html', response)
+            response = {
+                'message': "User logged in successfully",
+                'userRole': role
+            }
+            return JsonResponse(response, status=200)
         else:
-            print("Something went wrong - log in again")
-            return redirect("/loginpage")
+            return JsonResponse({"error": "User not authenticated"}, status=401)
     else:
-        print("Invalid credentials or user does not exist")
-        return redirect("/loginpage")
+        return JsonResponse({"error": "Invalid credentials"}, status=401)
 
-#handle the event of someone is registering to our store
+#register new users of the system
 def registerUser(request):
-    #get all the customer information to be stored to the database
+    if request.method != 'POST':
+        return JsonResponse({"error": "Method not allowed"}, status=405)
+
+    # Get all the customer information to be stored in the database
     firstname = request.POST.get('firstname')
     lastname = request.POST.get('lastname')
     username = request.POST.get('username')
@@ -102,36 +106,32 @@ def registerUser(request):
     password = request.POST.get('password')
     confPassword = request.POST.get('confirmpassword')
 
-    #check to see if the username is taken already
+    # Check to see if the username is taken already
     if User.objects.filter(username=username).exists():
-        print("Username already taken")
-        #open the register
-        return redirect("/loginpage")
+        return JsonResponse({"error": "Username already taken"}, status=400)
 
-    #check to see if email is taken already
+    # Check to see if email is taken already
     elif User.objects.filter(email=email).exists():
-        print("Email already taken")
-        #open the register
-        return redirect("/loginpage")
+        return JsonResponse({"error": "Email already taken"}, status=400)
 
-    #check to see if the two passwords are the same
+    # Check to see if the two passwords are the same
     elif password != confPassword:
-        print("Passwords do not match - Try again")
+        return JsonResponse({"error": "Passwords do not match - Try again"}, status=400)
 
-        #open the register
-        return redirect("/loginpage")
     else:
-        print("Passwords match")
-        #create a user object to hold the data for a new user
-        user = User.objects.create_user(first_name=firstname, last_name=lastname, username=username, email=email, password=password)
-        
-        #save the new user data to the database
-        user.save();
+        # Create a user object to hold the data for a new user
+        user = User.objects.create_user(
+            first_name=firstname,
+            last_name=lastname,
+            username=username,
+            email=email,
+            password=password
+        )
 
-        print("created user")
-        
-        #redirect new user to login page, where user can then log in with their user credentials
-        return redirect("/loginpage")
+        # Save the new user data to the database
+        user.save()
+
+        return JsonResponse({"message": "User registered successfully"}, status=201)
 
 #function to logout of user account
 def logout(request):

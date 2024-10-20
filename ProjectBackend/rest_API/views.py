@@ -24,7 +24,7 @@ from rest_framework import status
 from io import BytesIO
 
 #import functionality from other APPS in project
-from document_search.views import resourceSearch
+#from document_search.views import resourceSearch
 
 from faq.views import displayFaqs
 
@@ -45,7 +45,40 @@ from user_management.views import validate_verification_code
 from user_management.views import changePassword
 from user_management.views import updateRole
 
-#FRONTEND MAKES REQUEST - BACKEND GIVES RESPONSE
+import json
+
+#EXTERNAL APP FUNCTIONALITY FOR API ENDPOINTS
+#login users from frontend/clientside
+class Register(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        # Call the regular function
+        response = registerUser(request)
+
+        # If the other function returns a JsonResponse, return its content as JSON
+        if isinstance(response, JsonResponse):
+            # Deserialize the content if it's a JsonResponse
+            return JsonResponse(json.loads(response.content), status=response.status_code)
+
+        # Handle other response types if necessary
+        return JsonResponse({"error": "Unexpected response type"}, status=500)
+
+#login users from frontend/clientside
+class Login(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        # Call the regular function
+        response = loginUser(request)
+
+        # If the other function returns a JsonResponse, return its content as JSON
+        if isinstance(response, JsonResponse):
+            # Deserialize the content if it's a JsonResponse
+            return JsonResponse(json.loads(response.content), status=response.status_code)
+
+        # Handle other response types if necessary
+        return JsonResponse({"error": "Unexpected response type"}, status=500)
 
 #DESERIALIZE CLASSBASED VIEWS WITH PAGINATION
 class deserializeFaqPaginated(generics.ListCreateAPIView):
@@ -324,3 +357,4 @@ class ContributorsListView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK) 
         except User.DoesNotExist:
             return Response({"error": "Contributor not found."}, status=status.HTTP_404_NOT_FOUND)
+
