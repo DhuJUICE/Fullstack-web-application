@@ -89,6 +89,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+	'rest_API.middleware.PerformanceLoggingMiddleware',
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -176,7 +177,6 @@ STATIC_URL = 'static/'
 STATICFILES_DIR = [os.path.join(BASE_DIR, 'React-Frontend/build/static')]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-"""
 # Logging configuration
 LOGGING = {
     'version': 1,
@@ -191,6 +191,11 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'filename': os.path.join(BASE_DIR, 'django_errors.log'),
         },
+        'performance_file': {
+            'level': 'INFO',  # You can adjust this level as needed
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'api_performance.log'),
+        },
     },
     'loggers': {
         'django': {
@@ -203,7 +208,11 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': False,
         },
+        'rest_API.performance': {  # Adjust this to your app name
+            'handlers': ['performance_file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
     },
 }
 
-"""
