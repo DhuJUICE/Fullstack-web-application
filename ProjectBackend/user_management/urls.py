@@ -15,7 +15,11 @@ urlpatterns = [
 
     path('resetPasswordPage', views.resetPasswordPage, name='resetPasswordPage'),
     path('resetPassword', views.resetPassword, name='resetPassword'),
+
+	path('validateCodePage', views.validateCodePage, name='validateCodePage'),
     path('validateCode', views.validate_verification_code, name='validateCode'),
+
+	path('changePasswordPage', views.changePasswordPage, name='changePasswordPage'),
 	path('changePassword', views.changePassword, name='changePassword'),
 
 	path('updateRolePage', views.updateRolePage, name='updateRolePage'),

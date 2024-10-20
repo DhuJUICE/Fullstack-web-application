@@ -22,37 +22,35 @@ class DocSerializer(serializers.ModelSerializer):
 class ReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = RESOURCE_REPORT
-        
-        fields = '__all__'  # or specify fields explicitly
-    
-    #functions to handle nested relationships between reports and resources    
-    def create(self, validated_data):
-        #this gets me the object associated with the reportResource that was posted by the user
-        resource_instance = validated_data.pop('reportResource')
+        fields = '__all__'
+        extra_kwargs = {
+            'reportUser': {'required': False}  # Allow reportUser to be optional
+        }
 
-        #explicitly make the reportResource the above object
+    def create(self, validated_data):
+        # Set reportUser to the current user if not provided
+        reportUser = validated_data.pop('reportUser', None)  # If present, pop it
+
+        # Create the report instance
         report = RESOURCE_REPORT.objects.create(
-            reportResource=resource_instance,
+            reportUser=reportUser,  # This should be set in the view, not the request
             **validated_data
         )
-        #from here it goes back to the views
         return report
 
     def update(self, instance, validated_data):
-        #this is to get the resource object
-        instance.reportResource = validated_data.pop('reportResource')
+        # Check if reportResource is provided in the data
+        if 'reportResource' in validated_data:
+            resource_instance = validated_data.pop('reportResource')
+            instance.reportResource = resource_instance
 
-        #this is the information to update about the report object
+        # Update the other fields
         instance.reportComplaint = validated_data.get('reportComplaint', instance.reportComplaint)
-        
-        #we wont need to update the reportDatetime as it is the time the report was first made
-        #instance.reportDatetime = validated_data.get('reportDatetime', instance.reportDatetime)
 
-        #save the instance to database
+        # We won't need to update the reportDatetime as it is auto-set on creation
         instance.save()
         return instance
 
-        
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

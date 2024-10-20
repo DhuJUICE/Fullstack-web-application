@@ -1,59 +1,77 @@
-{%extends 'base.html'%}
-{%block body%}
+{% extends 'base.html' %}
+{% block body %}
 <title>HOMEPAGE</title>
 
 <center>
-{%if user.is_authenticated%}
-    <header>WELCOME TO THE HOMEPAGE {{user.username}}, CHOOSE YOUR DIRECTION</header>
+{% if user.is_authenticated %}
+    <header>WELCOME TO THE HOMEPAGE {{ user.username }}, CHOOSE YOUR DIRECTION</header>
 
-    <a href="logout">Logout</a><br><br>
+	<a href="#" id="logout-button">Logout</a>
 
     {% if userRole == "adminUser" %}
         <p>ROLE: ADMINISTRATOR</p>
-		<a href="updateRolePage">Upgrade a Users Role</a><br><br>
+        <a href="updateRolePage">Upgrade a User's Role</a><br><br>
         <a href="resourceSearch">Search For Resources</a><br><br>
-        <a href="resourceUpload">Upload a resource to the platform</a><br><br><br><br>
+        <a href="resourceUpload">Upload a resource to the platform</a><br><br>
         <a href="moderationPage">Moderate a Resource</a><br><br>
         <a href="reportPage">Report a Resource</a><br><br>
-        <a href="resourceSearch">Search For Resources</a><br><br>
-        <a href="reportPage">Report a Resource</a><br><br>
-        <a href="ratingPage">Rate a Resource</a><br><br><br><br>
+        <a href="ratingPage">Rate a Resource</a><br><br>
         <a href="faqs">See Frequently asked questions</a><br><br>
 
     {% elif userRole == "moderatorUser" %}
-        <p>ROLE: MODERATOR</p>    
+        <p>ROLE: MODERATOR</p>
         <a href="resourceSearch">Search For Resources</a><br><br>
-        <a href="resourceUpload">Upload a resource to the platform</a><br><br><br><br>
-        <a href="ratingPage">Rate a Resource</a><br><br><br><br>
+        <a href="resourceUpload">Upload a resource to the platform</a><br><br>
+        <a href="ratingPage">Rate a Resource</a><br><br>
         <a href="faqs">See Frequently asked questions</a><br><br>
         <a href="moderationPage">Moderate a Resource</a><br><br>
 
     {% elif userRole == "educatorUser" %}
         <p>ROLE: EDUCATOR</p>
         <a href="resourceSearch">Search For Resources</a><br><br>
-        <a href="resourceUpload">Upload a resource to the platform</a><br><br><br><br>
-        <a href="ratingPage">Rate a Resource</a><br><br><br><br>
+        <a href="resourceUpload">Upload a resource to the platform</a><br><br>
+        <a href="ratingPage">Rate a Resource</a><br><br>
         <a href="faqs">See Frequently asked questions</a><br><br>
 
     {% else %}
         <p>ROLE: OPEN ACCESS USER</p>
         <a href="resourceSearch">Search For Resources</a><br><br>
-        <a href="ratingPage">Rate a Resource</a><br><br><br><br>
+        <a href="ratingPage">Rate a Resource</a><br><br>
         <a href="faqs">See Frequently asked questions</a><br><br>
     {% endif %}
 
-{%else%}
+{% else %}
     <header>WELCOME TO THE HOMEPAGE, CHOOSE YOUR DIRECTION</header>
     <a href="loginpage">Login</a><br><br>
-    <a href="registerpage">SignUp - Create Account</a><br><br><br><br>
+    <a href="registerpage">SignUp - Create Account</a><br><br>
 
     <p>ROLE: OPEN ACCESS USER</p>
-
     <a href="resourceSearch">Search For Resources</a><br><br>
-    <a href="ratingPage">Rate a Resource</a><br><br><br><br>
+    <a href="ratingPage">Rate a Resource</a><br><br>
     <a href="faqs">See Frequently asked questions</a><br><br>
 
-{%endif%}
+{% endif %}
 </center>
 
-{%endblock%}
+<script>
+	document.getElementById('logout-button').addEventListener('click', function(event) {
+		event.preventDefault();  // Prevent the default link behavior
+	
+		fetch('/api/logout', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-CSRFToken': '{{ csrf_token }}'  // Include CSRF token
+			}
+		})
+		.then(response => response.json())
+		.then(data => {
+			console.log(data);  // Log the response data
+			// Optionally, redirect or update UI based on logout
+			window.location.href = '/loginpage';  // Redirect after logout
+		})
+		.catch(error => console.error('Error:', error));
+	});
+</script>
+
+{% endblock %}

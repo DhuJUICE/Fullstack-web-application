@@ -1,0 +1,8 @@
+Method: GET, Path: /loginpage, Status: 200, Duration: 0.02 seconds
+Method: POST, Path: /api/login, Status: 401, Duration: 1.06 seconds
+Method: POST, Path: /api/login, Status: 200, Duration: 1.24 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.39 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 1.02 seconds
+Method: GET, Path: /loginpage, Status: 200, Duration: 0.01 seconds
+Method: POST, Path: /api/login, Status: 401, Duration: 1.10 seconds
+Error: Method: POST, Path: /api/login, Status: 401, Duration: 1.10 seconds
