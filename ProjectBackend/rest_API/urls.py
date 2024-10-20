@@ -8,8 +8,12 @@ from django.test import TestCase
 
 from .views import ContributorsListView
 from .views import Login, Register, Logout, ResetPassword, ValidateCode, NewPassword, UpdateUserRole
-
+from .views import ResourceModeration
 urlpatterns = [
+	#Resource Review API endpoints
+	path('api/moderate-resource', ResourceModeration.as_view(), name='api-moderate_resource'),
+	#path('api/update-user-role', UpdateUserRole.as_view(), name='api-update_user_role'),
+
 	#User Management API endpoints
 	path('api/update-user-role', UpdateUserRole.as_view(), name='api-update_user_role'),
 	path('api/new-password', NewPassword.as_view(), name='api-new_password'),

@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect
 from resource_contribution.models import RESOURCE_METADATA
 from datetime import datetime
 from django.utils import timezone
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+
 # Create your views here.
 def ratingPage(request):
 	return render(request, 'rateResource.html')
@@ -42,48 +45,54 @@ def moderationPage(request):
 
 #get the resources from database and moderate them, then save them back in the database
 def resourceModeration(request):
-    try:
+    # Check if the request method is POST
+    if request.method == "POST":
         resource_id = request.POST.get('source_id')
         approval_status = request.POST.get('mod_status')
         moderation_comment = request.POST.get('mod_comment')
-        moderation_date = timezone.now()#request.POST.get('mod_dateTime')
-        
+        moderation_date = timezone.now()
+
         # Validate that resource_id is a digit
         if resource_id.isdigit():
-            # Get resource from database
-            resource = RESOURCE_METADATA.objects.get(pk=resource_id)
-            
+            # Check if resource exists
+            try:
+                resource = RESOURCE_METADATA.objects.get(pk=resource_id)
+            except RESOURCE_METADATA.DoesNotExist:
+                return JsonResponse({"error": "Resource not found."}, status=404)
+
             # Validate approval_status
-            if approval_status == "approved" or approval_status == "rejected":
+            if approval_status in ["approved", "rejected"]:
                 # Moderate the resource
                 resource.approval_status = approval_status
                 
                 # Check if moderation_comment is not empty
-                if moderation_comment != "":
+                if moderation_comment:
                     resource.moderation_comment = moderation_comment
-                    
-                    # Validate moderation_date is a valid date
-                    try:
-                        # Attempt to parse the moderation_date
-                        #parsed_date = datetime.strptime(moderation_date, '%Y-%m-%d') 
-                        resource.moderation_date = moderation_date#parsed_date
-                        
-                        # Save resource with updated moderation details
-                        resource.save()
-                    except ValueError:
-                        print("Invalid date format for moderation_date. Please use the format YYYY-MM-DD.")
-                else:
-                    print("You can't leave the comment textfield empty.")
-            else:
-                print("Invalid input for the approval status, must be \"approved\" or \"rejected\".")
-        else:
-            print("Invalid input for resource_id, must be an integer.")
-    except RESOURCE_METADATA.DoesNotExist:
-        print("Resource with the given ID does not exist.")
-    except Exception as e:
-        print(f"An error occurred: {e}")
+                
+                # Set the moderation date
+                resource.moderation_date = moderation_date
 
-    # Return the moderation page with updated moderation details
-    return render(request, 'moderation.html')
+                # Save resource with updated moderation details
+                resource.save()
+
+                response = {
+                    "message": "Resource moderated successfully.",
+                    "resource_id": resource_id,
+                    "approval_status": approval_status,
+                    "moderation_comment": moderation_comment,
+                    "moderation_date": moderation_date.isoformat()
+                }
+                return JsonResponse(response, status=200)
+
+            else:
+                response = {"error": "Invalid input for approval status. Must be 'approved' or 'rejected'."}
+                return JsonResponse(response, status=400)
+        else:
+            response = {"error": "Invalid input for resource_id. Must be an integer."}
+            return JsonResponse(response, status=400)
+
+    else:
+        response = {"error": "Invalid request method. Only POST is allowed."}
+        return JsonResponse(response, status=405)
 
 	

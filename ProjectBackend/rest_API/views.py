@@ -24,8 +24,6 @@ from rest_framework import status
 from io import BytesIO
 
 #import functionality from other APPS in project
-#from document_search.views import resourceSearch
-
 from faq.views import displayFaqs
 
 from resource_contribution.views import resourceUploading
@@ -35,6 +33,7 @@ from resource_report.views import resourceReport
 from resource_review.views import resourceRating
 from resource_review.views import resourceModeration
 
+#from document_search.views import resourceSearch
 #from user_analytics.views import UserAnalytics
 
 from user_management.views import loginUser
@@ -50,8 +49,25 @@ import json
 
 #EXTERNAL APP FUNCTIONALITY FOR API ENDPOINTS
 
+#RESOURCE REVIEW
+#moderate resources from client side
+class ResourceModeration(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        # Call the regular function
+        response = resourceModeration(request)
+
+        # If the other function returns a JsonResponse, return its content as JSON
+        if isinstance(response, JsonResponse):
+            # Deserialize the content if it's a JsonResponse
+            return JsonResponse(json.loads(response.content), status=response.status_code)
+
+        # Handle other response types if necessary
+        return JsonResponse({"error": "Unexpected response type"}, status=500)
 
 
+#USER MANAGEMENT API VIEWS
 #change user password after the verification code has been verified
 class UpdateUserRole(APIView):
     permission_classes = [AllowAny]
@@ -178,6 +194,7 @@ class deserializeUserPaginated(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     
+#MAIN CRUD API ENDPOINTS
 #DESERIALIZE CLASSBASED VIEWS
 class deserializeFaq(APIView):
     permission_classes = [AllowAny]

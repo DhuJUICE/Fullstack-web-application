@@ -2,7 +2,7 @@
 <title>Moderation</title>
 <header><center>This is the moderation page</center></header>
 
-<form action="resourceModeration" method="POST">
+<form action="api/moderate-resource" method="POST">
   {% csrf_token %}
   <table border="1" align="center">
     <tr>
