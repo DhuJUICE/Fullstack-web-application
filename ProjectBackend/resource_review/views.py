@@ -11,33 +11,43 @@ def ratingPage(request):
 
 #get the resources from database and rate them, then save them back in the database
 def resourceRating(request):
-	try:
-		resourceId = request.POST.get("resourceId")
-		rating = str(request.POST.get("rating"))
+    # Check if the request method is POST
+    if request.method == "POST":
+        resource_id = request.POST.get("resourceId")
+        rating = request.POST.get("rating")
 
-		if rating.isdigit() :
-			if int(rating) >= 1 and int(rating) <=5:
-				print(resourceId)
-				print(rating)
+        # First, check if the resource exists
+        resource = RESOURCE_METADATA.objects.filter(id=resource_id).first()
+        if not resource:
+            return JsonResponse({"error": "Resource not found."}, status=404)
 
-				#get resources from database with intial empty rating
-				resource = RESOURCE_METADATA.objects.get(id=resourceId)
+        # Validate the rating input
+        if rating.isdigit() and 1 <= int(rating) <= 5:
+            try:
+                # Rate the resource
+                resource.resource_rating = rating
 
-				#rate the resource
-				resource.resource_rating = rating
+                # Save resource with updated rating
+                resource.save()
 
-				#save resource with updated rating
-				resource.save()
-			else:
-				print("must be integer from 1-5")
-		else:
-			print("Invalid input for rating, must be integer")
+                response = {
+                    "message": "Resource rated successfully.",
+                    "resource_id": resource_id,
+                    "rating": rating
+                }
+                return JsonResponse(response, status=200)
 
-	except Exception as e:
-		print(f"An error occurred: {e}")
+            except Exception as e:
+                print(f"An error occurred: {e}")
+                return JsonResponse({"error": "An error occurred while saving the rating."}, status=500)
 
-	#return the rating page with updated rating
-	return render(request, 'rateResource.html')
+        elif not rating.isdigit():
+            return JsonResponse({"error": "Invalid input for rating, must be an integer."}, status=400)
+        else:
+            return JsonResponse({"error": "Rating must be an integer between 1 and 5."}, status=400)
+
+    # If the request method is not POST
+    return JsonResponse({"error": "Invalid request method. Only POST is allowed."}, status=405)
 
 def moderationPage(request):
 	return render(request, 'moderation.html')

@@ -6,7 +6,7 @@
 <body>
     <h1>Rate Resource</h1>
 
-    <form method="POST" action="resourceRating">
+    <form method="POST" action="api/rate-resource">
         {% csrf_token %}
         <input type="text" placeholder="Resource ID" name="resourceId" />
         <input type="text" placeholder="Rating (1-5)" name="rating" />

@@ -48,8 +48,55 @@ import json
 
 
 #EXTERNAL APP FUNCTIONALITY FOR API ENDPOINTS
+#RESOURCE CONTRIBUTION
+class ResourceContribute(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        # Call the regular function
+        response = resourceUploading(request)
+
+        # If the other function returns a JsonResponse, return its content as JSON
+        if isinstance(response, JsonResponse):
+            # Deserialize the content if it's a JsonResponse
+            return JsonResponse(json.loads(response.content), status=response.status_code)
+
+        # Handle other response types if necessary
+        return JsonResponse({"error": "Unexpected response type"}, status=500)
+
+#RESOURCE REPORT
+class ResourceReport(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        # Call the regular function
+        response = resourceReport(request)
+
+        # If the other function returns a JsonResponse, return its content as JSON
+        if isinstance(response, JsonResponse):
+            # Deserialize the content if it's a JsonResponse
+            return JsonResponse(json.loads(response.content), status=response.status_code)
+
+        # Handle other response types if necessary
+        return JsonResponse({"error": "Unexpected response type"}, status=500)
 
 #RESOURCE REVIEW
+#rate resources from client side
+class ResourceRating(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        # Call the regular function
+        response = resourceRating(request)
+
+        # If the other function returns a JsonResponse, return its content as JSON
+        if isinstance(response, JsonResponse):
+            # Deserialize the content if it's a JsonResponse
+            return JsonResponse(json.loads(response.content), status=response.status_code)
+
+        # Handle other response types if necessary
+        return JsonResponse({"error": "Unexpected response type"}, status=500)
+
 #moderate resources from client side
 class ResourceModeration(APIView):
     permission_classes = [AllowAny]
@@ -315,28 +362,24 @@ class deserializeReport(APIView):
             serializer = ReportSerializer(reports, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
-class deserializeReport(APIView):
-    permission_classes = [AllowAny]  # Adjust based on your authentication logic
-
     def post(self, request, *args, **kwargs):
         resource_id = request.data.get('reportResource')
 
-        if resource_id:
-            try:
-                resource = RESOURCE_METADATA.objects.get(id=resource_id)
-            except RESOURCE_METADATA.DoesNotExist:
-                return Response({"error": "Resource not found."}, status=status.HTTP_400_BAD_REQUEST)
-        else:
+        if not resource_id:
             return Response({"error": "reportResource is required."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Automatically set reportUser based on the authenticated user
+        # Try to retrieve the resource from the database
+        try:
+            resource = RESOURCE_METADATA.objects.get(id=resource_id)
+        except RESOURCE_METADATA.DoesNotExist:
+            return Response({"error": "Resource not found."}, status=status.HTTP_404_NOT_FOUND)
+
         if not request.user.is_authenticated:
             return Response({"error": "User must be logged in."}, status=status.HTTP_403_FORBIDDEN)
 
-        # Set reportUser to the current user
-        request.data['reportUser'] = request.user
-
+        request.data['reportUser'] = request.user.id
         serializer = ReportSerializer(data=request.data)
+
         if serializer.is_valid():
             report = serializer.save()
             response_data = serializer.data

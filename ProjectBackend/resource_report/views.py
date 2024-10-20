@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
 from .models import RESOURCE_REPORT
+from resource_contribution.models import RESOURCE_METADATA
 import requests
 import json
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 
 def reportPage(request):
     return render(request, 'resourceReport.html')
@@ -10,44 +13,35 @@ def reportPage(request):
 #report certain resource
 def resourceReport(request):
     if request.method == 'POST':
-        # Get the report complaint from the frontend
+        # Get the report complaint and resource ID from the request
         complaint = request.POST.get('reportComplaint')
-        resourceId = request.POST.get('resourceId')
-        userId = request.user.id  # This line assumes the user is authenticated
+        resource_id = request.POST.get('resourceId')
 
         # Validate that complaint is not empty
-        if complaint == "":
-            print("The complaint field cannot be empty.")
-            return redirect("reportPage")
+        if not complaint:
+            return JsonResponse({"error": "The complaint field cannot be empty."}, status=400)
 
-        # Validate that resourceId is a digit (assuming it's an integer ID)
-        if resourceId == "":
-            print("The resource id field cannot be empty.")
-            return redirect("reportPage")
-            
-        if not resourceId.isdigit():
-            print("Invalid input for resourceId, must be an integer.")
-            return redirect("reportPage")
+        # Validate that resourceId is provided and is a digit
+        if not resource_id or not resource_id.isdigit():
+            return JsonResponse({"error": "Invalid resource ID. It must be an integer."}, status=400)
 
-        # Prepare data for the API call
-        api_url = 'http://127.0.0.1:8000/api/report/deserial'
-        
-        data = {
-            "reportComplaint": complaint,
-            "reportResource": resourceId
-            # Do not include reportUser here
-        }
-
-        headers = {'Content-Type': 'application/json'}
-        
+        # Check if the resource exists
         try:
-            response = requests.post(api_url, json=data, headers=headers)  # Use json=data
-            
-            if response.status_code == 201:  # 201 for created
-                print("Report submitted successfully.")
-            else:
-                print(f"Failed to submit report. Status code: {response.status_code}. Response: {response.text}")
-        except requests.exceptions.RequestException as e:
-            print(f"An error occurred while making the API request: {e}")
+            resource = RESOURCE_METADATA.objects.get(id=resource_id)
+        except RESOURCE_METADATA.DoesNotExist:
+            return JsonResponse({"error": "Resource not found."}, status=404)
 
-    return redirect("reportPage")
+        # Assuming the user is authenticated
+        user = request.user  # Ensure that the user is logged in
+
+        # Create the report in the database
+        report = RESOURCE_REPORT.objects.create(
+            reportComplaint=complaint,
+            reportResource=resource,
+            reportUser=user
+        )
+
+        return JsonResponse({"message": "Report created successfully."}, status=201)
+
+    # If the request method is not POST
+    return JsonResponse({"error": "Invalid request method. Only POST is allowed."}, status=405)

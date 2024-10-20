@@ -550,7 +550,6 @@ def uploadPage(request):
     return render(request, 'fileStorage.html')
 
 
-
 def convert_to_file_like_object(file_path):
     # Open the file in binary mode
     with open(file_path, 'rb') as f:
@@ -586,8 +585,7 @@ def resourceFileStorage(uploadList, request):
 
     for path in uploadList:
         print("PATH: ", path)
-        file_obj = convert_to_file_like_object(path)[0]
-        file_like_object = convert_to_file_like_object(path)[1]
+        file_obj, file_like_object = convert_to_file_like_object(path)
 
         try:
             s3.upload_fileobj(
@@ -622,13 +620,13 @@ def resourceFileStorage(uploadList, request):
 
         # Save the files to the respective FileFields
         if len(file_urls) > 0:
-            resource_instance.file_path1 = file_urls[0] if len(file_urls) > 0 else None
+            resource_instance.file_path1 = file_urls[0]
         if len(file_urls) > 1:
-            resource_instance.file_path2 = file_urls[1] if len(file_urls) > 1 else None
+            resource_instance.file_path2 = file_urls[1]
         if len(file_urls) > 2:
-            resource_instance.file_path3 = file_urls[2] if len(file_urls) > 2 else None
+            resource_instance.file_path3 = file_urls[2]
         if len(file_urls) > 3:
-            resource_instance.file_path4 = file_urls[3] if len(file_urls) > 3 else None
+            resource_instance.file_path4 = file_urls[3]
         
         resource_instance.save()
 
