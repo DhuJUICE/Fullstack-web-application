@@ -44,7 +44,11 @@ jobs:
           
       - name: Build and push Docker image
         run: |
-          docker build -t juicebout01/docker-repo:docker-image -f ProjectBackend/Dockerfile .
+          docker build -t juicebout01/docker-repo:docker-image -f .
+          
+      - name: Push the Docker image to dockerhub
+        run: |
+          docker push juicebout01/docker-repo:docker-image
 
   deploy:
     runs-on: ubuntu-latest
