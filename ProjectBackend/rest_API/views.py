@@ -152,7 +152,7 @@ class deserializeResource(APIView):
             return Response({"error": "Resource not found."}, status=status.HTTP_404_NOT_FOUND)
 
 class deserializeReport(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get(self, request, *args, **kwargs):
         if 'pk' in kwargs:
