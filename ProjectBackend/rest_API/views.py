@@ -23,6 +23,28 @@ from django.http import JsonResponse
 from rest_framework import status
 from io import BytesIO
 
+#import functionality from other APPS in project
+from document_search.views import resourceSearch
+
+from faq.views import displayFaqs
+
+from resource_contribution.views import resourceUploading
+
+from resource_report.views import resourceReport
+
+from resource_review.views import resourceRating
+from resource_review.views import resourceModeration
+
+#from user_analytics.views import UserAnalytics
+
+from user_management.views import loginUser
+from user_management.views import registerUser
+from user_management.views import logout
+from user_management.views import resetPassword
+from user_management.views import validate_verification_code
+from user_management.views import changePassword
+from user_management.views import updateRole
+
 #FRONTEND MAKES REQUEST - BACKEND GIVES RESPONSE
 
 #DESERIALIZE CLASSBASED VIEWS WITH PAGINATION
