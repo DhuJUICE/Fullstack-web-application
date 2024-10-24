@@ -3,10 +3,17 @@ from faq.models import FAQ
 from resource_contribution.models import RESOURCE_METADATA
 from user_management.models import UserProfile
 from resource_report.models import RESOURCE_REPORT
+from user_analytics.models import ANALYTICS
 from django.contrib.auth.models import User, auth
 from rest_framework.exceptions import ValidationError
 
 #Serializers
+class AnalyticsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ANALYTICS
+
+        fields = '__all__'
+
 class FaqSerializer(serializers.ModelSerializer):
     class Meta:
         model = FAQ

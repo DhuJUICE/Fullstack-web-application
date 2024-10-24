@@ -12,7 +12,7 @@ from resource_report.models import RESOURCE_REPORT
 from resource_contribution.models import RESOURCE_METADATA
 
 #serializing imports
-from .serializers import FaqSerializer, DocSerializer, ReportSerializer, UserSerializer
+from .serializers import FaqSerializer, DocSerializer, ReportSerializer, UserSerializer, AnalyticsSerializer
 
 #deserializing imports
 from rest_framework.renderers import JSONRenderer
@@ -44,10 +44,41 @@ from user_management.views import validate_verification_code
 from user_management.views import changePassword
 from user_management.views import updateRole
 
+from user_analytics.views import userAnalytics
+from user_analytics.models import ANALYTICS
+
 import json
 
 
 #EXTERNAL APP FUNCTIONALITY FOR API ENDPOINTS
+#USER ANALYTICS
+class UserAnalytics(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        # Call the regular function
+        response = userAnalytics(request)
+
+        # If the other function returns a JsonResponse, return its content as JSON
+        if isinstance(response, JsonResponse):
+            # Deserialize the content if it's a JsonResponse
+            return JsonResponse(json.loads(response.content), status=response.status_code)
+
+        # Handle other response types if necessary
+        return JsonResponse({"error": "Unexpected response type"}, status=500)
+    
+    def post(self, request):
+        # Call the regular function
+        response = userAnalytics(request)
+
+        # If the other function returns a JsonResponse, return its content as JSON
+        if isinstance(response, JsonResponse):
+            # Deserialize the content if it's a JsonResponse
+            return JsonResponse(json.loads(response.content), status=response.status_code)
+
+        # Handle other response types if necessary
+        return JsonResponse({"error": "Unexpected response type"}, status=500)
+
 #RESOURCE CONTRIBUTION
 class ResourceContribute(APIView):
     permission_classes = [AllowAny]
@@ -219,7 +250,14 @@ class Login(APIView):
         # Handle other response types if necessary
         return JsonResponse({"error": "Unexpected response type"}, status=500)
 
+
+
 #DESERIALIZE CLASSBASED VIEWS WITH PAGINATION
+class deserializeAnalyticsPaginated(generics.ListCreateAPIView):
+    permission_classes = [AllowAny]
+    queryset = ANALYTICS.objects.all()
+    serializer_class = AnalyticsSerializer
+
 class deserializeFaqPaginated(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
     queryset = FAQ.objects.all()
@@ -241,7 +279,29 @@ class deserializeUserPaginated(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     
+
+
+    
 #MAIN CRUD API ENDPOINTS
+class deserializeAnalytics(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        if 'pk' in kwargs:
+            # Retrieve a single FAQ instance
+            try:
+                analytics = ANALYTICS.objects.get(pk=kwargs['pk'])
+                serializer = AnalyticsSerializer(analytics)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except ANALYTICS.DoesNotExist:
+                return Response({"error": "Analytics not found."}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            # List all FAQ instances
+            analytics = ANALYTICS.objects.all()
+            serializer = AnalyticsSerializer(analytics, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 #DESERIALIZE CLASSBASED VIEWS
 class deserializeFaq(APIView):
     permission_classes = [AllowAny]

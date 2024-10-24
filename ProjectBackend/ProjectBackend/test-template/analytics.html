@@ -1,0 +1,27 @@
+{%extends 'base.html'%} {%block body%}
+<title>Analytics</title>
+<header><center>Analytics Page</center></header>
+
+<form action="api/analytics" method="POST">
+  {% csrf_token %}
+  <table border="1" align="center">
+    <tr>
+      <td>
+        <input type="text" placeholder="event_category" name="event_category" /><br>
+        <input type="text" placeholder="event_action" name="event_action" /><br>
+        <input type="text" placeholder="event_label" name="event_label" /><br>
+        <input type="text" placeholder="user_id" name="user_id" /><br>
+        <input type="text" placeholder="event_duration" name="event_duration" /><br>
+        <input type="text" placeholder="custom_param" name="custom_param" /><br>
+
+      </td>
+    </tr>
+    
+	<tr>
+      <td align="center">
+        <input type="submit" name="Submit" />
+      </td>
+    </tr>
+  </table>
+</form>
+{%endblock%}
