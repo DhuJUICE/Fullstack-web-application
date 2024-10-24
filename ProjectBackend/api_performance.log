@@ -6,3 +6,15 @@ Method: GET, Path: /api/user/deserial, Status: 200, Duration: 1.02 seconds
 Method: GET, Path: /loginpage, Status: 200, Duration: 0.01 seconds
 Method: POST, Path: /api/login, Status: 401, Duration: 1.10 seconds
 Error: Method: POST, Path: /api/login, Status: 401, Duration: 1.10 seconds
+Method: GET, Path: /, Status: 200, Duration: 0.05 seconds
+Method: GET, Path: /favicon.ico, Status: 404, Duration: 0.13 seconds
+Error: Method: GET, Path: /favicon.ico, Status: 404, Duration: 0.13 seconds
+Method: GET, Path: /analytics, Status: 200, Duration: 0.00 seconds
+Method: GET, Path: /api-analytics, Status: 404, Duration: 0.03 seconds
+Error: Method: GET, Path: /api-analytics, Status: 404, Duration: 0.03 seconds
+Method: GET, Path: /api/analytics, Status: 405, Duration: 0.49 seconds
+Error: Method: GET, Path: /api/analytics, Status: 405, Duration: 0.49 seconds
+Method: GET, Path: /api/analytics, Status: 200, Duration: 0.00 seconds
+Method: GET, Path: /api/analytics, Status: 200, Duration: 0.00 seconds
+Method: GET, Path: /api/analytics, Status: 200, Duration: 0.00 seconds
+Method: GET, Path: /api/analytics, Status: 200, Duration: 0.00 seconds

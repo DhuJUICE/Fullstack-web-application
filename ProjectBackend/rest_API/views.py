@@ -44,10 +44,40 @@ from user_management.views import validate_verification_code
 from user_management.views import changePassword
 from user_management.views import updateRole
 
+from user_analytics.views import userAnalytics
+
 import json
 
 
 #EXTERNAL APP FUNCTIONALITY FOR API ENDPOINTS
+#USER ANALYTICS
+class UserAnalytics(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        # Call the regular function
+        response = userAnalytics(request)
+
+        # If the other function returns a JsonResponse, return its content as JSON
+        if isinstance(response, JsonResponse):
+            # Deserialize the content if it's a JsonResponse
+            return JsonResponse(json.loads(response.content), status=response.status_code)
+
+        # Handle other response types if necessary
+        return JsonResponse({"error": "Unexpected response type"}, status=500)
+    
+    def post(self, request):
+        # Call the regular function
+        response = userAnalytics(request)
+
+        # If the other function returns a JsonResponse, return its content as JSON
+        if isinstance(response, JsonResponse):
+            # Deserialize the content if it's a JsonResponse
+            return JsonResponse(json.loads(response.content), status=response.status_code)
+
+        # Handle other response types if necessary
+        return JsonResponse({"error": "Unexpected response type"}, status=500)
+
 #RESOURCE CONTRIBUTION
 class ResourceContribute(APIView):
     permission_classes = [AllowAny]

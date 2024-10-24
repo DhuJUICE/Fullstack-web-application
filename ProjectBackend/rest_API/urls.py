@@ -8,9 +8,12 @@ from django.test import TestCase
 
 from .views import ContributorsListView
 from .views import Login, Register, Logout, ResetPassword, ValidateCode, NewPassword, UpdateUserRole
-from .views import ResourceModeration, ResourceRating, ResourceReport, ResourceContribute
+from .views import ResourceModeration, ResourceRating, ResourceReport, ResourceContribute, UserAnalytics
 
 urlpatterns = [
+	#User Analytics API endpoints
+	path('api/analytics', UserAnalytics.as_view(), name='api-analytics'),
+
 	#Contribute Resource API endpoints
 	path('api/contribute-resource', ResourceContribute.as_view(), name='api-contribute_resource'),
 
