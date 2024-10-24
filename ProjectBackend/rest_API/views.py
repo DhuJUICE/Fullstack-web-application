@@ -10,9 +10,10 @@ from faq.models import FAQ
 from django.contrib.auth.models import User, auth
 from resource_report.models import RESOURCE_REPORT
 from resource_contribution.models import RESOURCE_METADATA
+from user_management.models import UserProfile
 
 #serializing imports
-from .serializers import FaqSerializer, DocSerializer, ReportSerializer, UserSerializer, AnalyticsSerializer
+from .serializers import FaqSerializer, DocSerializer, ReportSerializer, UserSerializer, AnalyticsSerializer, ProfileSerializer
 
 #deserializing imports
 from rest_framework.renderers import JSONRenderer
@@ -253,6 +254,11 @@ class Login(APIView):
 
 
 #DESERIALIZE CLASSBASED VIEWS WITH PAGINATION
+class deserializeProfilePaginated(generics.ListCreateAPIView):
+    permission_classes = [AllowAny]
+    queryset = UserProfile.objects.all()
+    serializer_class = ProfileSerializer
+
 class deserializeAnalyticsPaginated(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
     queryset = ANALYTICS.objects.all()
@@ -283,6 +289,24 @@ class deserializeUserPaginated(generics.ListCreateAPIView):
 
     
 #MAIN CRUD API ENDPOINTS
+class deserializeProfile(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        if 'pk' in kwargs:
+            # Retrieve a single User Profile instance
+            try:
+                profile = UserProfile.objects.get(pk=kwargs['pk'])
+                serializer = ProfileSerializer(profile)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except UserProfile.DoesNotExist:
+                return Response({"error": "User Profile not found."}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            # List all User Profile instances
+            profiles = UserProfile.objects.all()
+            serializer = ProfileSerializer(profiles, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
 class deserializeAnalytics(APIView):
     permission_classes = [AllowAny]
 

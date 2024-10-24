@@ -1,8 +1,8 @@
 from django.contrib import admin
 
 from django.urls import path
-from .views import deserializeFaqPaginated, deserializeResourcePaginated, deserializeReportPaginated, deserializeUserPaginated, deserializeAnalyticsPaginated
-from .views import deserializeFaq, deserializeResource, deserializeReport, deserializeUser, deserializeAnalytics
+from .views import deserializeFaqPaginated, deserializeResourcePaginated, deserializeReportPaginated, deserializeUserPaginated, deserializeAnalyticsPaginated, deserializeProfilePaginated
+from .views import deserializeFaq, deserializeResource, deserializeReport, deserializeUser, deserializeAnalytics, deserializeProfile
 
 from django.test import TestCase
 
@@ -42,8 +42,14 @@ urlpatterns = [
 	path('api/report/deserial/paginated', deserializeReportPaginated.as_view(), name='report-paginated'),
 	path('api/user/deserial/paginated', deserializeUserPaginated.as_view(), name='user-paginated'),
 	path('api/analytics/deserial/paginated', deserializeAnalyticsPaginated.as_view(), name='user-analytics-paginated'),
+	path('api/user-profile/deserial/paginated', deserializeProfilePaginated.as_view(), name='user-profile-paginated'),
+
 
 	#No pagination for GET requests
+	#User Profile endpoints
+	path('api/user-profile/deserial', deserializeProfile.as_view(), name='user-analytics'),
+	path('api/user-profile/deserial/<int:pk>', deserializeProfile.as_view(), name='user-analytics-object'),
+
 	#user analytics endpoints
 	path('api/analytics/deserial', deserializeAnalytics.as_view(), name='user-analytics'),
 	path('api/analytics/deserial/<int:pk>', deserializeAnalytics.as_view(), name='user-analytics-object'),

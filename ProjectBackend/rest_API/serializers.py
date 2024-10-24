@@ -7,7 +7,14 @@ from user_analytics.models import ANALYTICS
 from django.contrib.auth.models import User, auth
 from rest_framework.exceptions import ValidationError
 
+
 #Serializers
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+
+        fields = '__all__'
+
 class AnalyticsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ANALYTICS
