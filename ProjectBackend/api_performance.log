@@ -18,3 +18,7 @@ Method: GET, Path: /api/analytics, Status: 200, Duration: 0.00 seconds
 Method: GET, Path: /api/analytics, Status: 200, Duration: 0.00 seconds
 Method: GET, Path: /api/analytics, Status: 200, Duration: 0.00 seconds
 Method: GET, Path: /api/analytics, Status: 200, Duration: 0.00 seconds
+Method: GET, Path: /api/analytics, Status: 405, Duration: 0.05 seconds
+Error: Method: GET, Path: /api/analytics, Status: 405, Duration: 0.05 seconds
+Method: GET, Path: /api/analytics, Status: 200, Duration: 0.01 seconds
+Method: GET, Path: /api/analytics, Status: 200, Duration: 0.00 seconds
