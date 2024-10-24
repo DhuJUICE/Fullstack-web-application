@@ -283,6 +283,25 @@ class deserializeUserPaginated(generics.ListCreateAPIView):
 
     
 #MAIN CRUD API ENDPOINTS
+class deserializeAnalytics(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        if 'pk' in kwargs:
+            # Retrieve a single FAQ instance
+            try:
+                analytics = ANALYTICS.objects.get(pk=kwargs['pk'])
+                serializer = AnalyticsSerializer(analytics)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except ANALYTICS.DoesNotExist:
+                return Response({"error": "Analytics not found."}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            # List all FAQ instances
+            analytics = ANALYTICS.objects.all()
+            serializer = AnalyticsSerializer(analytics, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 #DESERIALIZE CLASSBASED VIEWS
 class deserializeFaq(APIView):
     permission_classes = [AllowAny]

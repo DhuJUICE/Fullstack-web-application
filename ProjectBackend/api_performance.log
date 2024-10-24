@@ -30,3 +30,20 @@ Method: POST, Path: /api/analytics, Status: 200, Duration: 0.36 seconds
 Method: GET, Path: /analytics-page, Status: 200, Duration: 0.01 seconds
 Method: POST, Path: /api/analytics, Status: 200, Duration: 0.28 seconds
 Method: GET, Path: /api/analytics/deserial/paginated, Status: 200, Duration: 2.94 seconds
+Method: GET, Path: /api/analytics/deserial/paginated, Status: 200, Duration: 0.55 seconds
+Method: GET, Path: /api/analytics/deserial, Status: 200, Duration: 0.33 seconds
+Method: GET, Path: /api/analytics/deserial/3, Status: 404, Duration: 1.51 seconds
+Error: Method: GET, Path: /api/analytics/deserial/3, Status: 404, Duration: 1.51 seconds
+Method: GET, Path: /api/analytics/deserial/2, Status: 404, Duration: 0.02 seconds
+Error: Method: GET, Path: /api/analytics/deserial/2, Status: 404, Duration: 0.02 seconds
+Method: GET, Path: /api/analytics/deserial/2, Status: 200, Duration: 0.35 seconds
+Method: GET, Path: /api/analytics/deserial/3, Status: 404, Duration: 0.31 seconds
+Error: Method: GET, Path: /api/analytics/deserial/3, Status: 404, Duration: 0.31 seconds
+Method: GET, Path: /api/analytics/deserial/1, Status: 200, Duration: 0.29 seconds
+Method: GET, Path: /api/analytics/deserial/, Status: 404, Duration: 0.03 seconds
+Error: Method: GET, Path: /api/analytics/deserial/, Status: 404, Duration: 0.03 seconds
+Method: GET, Path: /api/analytics/deserial/2, Status: 200, Duration: 0.28 seconds
+Method: GET, Path: /api/analytics/deserial, Status: 200, Duration: 0.28 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.46 seconds
+Method: GET, Path: /api/report/deserial, Status: 200, Duration: 0.34 seconds
+Method: GET, Path: /api/report/deserial, Status: 200, Duration: 0.32 seconds
