@@ -3499,3 +3499,5 @@ Traceback (most recent call last):
   File "C:\Users\KH-Build-PC1\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\http\request.py", line 151, in get_host
     raise DisallowedHost(msg)
 django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'localhost:8000'. You may need to add 'localhost' to ALLOWED_HOSTS.
+Internal Server Error: /api/analytics
+"POST /api/analytics HTTP/1.1" 500 37

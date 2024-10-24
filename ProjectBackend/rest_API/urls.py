@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from django.urls import path
 from .views import deserializeFaqPaginated, deserializeResourcePaginated, deserializeReportPaginated, deserializeUserPaginated
-from .views import deserializeFaq, deserializeResource, deserializeReport, deserializeUser
+from .views import deserializeFaq, deserializeResource, deserializeReport, deserializeUser, deserializeAnalyticsPaginated
 
 from django.test import TestCase
 
@@ -41,6 +41,7 @@ urlpatterns = [
 	path('api/resource/deserial/paginated', deserializeResourcePaginated.as_view(), name='resource-paginated'),
 	path('api/report/deserial/paginated', deserializeReportPaginated.as_view(), name='report-paginated'),
 	path('api/user/deserial/paginated', deserializeUserPaginated.as_view(), name='user-paginated'),
+	path('api/analytics/deserial/paginated', deserializeAnalyticsPaginated.as_view(), name='user-analytics-paginated'),
 
 	#No pagination for GET requests
 	#faq endpoints

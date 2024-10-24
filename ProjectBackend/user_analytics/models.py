@@ -1,7 +1,7 @@
 from django.db import models
 
 #User analytics model
-class ANALTICS(models.Model):
+class ANALYTICS(models.Model):
     event_category = models.CharField(max_length = 100, null=True, blank=True)
     event_action = models.CharField(max_length = 100, null=True, blank=True)
     event_label = models.CharField(max_length = 100, null=True, blank=True)

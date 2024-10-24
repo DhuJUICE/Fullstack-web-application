@@ -12,7 +12,7 @@ from resource_report.models import RESOURCE_REPORT
 from resource_contribution.models import RESOURCE_METADATA
 
 #serializing imports
-from .serializers import FaqSerializer, DocSerializer, ReportSerializer, UserSerializer
+from .serializers import FaqSerializer, DocSerializer, ReportSerializer, UserSerializer, AnalyticsSerializer
 
 #deserializing imports
 from rest_framework.renderers import JSONRenderer
@@ -45,6 +45,7 @@ from user_management.views import changePassword
 from user_management.views import updateRole
 
 from user_analytics.views import userAnalytics
+from user_analytics.models import ANALYTICS
 
 import json
 
@@ -249,7 +250,14 @@ class Login(APIView):
         # Handle other response types if necessary
         return JsonResponse({"error": "Unexpected response type"}, status=500)
 
+
+
 #DESERIALIZE CLASSBASED VIEWS WITH PAGINATION
+class deserializeAnalyticsPaginated(generics.ListCreateAPIView):
+    permission_classes = [AllowAny]
+    queryset = ANALYTICS.objects.all()
+    serializer_class = AnalyticsSerializer
+
 class deserializeFaqPaginated(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
     queryset = FAQ.objects.all()
@@ -270,6 +278,9 @@ class deserializeUserPaginated(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    
+
+
     
 #MAIN CRUD API ENDPOINTS
 #DESERIALIZE CLASSBASED VIEWS
