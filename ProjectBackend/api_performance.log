@@ -1,0 +1,32 @@
+Method: GET, Path: /loginpage, Status: 200, Duration: 0.02 seconds
+Method: POST, Path: /api/login, Status: 401, Duration: 1.06 seconds
+Method: POST, Path: /api/login, Status: 200, Duration: 1.24 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.39 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 1.02 seconds
+Method: GET, Path: /loginpage, Status: 200, Duration: 0.01 seconds
+Method: POST, Path: /api/login, Status: 401, Duration: 1.10 seconds
+Error: Method: POST, Path: /api/login, Status: 401, Duration: 1.10 seconds
+Method: GET, Path: /, Status: 200, Duration: 0.05 seconds
+Method: GET, Path: /favicon.ico, Status: 404, Duration: 0.13 seconds
+Error: Method: GET, Path: /favicon.ico, Status: 404, Duration: 0.13 seconds
+Method: GET, Path: /analytics, Status: 200, Duration: 0.00 seconds
+Method: GET, Path: /api-analytics, Status: 404, Duration: 0.03 seconds
+Error: Method: GET, Path: /api-analytics, Status: 404, Duration: 0.03 seconds
+Method: GET, Path: /api/analytics, Status: 405, Duration: 0.49 seconds
+Error: Method: GET, Path: /api/analytics, Status: 405, Duration: 0.49 seconds
+Method: GET, Path: /api/analytics, Status: 200, Duration: 0.00 seconds
+Method: GET, Path: /api/analytics, Status: 200, Duration: 0.00 seconds
+Method: GET, Path: /api/analytics, Status: 200, Duration: 0.00 seconds
+Method: GET, Path: /api/analytics, Status: 200, Duration: 0.00 seconds
+Method: GET, Path: /api/analytics, Status: 405, Duration: 0.05 seconds
+Error: Method: GET, Path: /api/analytics, Status: 405, Duration: 0.05 seconds
+Method: GET, Path: /api/analytics, Status: 200, Duration: 0.01 seconds
+Method: GET, Path: /api/analytics, Status: 200, Duration: 0.00 seconds
+Method: GET, Path: /analytics-page, Status: 200, Duration: 0.48 seconds
+Method: POST, Path: /api/analytics, Status: 500, Duration: 0.04 seconds
+Error: Method: POST, Path: /api/analytics, Status: 500, Duration: 0.04 seconds
+Method: GET, Path: /analytics-page, Status: 200, Duration: 0.01 seconds
+Method: POST, Path: /api/analytics, Status: 200, Duration: 0.36 seconds
+Method: GET, Path: /analytics-page, Status: 200, Duration: 0.01 seconds
+Method: POST, Path: /api/analytics, Status: 200, Duration: 0.28 seconds
+Method: GET, Path: /api/analytics/deserial/paginated, Status: 200, Duration: 2.94 seconds

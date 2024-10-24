@@ -2,15 +2,18 @@ from django.contrib import admin
 
 from django.urls import path
 from .views import deserializeFaqPaginated, deserializeResourcePaginated, deserializeReportPaginated, deserializeUserPaginated
-from .views import deserializeFaq, deserializeResource, deserializeReport, deserializeUser
+from .views import deserializeFaq, deserializeResource, deserializeReport, deserializeUser, deserializeAnalyticsPaginated
 
 from django.test import TestCase
 
 from .views import ContributorsListView
 from .views import Login, Register, Logout, ResetPassword, ValidateCode, NewPassword, UpdateUserRole
-from .views import ResourceModeration, ResourceRating, ResourceReport, ResourceContribute
+from .views import ResourceModeration, ResourceRating, ResourceReport, ResourceContribute, UserAnalytics
 
 urlpatterns = [
+	#User Analytics API endpoints
+	path('api/analytics', UserAnalytics.as_view(), name='api-analytics'),
+
 	#Contribute Resource API endpoints
 	path('api/contribute-resource', ResourceContribute.as_view(), name='api-contribute_resource'),
 
@@ -38,6 +41,7 @@ urlpatterns = [
 	path('api/resource/deserial/paginated', deserializeResourcePaginated.as_view(), name='resource-paginated'),
 	path('api/report/deserial/paginated', deserializeReportPaginated.as_view(), name='report-paginated'),
 	path('api/user/deserial/paginated', deserializeUserPaginated.as_view(), name='user-paginated'),
+	path('api/analytics/deserial/paginated', deserializeAnalyticsPaginated.as_view(), name='user-analytics-paginated'),
 
 	#No pagination for GET requests
 	#faq endpoints
