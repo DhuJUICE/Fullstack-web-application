@@ -572,7 +572,37 @@ class deserializeUser(APIView):
 
 class ContributorsListView(APIView):
     permission_classes = [AllowAny]
-    
+
+	def get(self, request):
+			emptyDictionary = {}
+			# Get all approved resources
+			resources = RESOURCE_METADATA.objects.filter(approval_status="approved")
+			
+			# Prepare lists for resources and contributors
+			resource_list = []
+			contributors = set()  # Use a set to avoid duplicates
+
+			for resource in resources:
+				# Add resource details to the resource list
+				resource_list.append({
+					'id': resource.id,
+					'name': resource.name,  # Adjust as needed
+					'contributor_id': resource.contributor.id  # Assuming 'contributor' is a related field
+				})
+				contributors.add(resource.contributor)
+
+			# Convert contributors to a list of dictionaries
+			contributor_list = [{'id': contributor.id, 'username': contributor.username} for contributor in contributors]
+
+			# Prepare the response data
+			response_data = {
+				'resources': resource_list,
+				'contributors': contributor_list,
+			}
+
+			return JsonResponse(response_data)
+
+	"""
     def get(self, requests):
         try:
             # Get all user IDs who have contributed resources
@@ -583,4 +613,4 @@ class ContributorsListView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK) 
         except User.DoesNotExist:
             return Response({"error": "Contributor not found."}, status=status.HTTP_404_NOT_FOUND)
-
+	"""

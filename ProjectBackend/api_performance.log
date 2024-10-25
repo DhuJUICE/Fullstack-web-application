@@ -63,3 +63,12 @@ Method: GET, Path: /tokenPage, Status: 200, Duration: 0.00 seconds
 Method: GET, Path: /tokenRefreshPage, Status: 200, Duration: 0.01 seconds
 Method: POST, Path: /api/token, Status: 200, Duration: 1.31 seconds
 Method: POST, Path: /api/token/refresh, Status: 200, Duration: 0.03 seconds
+Method: GET, Path: /moderationPage, Status: 200, Duration: 0.02 seconds
+Method: GET, Path: /favicon.ico, Status: 404, Duration: 0.04 seconds
+Error: Method: GET, Path: /favicon.ico, Status: 404, Duration: 0.04 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.48 seconds
+Method: POST, Path: /api/moderate-resource, Status: 200, Duration: 0.38 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.32 seconds
+Method: POST, Path: /api/moderate-resource, Status: 200, Duration: 0.27 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.29 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.36 seconds
