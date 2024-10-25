@@ -52,10 +52,10 @@ import json
 
 #test pages for authentication tokens
 def tokenPage(request):
-	return render(request, 'tokenPage.html')
+    return render(request, 'tokenPage.html')
 
 def tokenRefreshPage(request):
-	return render(request, 'tokenRefreshPage.html')
+    return render(request, 'tokenRefreshPage.html')
 
 #EXTERNAL APP FUNCTIONALITY FOR API ENDPOINTS
 #USER ANALYTICS
@@ -573,36 +573,36 @@ class deserializeUser(APIView):
 class ContributorsListView(APIView):
     permission_classes = [AllowAny]
 
-	def get(self, request):
-			emptyDictionary = {}
-			# Get all approved resources
-			resources = RESOURCE_METADATA.objects.filter(approval_status="approved")
-			
-			# Prepare lists for resources and contributors
-			resource_list = []
-			contributors = set()  # Use a set to avoid duplicates
+    def get(self, request):
+        # Get all approved resources
+        resources = RESOURCE_METADATA.objects.filter(approval_status="approved")
+        
+        # Prepare a dictionary to hold contributors and their associated resources
+        contributor_resources = {}
 
-			for resource in resources:
-				# Add resource details to the resource list
-				resource_list.append({
-					'id': resource.id,
-					'name': resource.name,  # Adjust as needed
-					'contributor_id': resource.contributor.id  # Assuming 'contributor' is a related field
-				})
-				contributors.add(resource.contributor)
+        for resource in resources:
+            contributor_id = resource.contributor.id
+            contributor_name = resource.contributor.username  # Adjust as necessary
 
-			# Convert contributors to a list of dictionaries
-			contributor_list = [{'id': contributor.id, 'username': contributor.username} for contributor in contributors]
+            # Initialize contributor entry if not already present
+            if contributor_id not in contributor_resources:
+                contributor_resources[contributor_id] = {
+                    'name': contributor_name,
+                    'resources': []
+                }
+            
+            # Append resource name to the corresponding contributor
+            contributor_resources[contributor_id]['resources'].append(resource.name)
 
-			# Prepare the response data
-			response_data = {
-				'resources': resource_list,
-				'contributors': contributor_list,
-			}
+        # Convert the dictionary to a list
+        contributor_list = [
+            {'id': contributor_id, 'name': data['name'], 'resources': data['resources']}
+            for contributor_id, data in contributor_resources.items()
+        ]
 
-			return JsonResponse(response_data)
+        return JsonResponse(contributor_list, safe=False)
 
-	"""
+    """
     def get(self, requests):
         try:
             # Get all user IDs who have contributed resources
@@ -613,4 +613,4 @@ class ContributorsListView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK) 
         except User.DoesNotExist:
             return Response({"error": "Contributor not found."}, status=status.HTTP_404_NOT_FOUND)
-	"""
+    """
