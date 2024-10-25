@@ -50,6 +50,12 @@ from user_analytics.models import ANALYTICS
 
 import json
 
+#test pages for authentication tokens
+def tokenPage(request):
+	return render(request, 'tokenPage.html')
+
+def tokenRefreshPage(request):
+	return render(request, 'tokenRefreshPage.html')
 
 #EXTERNAL APP FUNCTIONALITY FOR API ENDPOINTS
 #USER ANALYTICS

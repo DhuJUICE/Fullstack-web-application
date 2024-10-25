@@ -1,16 +1,25 @@
+from django.test import TestCase
 from django.contrib import admin
-
 from django.urls import path
+
 from .views import deserializeFaqPaginated, deserializeResourcePaginated, deserializeReportPaginated, deserializeUserPaginated, deserializeAnalyticsPaginated, deserializeProfilePaginated
 from .views import deserializeFaq, deserializeResource, deserializeReport, deserializeUser, deserializeAnalytics, deserializeProfile
-
-from django.test import TestCase
-
 from .views import ContributorsListView
 from .views import Login, Register, Logout, ResetPassword, ValidateCode, NewPassword, UpdateUserRole
 from .views import ResourceModeration, ResourceRating, ResourceReport, ResourceContribute, UserAnalytics
+from .views import tokenPage, tokenRefreshPage
+
+#token view imports
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
+	#Authentication token API endpoints
+	path('tokenPage', tokenPage, name='token-page'),
+    path('tokenRefreshPage', tokenRefreshPage, name='token-refresh-page'),
+
+    path('api/token', TokenObtainPairView.as_view(), name='token'),
+    path('api/token/refresh', TokenRefreshView.as_view(), name='token-refresh'),
+
 	#User Analytics API endpoints
 	path('api/analytics', UserAnalytics.as_view(), name='api-analytics'),
 

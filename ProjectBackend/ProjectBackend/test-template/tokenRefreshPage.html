@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block body %}
+<title>Token Refresh</title>
+<header><center>This is the Token Refresh page</center></header>
+
+<form action="/api/token/refresh" method="POST">
+    {% csrf_token %}
+    <table border="1" align="center">
+        <tr>
+            <td>
+                <input type="text" placeholder="Refresh Token" name="refresh" required />
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <input type="submit" name="refreshButton" value="Refresh Token" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+{% endblock %}

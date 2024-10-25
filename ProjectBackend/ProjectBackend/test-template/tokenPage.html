@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block body %}
+<title>Token Authentication</title>
+<header><center>This is the Authentication Token page</center></header>
+
+<form action="/api/token" method="POST">
+    {% csrf_token %}
+    <table border="1" align="center">
+        <tr>
+            <td>
+                <input type="text" placeholder="Username" name="username" required />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="password" placeholder="Password" name="password" required />
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <input type="submit" name="loginButton" value="Login" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+{% endblock %}
