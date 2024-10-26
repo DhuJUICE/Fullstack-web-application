@@ -177,7 +177,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIR = [os.path.join(BASE_DIR, 'React-Frontend/build/static')]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-"""
+
 # Logging configuration
 LOGGING = {
     'version': 1,
@@ -216,5 +216,3 @@ LOGGING = {
         },
     },
 }
-
-"""
