@@ -88,7 +88,8 @@ def loginUser(request):
             role = userProfile.role
             response = {
                 'message': "User logged in successfully",
-                'userRole': role
+                'userRole': role,
+				'username':user.username
             }
             return JsonResponse(response, status=200)
         else:
