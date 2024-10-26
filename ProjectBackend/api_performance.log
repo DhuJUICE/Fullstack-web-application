@@ -72,3 +72,5 @@ Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.32 seconds
 Method: POST, Path: /api/moderate-resource, Status: 200, Duration: 0.27 seconds
 Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.29 seconds
 Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.36 seconds
+Method: GET, Path: /tokenPage, Status: 200, Duration: 0.03 seconds
+Method: POST, Path: /api/token, Status: 200, Duration: 1.25 seconds

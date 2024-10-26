@@ -243,7 +243,7 @@ class Register(APIView):
 
 #login users from frontend/clientside
 class Login(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         # Call the regular function
