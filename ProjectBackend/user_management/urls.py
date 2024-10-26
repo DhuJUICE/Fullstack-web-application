@@ -4,6 +4,8 @@ from . import views
 
 urlpatterns = [
 	#define the homepage url
+	path('getUserRole', views.userRole, name='userRole'),
+
 	path('', views.homepage, name='homepage'),
 
     path('loginpage', views.loginPage, name='loginPage'),

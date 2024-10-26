@@ -7,12 +7,15 @@ from .views import deserializeFaq, deserializeResource, deserializeReport, deser
 from .views import ContributorsListView
 from .views import Login, Register, Logout, ResetPassword, ValidateCode, NewPassword, UpdateUserRole
 from .views import ResourceModeration, ResourceRating, ResourceReport, ResourceContribute, UserAnalytics
-from .views import tokenPage, tokenRefreshPage
+from .views import tokenPage, tokenRefreshPage, GetUserRole
 
 #token view imports
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
+	#return the users role on login usint the api/token endpoint
+	path('api/role', GetUserRole.as_view(), name='user-role'),
+
 	#Authentication token API endpoints
 	path('tokenPage', tokenPage, name='token-page'),
     path('tokenRefreshPage', tokenRefreshPage, name='token-refresh-page'),

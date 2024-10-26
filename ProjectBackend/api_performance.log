@@ -89,3 +89,5 @@ Method: POST, Path: /api/login, Status: 401, Duration: 0.04 seconds
 Error: Method: POST, Path: /api/login, Status: 401, Duration: 0.04 seconds
 Method: POST, Path: /api/login, Status: 401, Duration: 0.05 seconds
 Error: Method: POST, Path: /api/login, Status: 401, Duration: 0.05 seconds
+Method: GET, Path: /api/role, Status: 401, Duration: 0.40 seconds
+Error: Method: GET, Path: /api/role, Status: 401, Duration: 0.40 seconds

@@ -44,7 +44,7 @@ from user_management.views import resetPassword
 from user_management.views import validate_verification_code
 from user_management.views import changePassword
 from user_management.views import updateRole
-
+from user_management.views import userRole
 from user_analytics.views import userAnalytics
 from user_analytics.models import ANALYTICS
 
@@ -58,6 +58,22 @@ def tokenRefreshPage(request):
     return render(request, 'tokenRefreshPage.html')
 
 #EXTERNAL APP FUNCTIONALITY FOR API ENDPOINTS
+#USER ROLE RETURN
+class GetUserRole(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        # Call the regular function
+        response = userRole(request)
+
+        # If the other function returns a JsonResponse, return its content as JSON
+        if isinstance(response, JsonResponse):
+            # Deserialize the content if it's a JsonResponse
+            return JsonResponse(json.loads(response.content), status=response.status_code)
+
+        # Handle other response types if necessary
+        return JsonResponse({"error": "Unexpected response type"}, status=500)
+
 #USER ANALYTICS
 class UserAnalytics(APIView):
     permission_classes = [AllowAny]

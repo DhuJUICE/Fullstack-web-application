@@ -325,3 +325,23 @@ def updateRole(request):
     else:
         response = {'error': 'Invalid request method.'}
         return JsonResponse(response, status=400)
+
+#function to return the users Role
+def userRole(request):
+    # Get the logged-in user
+    user = request.user
+
+    if not user.is_authenticated:
+        return JsonResponse({'error': 'User not authenticated.'}, status=401)
+
+    try:
+        # Get the user's profile
+        userProfile = UserProfile.objects.get(user=user)
+        userRole = userProfile.role
+        return JsonResponse({'userRole': userRole}, status=200)
+
+    except UserProfile.DoesNotExist:
+        return JsonResponse({'error': 'User profile not found.'}, status=404)
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
