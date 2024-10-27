@@ -243,3 +243,64 @@ Method: POST, Path: /api/update-role, Status: 404, Duration: 0.21 seconds
 Error: Method: POST, Path: /api/update-role, Status: 404, Duration: 0.21 seconds
 Method: POST, Path: /api/update-role, Status: 404, Duration: 0.25 seconds
 Error: Method: POST, Path: /api/update-role, Status: 404, Duration: 0.25 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.98 seconds
+Method: GET, Path: /api/rate-resource, Status: 405, Duration: 1.53 seconds
+Error: Method: GET, Path: /api/rate-resource, Status: 405, Duration: 1.53 seconds
+Method: GET, Path: /api/rate-resource, Status: 405, Duration: 0.21 seconds
+Error: Method: GET, Path: /api/rate-resource, Status: 405, Duration: 0.21 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.31 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.30 seconds
+Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.30 seconds
+Error: Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.30 seconds
+Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.26 seconds
+Error: Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.26 seconds
+Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.24 seconds
+Error: Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.24 seconds
+Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.21 seconds
+Error: Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.21 seconds
+Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.22 seconds
+Error: Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.22 seconds
+Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.24 seconds
+Error: Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.24 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.40 seconds
+Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.21 seconds
+Error: Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.21 seconds
+Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.24 seconds
+Error: Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.24 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.25 seconds
+Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.24 seconds
+Error: Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.24 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.24 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.24 seconds
+Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.24 seconds
+Error: Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.24 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.91 seconds
+Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.72 seconds
+Error: Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.72 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 4.27 seconds
+Method: GET, Path: /api/faq/deserial, Status: 200, Duration: 0.23 seconds
+Method: GET, Path: /admin, Status: 404, Duration: 0.34 seconds
+Error: Method: GET, Path: /admin, Status: 404, Duration: 0.34 seconds
+Method: GET, Path: /admin/, Status: 302, Duration: 0.01 seconds
+Method: GET, Path: /admin/login/, Status: 200, Duration: 25.34 seconds
+Method: POST, Path: /admin/login/, Status: 302, Duration: 2.46 seconds
+Method: GET, Path: /admin/, Status: 200, Duration: 0.72 seconds
+Method: GET, Path: /admin/faq/faq/, Status: 200, Duration: 1.02 seconds
+Method: GET, Path: /admin/jsi18n/, Status: 200, Duration: 7.49 seconds
+Method: GET, Path: /admin/faq/faq/add/, Status: 200, Duration: 0.87 seconds
+Method: GET, Path: /admin/jsi18n/, Status: 200, Duration: 0.26 seconds
+Method: POST, Path: /admin/faq/faq/add/, Status: 302, Duration: 0.36 seconds
+Method: GET, Path: /admin/faq/faq/, Status: 200, Duration: 0.43 seconds
+Method: GET, Path: /admin/jsi18n/, Status: 200, Duration: 0.21 seconds
+Method: GET, Path: /admin/faq/faq/add/, Status: 200, Duration: 0.25 seconds
+Method: GET, Path: /admin/jsi18n/, Status: 200, Duration: 0.24 seconds
+Method: POST, Path: /admin/faq/faq/add/, Status: 302, Duration: 0.31 seconds
+Method: GET, Path: /admin/faq/faq/add/, Status: 200, Duration: 0.22 seconds
+Method: GET, Path: /admin/jsi18n/, Status: 200, Duration: 0.22 seconds
+Method: POST, Path: /admin/faq/faq/add/, Status: 302, Duration: 0.33 seconds
+Method: GET, Path: /admin/faq/faq/, Status: 200, Duration: 0.29 seconds
+Method: GET, Path: /admin/jsi18n/, Status: 200, Duration: 0.24 seconds
+Method: GET, Path: /api/faq/deserial, Status: 200, Duration: 0.25 seconds
+Method: GET, Path: /api/faq/deserial, Status: 200, Duration: 0.25 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.27 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.24 seconds

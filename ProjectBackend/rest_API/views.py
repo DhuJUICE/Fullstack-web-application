@@ -137,7 +137,7 @@ class ResourceReport(APIView):
 #RESOURCE REVIEW
 #rate resources from client side
 class ResourceRating(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         # Call the regular function

@@ -191,7 +191,7 @@ REST_FRAMEWORK = {
 }
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://contained-share2teach.onrender.com', 'https://share2teach.onrender.com', "http://127.0.0.1:8000",
+    'https://contained-share2teach.onrender.com', 'https://share2teach.onrender.com', "http://127.0.0.1:8000", "https://127.0.0.1:8000",
 ]
 
 # Internationalization
