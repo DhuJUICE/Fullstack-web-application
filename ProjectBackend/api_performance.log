@@ -304,3 +304,9 @@ Method: GET, Path: /api/faq/deserial, Status: 200, Duration: 0.25 seconds
 Method: GET, Path: /api/faq/deserial, Status: 200, Duration: 0.25 seconds
 Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.27 seconds
 Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.24 seconds
+Method: POST, Path: /api/token, Status: 200, Duration: 1.01 seconds
+Method: POST, Path: /api/role, Status: 200, Duration: 0.29 seconds
+Method: POST, Path: /api/contribute-resource, Status: 200, Duration: 18.43 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.50 seconds
+Method: GET, Path: /favicon.ico, Status: 404, Duration: 0.21 seconds
+Error: Method: GET, Path: /favicon.ico, Status: 404, Duration: 0.21 seconds

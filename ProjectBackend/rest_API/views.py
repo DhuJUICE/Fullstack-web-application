@@ -76,7 +76,7 @@ class GetUserRole(APIView):
 
 #USER ANALYTICS
 class UserAnalytics(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         # Call the regular function
@@ -120,7 +120,7 @@ class ResourceContribute(APIView):
 
 #RESOURCE REPORT
 class ResourceReport(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         # Call the regular function
@@ -153,7 +153,7 @@ class ResourceRating(APIView):
 
 #moderate resources from client side
 class ResourceModeration(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         # Call the regular function
@@ -187,7 +187,7 @@ class UpdateUserRole(APIView):
 
 #change user password after the verification code has been verified
 class NewPassword(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         # Call the regular function
@@ -203,7 +203,7 @@ class NewPassword(APIView):
 
 #validate verification code and check expiry
 class ValidateCode(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         # Call the regular function
@@ -219,7 +219,7 @@ class ValidateCode(APIView):
 
 #reset password for user account based on email
 class ResetPassword(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         # Call the regular function
@@ -235,7 +235,7 @@ class ResetPassword(APIView):
 
 #logout user from frontend/clientside
 class Logout(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         auth.logout(request)
@@ -243,7 +243,7 @@ class Logout(APIView):
 
 #register users from frontend/clientside
 class Register(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         # Call the regular function
@@ -277,33 +277,33 @@ class Login(APIView):
 
 #DESERIALIZE CLASSBASED VIEWS WITH PAGINATION
 class deserializeProfilePaginated(generics.ListCreateAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     queryset = UserProfile.objects.all()
     serializer_class = ProfileSerializer
 
 class deserializeAnalyticsPaginated(generics.ListCreateAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     queryset = ANALYTICS.objects.all()
     serializer_class = AnalyticsSerializer
 
 class deserializeFaqPaginated(generics.ListCreateAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     queryset = FAQ.objects.all()
     serializer_class = FaqSerializer
     
 
 class deserializeResourcePaginated(generics.ListCreateAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     queryset = RESOURCE_METADATA.objects.all()
     serializer_class = DocSerializer
     
 class deserializeReportPaginated(generics.ListCreateAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     queryset = RESOURCE_REPORT.objects.all()
     serializer_class = ReportSerializer
     
 class deserializeUserPaginated(generics.ListCreateAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = UserSerializer
     
@@ -312,7 +312,7 @@ class deserializeUserPaginated(generics.ListCreateAPIView):
     
 #MAIN CRUD API ENDPOINTS
 class deserializeProfile(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         if 'pk' in kwargs:
@@ -330,7 +330,7 @@ class deserializeProfile(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
 class deserializeAnalytics(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         if 'pk' in kwargs:
@@ -350,7 +350,7 @@ class deserializeAnalytics(APIView):
 
 #DESERIALIZE CLASSBASED VIEWS
 class deserializeFaq(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         if 'pk' in kwargs:
@@ -405,7 +405,7 @@ class deserializeFaq(APIView):
             return Response({"error": "FAQ not found."}, status=status.HTTP_404_NOT_FOUND)
 
 class deserializeResource(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         if 'pk' in kwargs:
@@ -453,7 +453,7 @@ class deserializeResource(APIView):
             return Response({"error": "Resource not found."}, status=status.HTTP_404_NOT_FOUND)
 
 class deserializeReport(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         if 'pk' in kwargs:
@@ -528,7 +528,7 @@ class deserializeReport(APIView):
             return Response({"error": "Report not found."}, status=status.HTTP_404_NOT_FOUND)
 
 class deserializeUser(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         if 'pk' in kwargs:
@@ -587,7 +587,7 @@ class deserializeUser(APIView):
             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
 class ContributorsListView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         # Get all approved resources
