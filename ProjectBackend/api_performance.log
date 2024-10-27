@@ -89,3 +89,8 @@ Error: Method: POST, Path: /api/contribute-resource, Status: 401, Duration: 0.00
 Method: POST, Path: /api/token, Status: 200, Duration: 1.50 seconds
 Method: POST, Path: /api/role, Status: 200, Duration: 0.25 seconds
 Method: POST, Path: /api/contribute-resource, Status: 200, Duration: 85.81 seconds
+Method: POST, Path: /api/contribute-resource, Status: 401, Duration: 0.07 seconds
+Error: Method: POST, Path: /api/contribute-resource, Status: 401, Duration: 0.07 seconds
+Method: POST, Path: /api/token, Status: 200, Duration: 1.30 seconds
+Method: POST, Path: /api/role, Status: 200, Duration: 0.23 seconds
+Method: POST, Path: /api/contribute-resource, Status: 200, Duration: 21.60 seconds
