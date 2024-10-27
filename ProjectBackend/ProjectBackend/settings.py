@@ -16,6 +16,9 @@ import os
 
 #to use enviroment variables
 from decouple import config, Csv
+from datetime import timedelta
+
+from corsheaders.defaults import default_headers, default_methods
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -81,6 +84,7 @@ DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # Static and Media files settings
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -88,14 +92,39 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+
 	'rest_API.middleware.PerformanceLoggingMiddleware',
 ]
 
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  # Set access token expiration (default is 5 minutes)
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # Set refresh token expiration (default is 1 day)
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+}
+
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
     "http://127.0.0.1:3000",
 	"https://frontend-bm1e.onrender.com",  # React app's URL
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+# Allow specific methods
+CORS_ALLOW_METHODS = list(default_methods) + [
+    'POST',
+    'GET',
+    'PUT',
+    'DELETE',
+    'OPTIONS',
+]
+
+# Allow specific headers
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'Authorization',  # Allow authorization headers
+    'Content-Type',   # Allow content-type headers
+    'your-custom-header',  # Add any other custom headers you need to allow
 ]
 
 ROOT_URLCONF = 'ProjectBackend.urls'
@@ -162,7 +191,7 @@ REST_FRAMEWORK = {
 }
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://contained-share2teach.onrender.com', 'https://share2teach.onrender.com', "https://127.0.0.1",
+    'https://contained-share2teach.onrender.com', 'https://share2teach.onrender.com', "http://127.0.0.1:8000",
 ]
 
 # Internationalization

@@ -37,7 +37,8 @@ urlpatterns = [
 	path('api/rate-resource', ResourceRating.as_view(), name='api-rate_resource'),
 
 	#User Management API endpoints
-	path('api/update-user-role', UpdateUserRole.as_view(), name='api-update_user_role'),
+	path('api/update-role', UpdateUserRole.as_view(), name='api-update_user_role'),
+	
 	path('api/new-password', NewPassword.as_view(), name='api-new_password'),
 	path('api/validate-code', ValidateCode.as_view(), name='api-validate_code'),
 	path('api/reset-password', ResetPassword.as_view(), name='api-reset_password'),

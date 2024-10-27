@@ -171,7 +171,7 @@ class ResourceModeration(APIView):
 #USER MANAGEMENT API VIEWS
 #change user password after the verification code has been verified
 class UpdateUserRole(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         # Call the regular function

@@ -3501,3 +3501,4 @@ Traceback (most recent call last):
 django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'localhost:8000'. You may need to add 'localhost' to ALLOWED_HOSTS.
 Internal Server Error: /api/analytics
 "POST /api/analytics HTTP/1.1" 500 37
+Internal Server Error: /api/contribute-resource

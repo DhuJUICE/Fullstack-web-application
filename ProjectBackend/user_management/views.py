@@ -5,6 +5,8 @@ from user_management.models import UserProfile
 from django.utils import timezone
 from django.http import JsonResponse
 
+from django.views.decorators.csrf import csrf_exempt
+
 #mailgun email api import
 import requests
 from django.conf import settings

@@ -94,3 +94,152 @@ Error: Method: POST, Path: /api/contribute-resource, Status: 401, Duration: 0.07
 Method: POST, Path: /api/token, Status: 200, Duration: 1.30 seconds
 Method: POST, Path: /api/role, Status: 200, Duration: 0.23 seconds
 Method: POST, Path: /api/contribute-resource, Status: 200, Duration: 21.60 seconds
+Method: POST, Path: /api/token, Status: 200, Duration: 1.38 seconds
+Method: POST, Path: /api/role, Status: 200, Duration: 0.25 seconds
+Method: POST, Path: /api/contribute-resource, Status: 200, Duration: 13.57 seconds
+Method: POST, Path: /api/contribute-resource, Status: 200, Duration: 4.15 seconds
+Method: POST, Path: /api/contribute-resource, Status: 401, Duration: 0.02 seconds
+Error: Method: POST, Path: /api/contribute-resource, Status: 401, Duration: 0.02 seconds
+Method: POST, Path: /api/token, Status: 200, Duration: 1.32 seconds
+Method: POST, Path: /api/role, Status: 200, Duration: 0.21 seconds
+Method: POST, Path: /api/contribute-resource, Status: 200, Duration: 2.96 seconds
+Method: POST, Path: /api/contribute-resource, Status: 200, Duration: 1.37 seconds
+Method: POST, Path: /api/contribute-resource, Status: 401, Duration: 0.00 seconds
+Error: Method: POST, Path: /api/contribute-resource, Status: 401, Duration: 0.00 seconds
+Method: POST, Path: /api/token, Status: 200, Duration: 1.27 seconds
+Method: POST, Path: /api/role, Status: 200, Duration: 0.24 seconds
+Method: POST, Path: /api/contribute-resource, Status: 200, Duration: 34.85 seconds
+Method: POST, Path: /api/token, Status: 200, Duration: 1.89 seconds
+Method: POST, Path: /api/role, Status: 200, Duration: 0.25 seconds
+Method: POST, Path: /api/contribute-resource, Status: 200, Duration: 104.39 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 8.91 seconds
+Method: POST, Path: /api/contribute-resource, Status: 401, Duration: 0.00 seconds
+Error: Method: POST, Path: /api/contribute-resource, Status: 401, Duration: 0.00 seconds
+Method: POST, Path: /api/token, Status: 200, Duration: 1.41 seconds
+Method: POST, Path: /api/role, Status: 200, Duration: 0.22 seconds
+Method: POST, Path: /api/contribute-resource, Status: 200, Duration: 179.49 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 6.01 seconds
+Method: POST, Path: /api/token, Status: 200, Duration: 1.24 seconds
+Method: POST, Path: /api/role, Status: 200, Duration: 0.23 seconds
+Method: POST, Path: /api/contribute-resource, Status: 200, Duration: 66.92 seconds
+Method: POST, Path: /api/token, Status: 200, Duration: 1.43 seconds
+Method: POST, Path: /api/role, Status: 200, Duration: 0.30 seconds
+Method: POST, Path: /api/contribute-resource, Status: 500, Duration: 303.40 seconds
+Error: Method: POST, Path: /api/contribute-resource, Status: 500, Duration: 303.40 seconds
+Method: POST, Path: /api/token, Status: 200, Duration: 2.00 seconds
+Method: POST, Path: /api/role, Status: 200, Duration: 0.27 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 12.02 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.84 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.85 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.80 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.82 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.85 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.83 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.91 seconds
+Method: POST, Path: /api/token, Status: 200, Duration: 1.25 seconds
+Method: POST, Path: /api/role, Status: 200, Duration: 0.23 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.76 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.79 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 1.13 seconds
+Method: POST, Path: /api/token, Status: 200, Duration: 1.35 seconds
+Method: POST, Path: /api/role, Status: 200, Duration: 0.23 seconds
+Method: POST, Path: /api/token, Status: 200, Duration: 1.23 seconds
+Method: POST, Path: /api/role, Status: 200, Duration: 0.24 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.91 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.94 seconds
+Method: POST, Path: /api/update-user-role, Status: 404, Duration: 0.28 seconds
+Error: Method: POST, Path: /api/update-user-role, Status: 404, Duration: 0.28 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 1.01 seconds
+Method: POST, Path: /api/update-user-role, Status: 404, Duration: 0.24 seconds
+Error: Method: POST, Path: /api/update-user-role, Status: 404, Duration: 0.24 seconds
+Method: POST, Path: /api/token, Status: 200, Duration: 1.21 seconds
+Method: POST, Path: /api/role, Status: 200, Duration: 0.22 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.97 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.81 seconds
+Method: POST, Path: /api/update-user-role, Status: 404, Duration: 0.23 seconds
+Error: Method: POST, Path: /api/update-user-role, Status: 404, Duration: 0.23 seconds
+Method: GET, Path: /api/user/update-user-role, Status: 404, Duration: 50.79 seconds
+Error: Method: GET, Path: /api/user/update-user-role, Status: 404, Duration: 50.79 seconds
+Method: GET, Path: /api/update-user-role, Status: 401, Duration: 3.30 seconds
+Error: Method: GET, Path: /api/update-user-role, Status: 401, Duration: 3.30 seconds
+Method: POST, Path: /api/update-user-role, Status: 404, Duration: 0.29 seconds
+Error: Method: POST, Path: /api/update-user-role, Status: 404, Duration: 0.29 seconds
+Method: POST, Path: /api/token, Status: 401, Duration: 1.53 seconds
+Error: Method: POST, Path: /api/token, Status: 401, Duration: 1.53 seconds
+Method: POST, Path: /api/token, Status: 200, Duration: 1.26 seconds
+Method: POST, Path: /api/role, Status: 200, Duration: 0.27 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.90 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.82 seconds
+Method: POST, Path: /api/update-user-role, Status: 404, Duration: 0.24 seconds
+Error: Method: POST, Path: /api/update-user-role, Status: 404, Duration: 0.24 seconds
+Method: POST, Path: /api/token, Status: 200, Duration: 2.10 seconds
+Method: POST, Path: /api/role, Status: 200, Duration: 0.21 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.85 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.87 seconds
+Method: POST, Path: /api/update-role, Status: 404, Duration: 0.23 seconds
+Error: Method: POST, Path: /api/update-role, Status: 404, Duration: 0.23 seconds
+Method: POST, Path: /api/token, Status: 200, Duration: 1.31 seconds
+Method: POST, Path: /api/role, Status: 200, Duration: 0.22 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.85 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.76 seconds
+Method: POST, Path: /api/update-role, Status: 404, Duration: 0.24 seconds
+Error: Method: POST, Path: /api/update-role, Status: 404, Duration: 0.24 seconds
+Method: POST, Path: /api/update-role, Status: 404, Duration: 0.24 seconds
+Error: Method: POST, Path: /api/update-role, Status: 404, Duration: 0.24 seconds
+Method: POST, Path: /api/token, Status: 200, Duration: 2.40 seconds
+Method: POST, Path: /api/role, Status: 200, Duration: 0.22 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.92 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.85 seconds
+Method: POST, Path: /api/update-role, Status: 404, Duration: 0.24 seconds
+Error: Method: POST, Path: /api/update-role, Status: 404, Duration: 0.24 seconds
+Method: POST, Path: /api/token, Status: 200, Duration: 1.25 seconds
+Method: POST, Path: /api/role, Status: 200, Duration: 0.21 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.77 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.75 seconds
+Method: POST, Path: /api/update-role, Status: 404, Duration: 0.25 seconds
+Error: Method: POST, Path: /api/update-role, Status: 404, Duration: 0.25 seconds
+Method: POST, Path: /api/token, Status: 200, Duration: 1.42 seconds
+Method: POST, Path: /api/role, Status: 200, Duration: 0.21 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.80 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.84 seconds
+Method: POST, Path: /api/update-role, Status: 404, Duration: 0.27 seconds
+Error: Method: POST, Path: /api/update-role, Status: 404, Duration: 0.27 seconds
+Method: POST, Path: /api/update-role, Status: 404, Duration: 0.25 seconds
+Error: Method: POST, Path: /api/update-role, Status: 404, Duration: 0.25 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.88 seconds
+Method: POST, Path: /api/update-role, Status: 404, Duration: 0.22 seconds
+Error: Method: POST, Path: /api/update-role, Status: 404, Duration: 0.22 seconds
+Method: POST, Path: /api/update-role, Status: 404, Duration: 0.25 seconds
+Error: Method: POST, Path: /api/update-role, Status: 404, Duration: 0.25 seconds
+Method: POST, Path: /api/update-role, Status: 404, Duration: 0.23 seconds
+Error: Method: POST, Path: /api/update-role, Status: 404, Duration: 0.23 seconds
+Method: GET, Path: /api/update-user-role, Status: 404, Duration: 0.92 seconds
+Error: Method: GET, Path: /api/update-user-role, Status: 404, Duration: 0.92 seconds
+Method: GET, Path: /api/update-role, Status: 401, Duration: 0.59 seconds
+Error: Method: GET, Path: /api/update-role, Status: 401, Duration: 0.59 seconds
+Method: POST, Path: /api/update-role, Status: 404, Duration: 0.29 seconds
+Error: Method: POST, Path: /api/update-role, Status: 404, Duration: 0.29 seconds
+Method: POST, Path: /api/update-role, Status: 404, Duration: 0.23 seconds
+Error: Method: POST, Path: /api/update-role, Status: 404, Duration: 0.23 seconds
+Method: POST, Path: /api/update-role, Status: 404, Duration: 0.22 seconds
+Error: Method: POST, Path: /api/update-role, Status: 404, Duration: 0.22 seconds
+Method: POST, Path: /api/update-role, Status: 404, Duration: 0.21 seconds
+Error: Method: POST, Path: /api/update-role, Status: 404, Duration: 0.21 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 1.05 seconds
+Method: POST, Path: /api/update-role, Status: 404, Duration: 0.21 seconds
+Error: Method: POST, Path: /api/update-role, Status: 404, Duration: 0.21 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 60.19 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 1.26 seconds
+Method: POST, Path: /api/update-role, Status: 404, Duration: 0.23 seconds
+Error: Method: POST, Path: /api/update-role, Status: 404, Duration: 0.23 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 1.06 seconds
+Method: POST, Path: /api/update-role, Status: 404, Duration: 0.34 seconds
+Error: Method: POST, Path: /api/update-role, Status: 404, Duration: 0.34 seconds
+Method: POST, Path: /api/token, Status: 200, Duration: 6.28 seconds
+Method: POST, Path: /api/role, Status: 200, Duration: 0.47 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 1.06 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 1.01 seconds
+Method: POST, Path: /api/update-role, Status: 404, Duration: 0.21 seconds
+Error: Method: POST, Path: /api/update-role, Status: 404, Duration: 0.21 seconds
+Method: POST, Path: /api/update-role, Status: 404, Duration: 0.25 seconds
+Error: Method: POST, Path: /api/update-role, Status: 404, Duration: 0.25 seconds
