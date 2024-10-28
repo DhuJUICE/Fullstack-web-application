@@ -187,7 +187,7 @@ class UpdateUserRole(APIView):
 
 #change user password after the verification code has been verified
 class NewPassword(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def post(self, request):
         # Call the regular function
@@ -203,7 +203,7 @@ class NewPassword(APIView):
 
 #validate verification code and check expiry
 class ValidateCode(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def post(self, request):
         # Call the regular function
@@ -219,7 +219,7 @@ class ValidateCode(APIView):
 
 #reset password for user account based on email
 class ResetPassword(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def post(self, request):
         # Call the regular function
@@ -243,7 +243,7 @@ class Logout(APIView):
 
 #register users from frontend/clientside
 class Register(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def post(self, request):
         # Call the regular function
@@ -350,7 +350,7 @@ class deserializeAnalytics(APIView):
 
 #DESERIALIZE CLASSBASED VIEWS
 class deserializeFaq(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get(self, request, *args, **kwargs):
         if 'pk' in kwargs:
@@ -405,7 +405,7 @@ class deserializeFaq(APIView):
             return Response({"error": "FAQ not found."}, status=status.HTTP_404_NOT_FOUND)
 
 class deserializeResource(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get(self, request, *args, **kwargs):
         if 'pk' in kwargs:
@@ -528,7 +528,7 @@ class deserializeReport(APIView):
             return Response({"error": "Report not found."}, status=status.HTTP_404_NOT_FOUND)
 
 class deserializeUser(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get(self, request, *args, **kwargs):
         if 'pk' in kwargs:

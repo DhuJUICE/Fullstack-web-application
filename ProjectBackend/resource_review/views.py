@@ -4,6 +4,9 @@ from datetime import datetime
 from django.utils import timezone
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
+from django.db import transaction
+import json
 
 # Create your views here.
 def ratingPage(request):
@@ -13,33 +16,32 @@ def ratingPage(request):
 from django.http import JsonResponse
 from django.db import transaction
 
+@csrf_exempt  # Disable CSRF protection for this view
 def resourceRating(request):
-    # Check if the request method is POST
     if request.method == "POST":
-        resource_id = request.POST.get("resourceId")
-        rating = request.POST.get("rating")
+        try:
+            # Load JSON data from the request body
+            data = json.loads(request.body)
+            resource_id = data.get("resourceId")
+            rating = data.get("rating")
 
-        # First, check if the resource exists
-        resource = RESOURCE_METADATA.objects.filter(id=resource_id).first()
-        if not resource:
-            return JsonResponse({"error": "Resource not found."}, status=404)
+            # Check if the resource exists
+            resource = RESOURCE_METADATA.objects.filter(id=resource_id).first()
+            if not resource:
+                return JsonResponse({"error": "Resource not found."}, status=404)
 
-        # Validate the rating input
-        if rating.isdigit():
-            rating_value = int(rating)
-            if 1 <= rating_value <= 5:
+            # Validate the rating input
+            if isinstance(rating, int) and 1 <= rating <= 5:
                 try:
                     with transaction.atomic():
                         # Rate the resource
-                        resource.resource_rating = rating_value
-
-                        # Save resource with updated rating
+                        resource.resource_rating = rating
                         resource.save()
 
                     response = {
                         "message": "Resource rated successfully.",
                         "resource_id": resource_id,
-                        "rating": rating_value
+                        "rating": rating
                     }
                     return JsonResponse(response, status=200)
 
@@ -48,67 +50,63 @@ def resourceRating(request):
                     return JsonResponse({"error": "An error occurred while saving the rating."}, status=500)
 
             return JsonResponse({"error": "Rating must be an integer between 1 and 5."}, status=400)
-        else:
-            return JsonResponse({"error": "Invalid input for rating, must be an integer."}, status=400)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON data."}, status=400)
 
-    # If the request method is not POST
     return JsonResponse({"error": "Invalid request method. Only POST is allowed."}, status=405)
 
-
+	
 def moderationPage(request):
 	return render(request, 'moderation.html')
     
 
 #get the resources from database and moderate them, then save them back in the database
 def resourceModeration(request):
-    # Check if the request method is POST
     if request.method == "POST":
-        resource_id = request.POST.get('source_id')
-        approval_status = request.POST.get('mod_status')
-        moderation_comment = request.POST.get('mod_comment')
+        try:
+            data = json.loads(request.body)
+            resource_id = data.get('source_id')
+            approval_status = data.get('mod_status')
+            moderation_comment = data.get('mod_comment')
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON data."}, status=400)
+
         moderation_date = timezone.now()
 
-        # Validate that resource_id is a digit
+        # Validate that resource_id is provided and is a digit
+        if resource_id is None:
+            return JsonResponse({"error": "Resource ID is required."}, status=400)
+
         if resource_id.isdigit():
-            # Check if resource exists
             try:
                 resource = RESOURCE_METADATA.objects.get(pk=resource_id)
             except RESOURCE_METADATA.DoesNotExist:
                 return JsonResponse({"error": "Resource not found."}, status=404)
 
             # Validate approval_status
-            if approval_status in ["approved", "rejected"]:
-                # Moderate the resource
-                resource.approval_status = approval_status
-                
-                # Check if moderation_comment is not empty
-                if moderation_comment:
-                    resource.moderation_comment = moderation_comment
-                
-                # Set the moderation date
-                resource.moderation_date = moderation_date
+            if approval_status not in ["approved", "rejected"]:
+                return JsonResponse({"error": "Invalid input for approval status. Must be 'approved' or 'rejected'."}, status=400)
 
-                # Save resource with updated moderation details
-                resource.save()
+            # Check if moderation_comment is empty or just whitespace
+            if not moderation_comment or not moderation_comment.strip():
+                return JsonResponse({"error": "Moderation comment cannot be empty."}, status=400)
 
-                response = {
-                    "message": "Resource moderated successfully.",
-                    "resource_id": resource_id,
-                    "approval_status": approval_status,
-                    "moderation_comment": moderation_comment,
-                    "moderation_date": moderation_date.isoformat()
-                }
-                return JsonResponse(response, status=200)
+            # Moderate the resource
+            resource.approval_status = approval_status
+            resource.moderation_comment = moderation_comment
+            resource.moderation_date = moderation_date
+            resource.save()
 
-            else:
-                response = {"error": "Invalid input for approval status. Must be 'approved' or 'rejected'."}
-                return JsonResponse(response, status=400)
-        else:
-            response = {"error": "Invalid input for resource_id. Must be an integer."}
-            return JsonResponse(response, status=400)
+            response = {
+                "message": "Resource moderated successfully.",
+                "resource_id": resource_id,
+                "approval_status": approval_status,
+                "moderation_comment": moderation_comment,
+                "moderation_date": moderation_date.isoformat()
+            }
+            return JsonResponse(response, status=200)
 
-    else:
-        response = {"error": "Invalid request method. Only POST is allowed."}
-        return JsonResponse(response, status=405)
+        return JsonResponse({"error": "Invalid input for resource_id. Must be an integer."}, status=400)
 
+    return JsonResponse({"error": "Invalid request method. Only POST is allowed."}, status=405)
 	

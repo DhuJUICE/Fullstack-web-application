@@ -4,8 +4,9 @@ from django.contrib.auth.models import User, auth
 from user_management.models import UserProfile
 from django.utils import timezone
 from django.http import JsonResponse
-
+import json
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
 
 #mailgun email api import
 import requests
@@ -104,40 +105,45 @@ def registerUser(request):
     if request.method != 'POST':
         return JsonResponse({"error": "Method not allowed"}, status=405)
 
-    # Get all the customer information to be stored in the database
-    firstname = request.POST.get('firstname')
-    lastname = request.POST.get('lastname')
-    username = request.POST.get('username')
-    email = request.POST.get('email')
-    password = request.POST.get('password')
-    confPassword = request.POST.get('confirmpassword')
+    try:
+        # Load JSON data from the request body
+        data = json.loads(request.body)
+        firstname = data.get('firstname')
+        lastname = data.get('lastname')
+        username = data.get('username')
+        email = data.get('email')
+        password = data.get('password')
+        confPassword = data.get('confirmpassword')
 
-    # Check to see if the username is taken already
-    if User.objects.filter(username=username).exists():
-        return JsonResponse({"error": "Username already taken"}, status=400)
+        # Check to see if the username is taken already
+        if User.objects.filter(username=username).exists():
+            return JsonResponse({"error": "Username already taken"}, status=400)
 
-    # Check to see if email is taken already
-    elif User.objects.filter(email=email).exists():
-        return JsonResponse({"error": "Email already taken"}, status=400)
+        # Check to see if email is taken already
+        elif User.objects.filter(email=email).exists():
+            return JsonResponse({"error": "Email already taken"}, status=400)
 
-    # Check to see if the two passwords are the same
-    elif password != confPassword:
-        return JsonResponse({"error": "Passwords do not match - Try again"}, status=400)
+        # Check to see if the two passwords are the same
+        elif password != confPassword:
+            return JsonResponse({"error": "Passwords do not match - Try again"}, status=400)
 
-    else:
-        # Create a user object to hold the data for a new user
-        user = User.objects.create_user(
-            first_name=firstname,
-            last_name=lastname,
-            username=username,
-            email=email,
-            password=password
-        )
+        else:
+            # Create a user object to hold the data for a new user
+            user = User.objects.create_user(
+                first_name=firstname,
+                last_name=lastname,
+                username=username,
+                email=email,
+                password=password
+            )
 
-        # Save the new user data to the database
-        user.save()
+            # Save the new user data to the database
+            user.save()
 
-        return JsonResponse({"message": "User registered successfully"}, status=201)
+            return JsonResponse({"message": "User registered successfully"}, status=201)
+
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
 
 #function to logout of user account
 def logout(request):
@@ -189,13 +195,11 @@ def resetPassword(request):
             EmailVerificationCode(email, code)
 
             # Prepare JSON response
-            response = {"message": "Verification code sent to your email.", "email": email}
+            response = {"message": "Verification code sent to your email.", "email": email, 'code':code}
             return JsonResponse(response, status=200)
 
         # If user does not exist
         else:
-            print("Email does not exist, You CANNOT get a verification code")
-            print("No user with that email\n")
             # Give response that no user is registered with that email
             response = {"error": "No user registered with that email."}
             return JsonResponse(response, status=404)
@@ -305,28 +309,34 @@ def updateRolePage(request):
     return render(request, 'updateUser.html')
 
 #function to update user role
+
+
+@csrf_exempt  # Disable CSRF protection for this view
 def updateRole(request):
-    # Check if the request method is POST
     if request.method == "POST":
-        userId = request.POST.get('user_id')
-        userRole = request.POST.get('role')
-        print(f"{userId} {userRole}")
+        try:
+            # Load JSON data from the request body
+            data = json.loads(request.body)
+            user_id = data.get('user_id')
+            user_role = data.get('role')
 
-        # Get the user and their profile
-        user = get_object_or_404(User, id=userId)
-        userProfile = get_object_or_404(UserProfile, user=user)
+            # Get the user and their profile
+            user = get_object_or_404(User, id=user_id)
+            userProfile = get_object_or_404(UserProfile, user=user)
 
-        # Update the user's role
-        userProfile.role = userRole
-        userProfile.save()
+            # Update the user's role
+            userProfile.role = user_role
+            userProfile.save()
 
-        response = {'userRole': userRole}
-        return JsonResponse(response, status=200)
+            response = {'userRole': user_role}
+            return JsonResponse(response, status=200)
 
-    # If the request method is not POST
-    else:
-        response = {'error': 'Invalid request method.'}
-        return JsonResponse(response, status=400)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON data."}, status=400)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Invalid request method. Only POST is allowed."}, status=405)
 
 #function to return the users Role
 def userRole(request):

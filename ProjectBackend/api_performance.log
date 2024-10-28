@@ -310,3 +310,123 @@ Method: POST, Path: /api/contribute-resource, Status: 200, Duration: 18.43 secon
 Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.50 seconds
 Method: GET, Path: /favicon.ico, Status: 404, Duration: 0.21 seconds
 Error: Method: GET, Path: /favicon.ico, Status: 404, Duration: 0.21 seconds
+Method: GET, Path: /api/resource/deserial, Status: 401, Duration: 0.14 seconds
+Error: Method: GET, Path: /api/resource/deserial, Status: 401, Duration: 0.14 seconds
+Method: GET, Path: /favicon.ico, Status: 404, Duration: 0.06 seconds
+Error: Method: GET, Path: /favicon.ico, Status: 404, Duration: 0.06 seconds
+Method: POST, Path: /api/token, Status: 200, Duration: 0.92 seconds
+Method: POST, Path: /api/role, Status: 200, Duration: 0.27 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.93 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.89 seconds
+Method: POST, Path: /api/update-role, Status: 404, Duration: 0.26 seconds
+Error: Method: POST, Path: /api/update-role, Status: 404, Duration: 0.26 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.25 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.27 seconds
+Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.28 seconds
+Error: Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.28 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.29 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.26 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.27 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.31 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.24 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.30 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.24 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.89 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.89 seconds
+Method: POST, Path: /api/update-role, Status: 404, Duration: 0.26 seconds
+Error: Method: POST, Path: /api/update-role, Status: 404, Duration: 0.26 seconds
+Method: GET, Path: /api/contributors, Status: 401, Duration: 0.00 seconds
+Error: Method: GET, Path: /api/contributors, Status: 401, Duration: 0.00 seconds
+Method: GET, Path: /api/contributors, Status: 401, Duration: 0.00 seconds
+Error: Method: GET, Path: /api/contributors, Status: 401, Duration: 0.00 seconds
+Method: GET, Path: /api/resource/deserial, Status: 401, Duration: 0.00 seconds
+Error: Method: GET, Path: /api/resource/deserial, Status: 401, Duration: 0.00 seconds
+Method: GET, Path: /api/resource/deserial, Status: 401, Duration: 0.00 seconds
+Error: Method: GET, Path: /api/resource/deserial, Status: 401, Duration: 0.00 seconds
+Method: GET, Path: /api/resource/deserial, Status: 401, Duration: 0.00 seconds
+Error: Method: GET, Path: /api/resource/deserial, Status: 401, Duration: 0.00 seconds
+Method: GET, Path: /api/resource/deserial, Status: 401, Duration: 0.00 seconds
+Error: Method: GET, Path: /api/resource/deserial, Status: 401, Duration: 0.00 seconds
+Method: GET, Path: /api/resource/deserial, Status: 401, Duration: 0.00 seconds
+Error: Method: GET, Path: /api/resource/deserial, Status: 401, Duration: 0.00 seconds
+Method: GET, Path: /api/contributors, Status: 401, Duration: 0.00 seconds
+Error: Method: GET, Path: /api/contributors, Status: 401, Duration: 0.00 seconds
+Method: GET, Path: /api/contributors, Status: 401, Duration: 0.00 seconds
+Error: Method: GET, Path: /api/contributors, Status: 401, Duration: 0.00 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.31 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.24 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.33 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.25 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.91 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.93 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.36 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.31 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.27 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 1.01 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.91 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.30 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.27 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.25 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.96 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.26 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.91 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.29 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.26 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.23 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.85 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.25 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.25 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.91 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.80 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.32 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.26 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.99 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.87 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.26 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.25 seconds
+Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.27 seconds
+Error: Method: POST, Path: /api/rate-resource, Status: 404, Duration: 0.27 seconds
+Method: GET, Path: /api/faq/deserial, Status: 200, Duration: 0.29 seconds
+Method: GET, Path: /api/faq/deserial, Status: 200, Duration: 0.24 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.27 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.25 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.27 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.24 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.27 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.27 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.27 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.24 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.30 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.23 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.28 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.27 seconds
+Method: POST, Path: /api/token, Status: 200, Duration: 0.91 seconds
+Method: POST, Path: /api/role, Status: 200, Duration: 0.24 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.94 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.94 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.27 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.27 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.26 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.26 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.25 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.26 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.92 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.88 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.41 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.25 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 1.09 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.84 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.88 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 1.02 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.28 seconds
+Method: GET, Path: /api/resource/deserial, Status: 200, Duration: 0.25 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.92 seconds
+Method: GET, Path: /api/user/deserial, Status: 200, Duration: 0.83 seconds
+Method: POST, Path: /api/register, Status: 401, Duration: 0.00 seconds
+Error: Method: POST, Path: /api/register, Status: 401, Duration: 0.00 seconds
+Method: POST, Path: /api/register, Status: 500, Duration: 0.57 seconds
+Error: Method: POST, Path: /api/register, Status: 500, Duration: 0.57 seconds
+Method: POST, Path: /api/register, Status: 500, Duration: 0.35 seconds
+Error: Method: POST, Path: /api/register, Status: 500, Duration: 0.35 seconds
+Method: POST, Path: /api/register, Status: 500, Duration: 0.35 seconds
+Error: Method: POST, Path: /api/register, Status: 500, Duration: 0.35 seconds
