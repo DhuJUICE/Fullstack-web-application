@@ -77,18 +77,6 @@ class GetUserRole(APIView):
 #USER ANALYTICS
 class UserAnalytics(APIView):
     permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        # Call the regular function
-        response = userAnalytics(request)
-
-        # If the other function returns a JsonResponse, return its content as JSON
-        if isinstance(response, JsonResponse):
-            # Deserialize the content if it's a JsonResponse
-            return JsonResponse(json.loads(response.content), status=response.status_code)
-
-        # Handle other response types if necessary
-        return JsonResponse({"error": "Unexpected response type"}, status=500)
     
     def post(self, request):
         # Call the regular function
