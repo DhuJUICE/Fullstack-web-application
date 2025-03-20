@@ -104,6 +104,13 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
 }
 
+ALLOWED_HOSTS = [
+    "http://127.0.0.1:3000",
+	"http://localhost:3000",
+	"https://frontend-bm1e.onrender.com",
+    "https://resourcesharing-0kb0.onrender.com",
+  ]
+
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
 	"http://localhost:3000",
