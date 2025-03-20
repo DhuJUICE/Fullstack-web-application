@@ -105,16 +105,16 @@ SIMPLE_JWT = {
 }
 
 ALLOWED_HOSTS = [
-    "http://127.0.0.1:3000",
-	"http://localhost:3000",
-	"https://frontend-bm1e.onrender.com",
-    "https://resourcesharing-0kb0.onrender.com",
+    "http://127.0.0.1:8000",
+	"http://localhost:8000",
+    "https://share2teach.onrender.com",
   ]
 
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
 	"http://localhost:3000",
 	"https://frontend-bm1e.onrender.com",  # React app's URL
+    "https://resourcesharing-0kb0.onrender.com",  # React app's URL
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -159,11 +159,14 @@ WSGI_APPLICATION = 'ProjectBackend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Share2TeachDB',
-        'USER': 'postgres',
-        'PASSWORD': 'giovanI200',
-        'HOST': 'share2teach-db.c70w2o822mxq.af-south-1.rds.amazonaws.com',
-        'PORT': '5432',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
+        'OPTIONS': {
+            'sslmode': os.getenv('DB_SSLMODE', 'require'),
+        },
     }
 }
 
