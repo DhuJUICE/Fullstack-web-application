@@ -105,9 +105,9 @@ SIMPLE_JWT = {
 }
 
 ALLOWED_HOSTS = [
-    "http://127.0.0.1:8000",
-	"http://localhost:8000",
-    "https://share2teach.onrender.com",
+    "127.0.0.1:8000",
+	"localhost:8000",
+    "share2teach.onrender.com",
   ]
 
 CORS_ALLOWED_ORIGINS = [
