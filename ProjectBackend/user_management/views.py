@@ -21,84 +21,7 @@ from django.shortcuts import get_object_or_404
 
 def homepage(request):
     return render(request, 'homepage.html')
-    user = request.user  # Access the logged-in user
-    if user.is_authenticated:
-        # The user is logged in
-        userProfile = UserProfile.objects.get(user=user)
-        role = userProfile.role
-        if role == "adminUser":
-            response = {"userRole":role}
-        elif role == "moderatorUser":
-            response = {"userRole":role}   
-        elif role == "educatorUser":
-            response = {"userRole":role}
 
-        return render(request, 'homepage.html', response)
-
-    else:
-        # The user is not logged in
-        return render(request, 'homepage.html')
-
-    #context = {
-    #    'url': 'http://127.0.0.1:8000',
-    #    'link_text': 'Click here',
-    #}
-
-    return render(request, 'homepage.html')
-
-# Create your views here.
-#this function should validate and authenticate the user
-def loginPage(request):
-    return render(request, 'login.html')
-    
-def testPage(request):
-    response = {"user name" : "james"}
-    return render(request, 'testpage.html', response)
-
-#function-view to get the registration page
-def registerPage(request):
-    return render(request, 'register.html')
-
-#function-view to get the login buttons navigation
-def loginUser(request):
-    # Only allow POST requests
-    if request.method != 'POST':
-        return JsonResponse({"error": "Method not allowed"}, status=405)
-
-    # Get the username or email and password from the user
-    username_or_email = request.POST.get('username_or_email')
-    password = request.POST.get('password')
-
-    # Try to authenticate based on email or username
-    user = None
-    if '@' in username_or_email:
-        # Attempt to get the user by email
-        try:
-            email_user = User.objects.get(email=username_or_email)
-            user = auth.authenticate(username=email_user.username, password=password)
-        except User.DoesNotExist:
-            return JsonResponse({"error": "Invalid credentials"}, status=401)
-    else:
-        # Attempt to authenticate using username directly
-        user = auth.authenticate(username=username_or_email, password=password)
-
-    if user is not None:
-        # Securely log in the user
-        auth.login(request, user)
-
-        if user.is_authenticated:
-            userProfile = UserProfile.objects.get(user=user)
-            role = userProfile.role
-            response = {
-                'message': "User logged in successfully",
-                'userRole': role,
-				'username':user.username
-            }
-            return JsonResponse(response, status=200)
-        else:
-            return JsonResponse({"error": "User not authenticated"}, status=401)
-    else:
-        return JsonResponse({"error": "Invalid credentials"}, status=401)
 
 #register new users of the system
 def registerUser(request):
@@ -144,12 +67,6 @@ def registerUser(request):
 
     except json.JSONDecodeError:
         return JsonResponse({"error": "Invalid JSON"}, status=400)
-
-#function to logout of user account
-def logout(request):
-    auth.logout(request)
-
-    return JsonResponse({"message": "User logged out successfully"}, status=200)
 
 
 #PASSWORD RESET
@@ -208,9 +125,6 @@ def resetPassword(request):
     else:
         response = {"error": "Invalid request method."}
         return JsonResponse(response, status=400)
-
-
-
 
 #function to send email to user with verification code
 def EmailVerificationCode(recipient, code):
@@ -274,9 +188,6 @@ def validate_verification_code(request):
         response = {"error": "Invalid request method."}
         return JsonResponse(response, status=400)
 
-def changePasswordPage(request):
-    return render(request, 'newPassword.html', {'email':'james@gmail.com'})
-
 #function to change user password after verification code is validated
 def changePassword(request):
     # Check if the request method is POST
@@ -304,13 +215,7 @@ def changePassword(request):
         response = {"error": "Invalid request method."}
         return JsonResponse(response, status=400)
  
-#function to display update user role page
-def updateRolePage(request):
-    return render(request, 'updateUser.html')
-
 #function to update user role
-
-
 @csrf_exempt  # Disable CSRF protection for this view
 def updateRole(request):
     if request.method == "POST":

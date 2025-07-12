@@ -28,14 +28,9 @@ from io import BytesIO
 from faq.views import displayFaqs
 
 from resource_contribution.views import resourceUploading
-
 from resource_report.views import resourceReport
-
 from resource_review.views import resourceRating
 from resource_review.views import resourceModeration
-
-#from document_search.views import resourceSearch
-#from user_analytics.views import UserAnalytics
 
 from user_management.views import loginUser
 from user_management.views import registerUser
@@ -47,15 +42,7 @@ from user_management.views import updateRole
 from user_management.views import userRole
 from user_analytics.views import userAnalytics
 from user_analytics.models import ANALYTICS
-
 import json
-
-#test pages for authentication tokens
-def tokenPage(request):
-    return render(request, 'tokenPage.html')
-
-def tokenRefreshPage(request):
-    return render(request, 'tokenRefreshPage.html')
 
 #EXTERNAL APP FUNCTIONALITY FOR API ENDPOINTS
 #USER ROLE RETURN
@@ -221,14 +208,6 @@ class ResetPassword(APIView):
         # Handle other response types if necessary
         return JsonResponse({"error": "Unexpected response type"}, status=500)
 
-#logout user from frontend/clientside
-class Logout(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        auth.logout(request)
-        return JsonResponse({"message": "User logged out successfully"}, status=200)
-
 #register users from frontend/clientside
 class Register(APIView):
     permission_classes = [AllowAny]
@@ -244,58 +223,6 @@ class Register(APIView):
 
         # Handle other response types if necessary
         return JsonResponse({"error": "Unexpected response type"}, status=500)
-
-#login users from frontend/clientside
-class Login(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        # Call the regular function
-        response = loginUser(request)
-
-        # If the other function returns a JsonResponse, return its content as JSON
-        if isinstance(response, JsonResponse):
-            # Deserialize the content if it's a JsonResponse
-            return JsonResponse(json.loads(response.content), status=response.status_code)
-
-        # Handle other response types if necessary
-        return JsonResponse({"error": "Unexpected response type"}, status=500)
-
-
-
-#DESERIALIZE CLASSBASED VIEWS WITH PAGINATION
-class deserializeProfilePaginated(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
-    queryset = UserProfile.objects.all()
-    serializer_class = ProfileSerializer
-
-class deserializeAnalyticsPaginated(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
-    queryset = ANALYTICS.objects.all()
-    serializer_class = AnalyticsSerializer
-
-class deserializeFaqPaginated(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
-    queryset = FAQ.objects.all()
-    serializer_class = FaqSerializer
-    
-
-class deserializeResourcePaginated(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
-    queryset = RESOURCE_METADATA.objects.all()
-    serializer_class = DocSerializer
-    
-class deserializeReportPaginated(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
-    queryset = RESOURCE_REPORT.objects.all()
-    serializer_class = ReportSerializer
-    
-class deserializeUserPaginated(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    
-
 
     
 #MAIN CRUD API ENDPOINTS
@@ -605,16 +532,3 @@ class ContributorsListView(APIView):
         ]
 
         return JsonResponse(contributor_list, safe=False)
-
-    """
-    def get(self, requests):
-        try:
-            # Get all user IDs who have contributed resources
-            contributor_ids = RESOURCE_METADATA.objects.values_list('contributor', flat=True).distinct()
-            # Return users who have contributed resources
-            users =  User.objects.filter(id__in=contributor_ids)
-            serializer = UserSerializer(users, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK) 
-        except User.DoesNotExist:
-            return Response({"error": "Contributor not found."}, status=status.HTTP_404_NOT_FOUND)
-    """

@@ -70,18 +70,6 @@ MAILGUN_API_KEY = config('MAILGUN_API_KEY')
 MAILGUN_DOMAIN = config('MAILGUN_DOMAIN')
 MAILGUN_API_URL = f'https://api.mailgun.net/v3/{MAILGUN_DOMAIN}/messages'
 
-# AWS S3 Configuration
-AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
-AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME')
-AWS_S3_SIGNATURE_VERSION = config('AWS_S3_SIGNATURE_VERSION')
-AWS_S3_FILE_OVERWRITE = config('AWS_S3_FILE_OVERWRITE')
-AWS_DEFAULT_ACL = config('AWS_DEFAULT_ACL')  # S3 default access 
-
-#This is the file path for where our files gets stored
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
 # Static and Media files settings
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -92,17 +80,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-	'rest_API.middleware.PerformanceLoggingMiddleware',
 ]
-
-
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  # Set access token expiration (default is 5 minutes)
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # Set refresh token expiration (default is 1 day)
-    'ROTATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_ROTATION': True,
-}
 
 ALLOWED_HOSTS = [
     "127.0.0.1:8000",
@@ -113,27 +91,10 @@ ALLOWED_HOSTS = [
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
 	"http://localhost:3000",
-	"https://frontend-bm1e.onrender.com",  # React app's URL
     "https://resourcesharing-0kb0.onrender.com",  # React app's URL
 ]
 
 CORS_ALLOW_CREDENTIALS = True
-
-# Allow specific methods
-CORS_ALLOW_METHODS = list(default_methods) + [
-    'POST',
-    'GET',
-    'PUT',
-    'DELETE',
-    'OPTIONS',
-]
-
-# Allow specific headers
-CORS_ALLOW_HEADERS = list(default_headers) + [
-    'Authorization',  # Allow authorization headers
-    'Content-Type',   # Allow content-type headers
-    'your-custom-header',  # Add any other custom headers you need to allow
-]
 
 ROOT_URLCONF = 'ProjectBackend.urls'
 
@@ -159,13 +120,13 @@ WSGI_APPLICATION = 'ProjectBackend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT'),
         'OPTIONS': {
-            'sslmode': os.getenv('DB_SSLMODE', 'require'),
+            'sslmode': config('DB_SSLMODE', default='require'),
         },
     }
 }
@@ -202,7 +163,7 @@ REST_FRAMEWORK = {
 }
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://contained-share2teach.onrender.com', 'https://share2teach.onrender.com', "http://127.0.0.1:8000", "https://127.0.0.1:8000",
+    'https://share2teach.onrender.com', "http://127.0.0.1:8000", "https://127.0.0.1:8000",
 ]
 
 # Internationalization
@@ -217,43 +178,3 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIR = [os.path.join(BASE_DIR, 'React-Frontend/build/static')]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-# Logging configuration
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-        },
-        'file': {
-            'level': 'ERROR',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'django_errors.log'),
-        },
-        'performance_file': {
-            'level': 'INFO',  # You can adjust this level as needed
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'api_performance.log'),
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console', 'file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-        'django.request': {
-            'handlers': ['file'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
-        'rest_API.performance': {  # Adjust this to your app name
-            'handlers': ['performance_file'],
-            'level': 'INFO',
-            'propagate': False,
-        },
-    },
-}

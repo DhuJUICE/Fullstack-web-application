@@ -8,10 +8,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
 import json
 
-# Create your views here.
-def ratingPage(request):
-	return render(request, 'rateResource.html')
-
 #get the resources from database and rate them, then save them back in the database
 from django.http import JsonResponse
 from django.db import transaction
@@ -54,11 +50,6 @@ def resourceRating(request):
             return JsonResponse({"error": "Invalid JSON data."}, status=400)
 
     return JsonResponse({"error": "Invalid request method. Only POST is allowed."}, status=405)
-
-	
-def moderationPage(request):
-	return render(request, 'moderation.html')
-    
 
 #get the resources from database and moderate them, then save them back in the database
 def resourceModeration(request):

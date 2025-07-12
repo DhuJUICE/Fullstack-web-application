@@ -16,10 +16,6 @@ urlpatterns = [
 	#return the users role on login usint the api/token endpoint
 	path('api/role', GetUserRole.as_view(), name='user-role'),
 
-	#Authentication token API endpoints
-	path('tokenPage', tokenPage, name='token-page'),
-    path('tokenRefreshPage', tokenRefreshPage, name='token-refresh-page'),
-
     path('api/token', TokenObtainPairView.as_view(), name='token'),
     path('api/token/refresh', TokenRefreshView.as_view(), name='token-refresh'),
 
@@ -42,23 +38,11 @@ urlpatterns = [
 	path('api/new-password', NewPassword.as_view(), name='api-new_password'),
 	path('api/validate-code', ValidateCode.as_view(), name='api-validate_code'),
 	path('api/reset-password', ResetPassword.as_view(), name='api-reset_password'),
-	path('api/logout', Logout.as_view(), name='api-logout'),
 	path('api/register', Register.as_view(), name='api-register'),
-	path('api/login', Login.as_view(), name='api-login'),
 
 	path('api/contributors', ContributorsListView.as_view(), name='contributors-list'),
 	#API ENDPOINTS for GET, POST, PUT, DELETE requests
 
-	#with pagination for GET requests of all objects
-	path('api/faq/deserial/paginated', deserializeFaqPaginated.as_view(), name='faq-paginated'),
-	path('api/resource/deserial/paginated', deserializeResourcePaginated.as_view(), name='resource-paginated'),
-	path('api/report/deserial/paginated', deserializeReportPaginated.as_view(), name='report-paginated'),
-	path('api/user/deserial/paginated', deserializeUserPaginated.as_view(), name='user-paginated'),
-	path('api/analytics/deserial/paginated', deserializeAnalyticsPaginated.as_view(), name='user-analytics-paginated'),
-	path('api/user-profile/deserial/paginated', deserializeProfilePaginated.as_view(), name='user-profile-paginated'),
-
-
-	#No pagination for GET requests
 	#User Profile endpoints
 	path('api/user-profile/deserial', deserializeProfile.as_view(), name='user-analytics'),
 	path('api/user-profile/deserial/<int:pk>', deserializeProfile.as_view(), name='user-analytics-object'),
