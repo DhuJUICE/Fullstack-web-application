@@ -15,8 +15,7 @@ from pathlib import Path
 import os
 
 #to use enviroment variables
-from decouple import config, Csv
-from datetime import timedelta
+from decouple import config
 
 from corsheaders.defaults import default_headers, default_methods
 
@@ -29,7 +28,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['share2teach.onrender.com', 'contained-share2teach.onrender.com', '127.0.0.1']
+ALLOWED_HOSTS = ['share2teach.onrender.com', '127.0.0.1', 'localhost']
 
 # Application definition
 INSTALLED_APPS = [
@@ -46,9 +45,6 @@ INSTALLED_APPS = [
     #framework APPS
     'rest_framework',
 	'rest_framework.authtoken',
-
-    #fileStorageSystem APP
-    'storages',
 
     #built in APPS
     'django.contrib.admin',

@@ -1,5 +1,5 @@
+"""
 from django.shortcuts import render, redirect
-import boto3
 from django.conf import settings
 from django.http import JsonResponse
 import os
@@ -644,3 +644,4 @@ def resourceFileStorage(uploadList, request):
             print(f"Error deleting file {path}: {e}")
 
     return JsonResponse({'uploaded_files': file_urls}, status=200)
+"""
