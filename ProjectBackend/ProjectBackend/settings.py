@@ -78,12 +78,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ALLOWED_HOSTS = [
-    "127.0.0.1:8000",
-	"localhost:8000",
-    "share2teach.onrender.com",
-  ]
-
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
 	"http://localhost:3000",
@@ -159,7 +153,7 @@ REST_FRAMEWORK = {
 }
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://share2teach.onrender.com', "http://127.0.0.1:8000", "https://127.0.0.1:8000",
+    'https://share2teach.onrender.com', "http://127.0.0.1:000", "https://localhost",
 ]
 
 # Internationalization
