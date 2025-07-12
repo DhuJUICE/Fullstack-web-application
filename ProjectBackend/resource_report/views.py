@@ -6,10 +6,6 @@ import json
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
-def reportPage(request):
-    return render(request, 'resourceReport.html')
-
-# Create your views here.
 #report certain resource
 def resourceReport(request):
     if request.method == 'POST':

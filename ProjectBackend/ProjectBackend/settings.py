@@ -33,7 +33,6 @@ ALLOWED_HOSTS = ['share2teach.onrender.com', '127.0.0.1', 'localhost']
 # Application definition
 INSTALLED_APPS = [
     #functionality APPS
-    'document_search',
     'faq',
     'resource_contribution',
     'resource_report',

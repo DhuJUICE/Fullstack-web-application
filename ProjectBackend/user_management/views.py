@@ -80,10 +80,6 @@ def generate_verification_code():
     #give back the verification code
     return code, timestamp
 
-#reset password page
-def resetPasswordPage(request):
-    return render(request, 'resetPassword.html')
-
 #function to reset password using your email
 def resetPassword(request):
     # Check if the request method is POST
@@ -147,9 +143,6 @@ def EmailVerificationCode(recipient, code):
         print("Email sent successfully.")
     else:
         print(f"Failed to send email: {response.status_code} - {response.text}")
-
-def validateCodePage(request):
-    return render(request, 'resetPasswordCode.html', {'email':'james@gmail.com'})
 
 #function to validate verification code - WHEN USER ENTERS THE CODE
 def validate_verification_code(request):

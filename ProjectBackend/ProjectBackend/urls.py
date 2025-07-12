@@ -47,7 +47,6 @@ urlpatterns = [
     path('', include('resource_review.urls')),
     path('', include('resource_report.urls')),
     path('', include('user_management.urls')),
-    path('', include('document_search.urls')),
     path('', include('user_analytics.urls')),
     path('', include('faq.urls')),
 	path('', include('rest_API.urls')),

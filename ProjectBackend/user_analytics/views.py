@@ -5,9 +5,6 @@ import json
 
 from django.views.decorators.csrf import csrf_exempt
 
-def analyticsPage(request):
-    return render(request, 'analytics.html')
-
 # Create your views here.
 @csrf_exempt  # Use this only for API views; otherwise, handle CSRF properly.
 def userAnalytics(request):
